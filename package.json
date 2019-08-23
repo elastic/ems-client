@@ -1,0 +1,36 @@
+{
+  "name": "@elastic/ems-client",
+  "version": "1.0.0",
+  "description": "JavaScript client library for the Elastic Maps Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elastic/ems-client.git"
+  },
+  "keywords": [
+    "kibana",
+    "elasticsearch",
+    "elastic maps service"
+  ],
+  "author": "Nick Peihl <nick.peihl@elastic.co>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/elastic/ems-client/issues"
+  },
+  "homepage": "https://github.com/elastic/ems-client#readme",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-jest": "^24.9.0",
+    "expect.js": "^0.3.1",
+    "jest": "^24.9.0"
+  }
+}
