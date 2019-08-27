@@ -17,5 +17,5 @@
  * under the License.
  */
 
-export { EMSClient } from './lib/ems_client';
-export { ORIGIN } from './lib/origin';
+export { EMSClient } from './ems_client';
+export { ORIGIN } from './origin';

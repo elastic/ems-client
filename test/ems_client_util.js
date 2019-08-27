@@ -18,7 +18,7 @@
  */
 
 
-import { EMSClient } from '../';
+import { EMSClient } from '../src';
 
 import EMS_CATALOGUE from './ems_mocks/sample_manifest.json';
 import EMS_FILES from './ems_mocks/sample_files.json';
