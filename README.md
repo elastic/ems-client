@@ -13,6 +13,10 @@ NPM
 Yarn
 `yarn add @elastic/ems-client`
 
+## Building locally
+
+`yarn build`
+
 ## Usage
 
 ```js

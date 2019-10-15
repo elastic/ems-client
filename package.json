@@ -2,9 +2,13 @@
   "name": "@elastic/ems-client",
   "version": "1.0.1",
   "description": "JavaScript client library for the Elastic Maps Service",
-  "main": "src/index.js",
+  "main": "target/node/index.js",
+  "browser": "target/browser/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "yarn build-web && yarn build-node",
+    "build-web": "BABEL_ENV=web babel src --config-file=./babel.config.js --out-dir=target/web --delete-dir-on-start",
+    "build-node": "BABEL_ENV=node babel src --config-file=./babel.config.js --out-dir=target/node --delete-dir-on-start"
   },
   "repository": {
     "type": "git",
@@ -26,6 +30,7 @@
     "node-fetch": "^1.7.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.6.4",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
