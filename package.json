@@ -3,7 +3,7 @@
   "version": "1.0.4",
   "description": "JavaScript client library for the Elastic Maps Service",
   "main": "target/node/index.js",
-  "browser": "target/browser/index.js",
+  "browser": "target/web/index.js",
   "scripts": {
     "test": "jest",
     "build": "yarn build-web && yarn build-node",
