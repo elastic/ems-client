@@ -189,7 +189,6 @@ describe('ems_client', () => {
   it('should prepend proxypath', async () => {
 
     const emsClient = getEMSClient({
-      proxyPath: 'http://proxy.com/foobar',
       tileApiUrl: 'http://proxy.com/foobar/tiles',
       fileApiUrl: 'http://proxy.com/foobar/vector',
     });
@@ -231,7 +230,6 @@ describe('ems_client', () => {
   it('should retrieve vectorstylesheet with all sources inlined) (proxy)', async () => {
 
     const emsClient = getEMSClient({
-      proxyPath: 'http://proxy.com/foobar',
       tileApiUrl: 'http://proxy.com/foobar/tiles',
       fileApiUrl: 'http://proxy.com/foobar/vector',
     });
