@@ -19,12 +19,12 @@
         {
           "locale": "en",
           "format": "vector",
-          "url": "https://vector-style.foobar/styles/osm-bright/style.json"
+          "url": "/vector/styles/osm-bright/style.json"
         },
         {
           "locale": "en",
           "format": "raster",
-          "url": "https://raster-style.foobar/styles/osm-bright.json"
+          "url": "/raster/styles/osm-bright.json"
         }
       ]
     },
@@ -47,12 +47,12 @@
         {
           "locale": "en",
           "format": "vector",
-          "url": "https://vector-style.foobar/styles/osm-bright-desaturated/style.json"
+          "url": "/vector/styles/osm-bright-desaturated/style.json"
         },
         {
           "locale": "en",
           "format": "raster",
-          "url": "https://raster-style.foobar/styles/osm-bright-desaturated.json"
+          "url": "/raster/styles/osm-bright-desaturated.json"
         }
       ]
     },
@@ -75,12 +75,12 @@
         {
           "locale": "en",
           "format": "vector",
-          "url": "https://vector-style.foobar/styles/dark-matter/style.json"
+          "url": "/vector/styles/dark-matter/style.json"
         },
         {
           "locale": "en",
           "format": "raster",
-          "url": "https://raster-style.foobar/styles/dark-matter.json"
+          "url": "/raster/styles/dark-matter.json"
         }
       ]
     }
