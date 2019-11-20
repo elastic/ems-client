@@ -98,7 +98,6 @@ export class EMSClient {
     language,
     landingPageUrl,
     fetchFunction,
-    proxyPath
   }) {
 
 
