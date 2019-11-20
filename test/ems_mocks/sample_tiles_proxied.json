@@ -19,12 +19,12 @@
         {
           "locale": "en",
           "format": "vector",
-          "url": "/tiles/vector/osm.bright.json"
+          "url": "/vector/styles/osm.bright/style.json"
         },
         {
           "locale": "en",
           "format": "raster",
-          "url": "/tiles/raster/osm.bright.json"
+          "url": "/raster/styles/osm.bright.json"
         }
       ]
     }

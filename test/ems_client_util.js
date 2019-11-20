@@ -20,7 +20,6 @@
 
 import { EMSClient } from '../src';
 
-import EMS_CATALOGUE from './ems_mocks/sample_manifest.json';
 import EMS_FILES from './ems_mocks/sample_files.json';
 import EMS_TILES from './ems_mocks/sample_tiles.json';
 import EMS_STYLE_ROAD_MAP_BRIGHT from './ems_mocks/sample_style_bright';
@@ -31,7 +30,6 @@ import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR from './ems_mocks/sample_style_bright_ve
 import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE from './ems_mocks/sample_style_bright_vector_source';
 import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE_PROXIED from './ems_mocks/sample_style_bright_vector_source_proxied';
 
-import EMS_CATALOGUE_PROXIED from './ems_mocks/sample_manifest_proxied.json';
 import EMS_FILES_PROXIED from './ems_mocks/sample_files_proxied.json';
 import EMS_TILES_PROXIED from './ems_mocks/sample_tiles_proxied.json';
 
@@ -40,7 +38,8 @@ export function getEMSClient(options = {}) {
   const emsClient = new EMSClient({
     language: 'en',
     kbnVersion: '7.x.x',
-    manifestServiceUrl: 'https://foobar',
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
     htmlSanitizer: x => x,
     landingPageUrl: 'https://landing.foobar',
     ...options
@@ -48,13 +47,11 @@ export function getEMSClient(options = {}) {
 
   emsClient.getManifest = async (url) => {
     //simulate network calls
-    if (url.startsWith('https://foobar')) {
-      return EMS_CATALOGUE;
-    } else if (url.startsWith('https://tiles.foobar')) {
+    if (url.startsWith('https://tiles.foobar/manifest')) {
       return EMS_TILES;
-    } else if (url.startsWith('https://files.foobar')) {
+    } else if (url.startsWith('https://files.foobar/manifest')) {
       return EMS_FILES;
-    } else if (url.startsWith('https://raster-style.foobar')) {
+    } else if (url.startsWith('https://tiles.foobar/raster/styles')) {
       if (url.includes('osm-bright-desaturated')) {
         return EMS_STYLE_ROAD_MAP_DESATURATED;
       } else if (url.includes('osm-bright')) {
@@ -62,22 +59,20 @@ export function getEMSClient(options = {}) {
       } else if (url.includes('dark-matter')) {
         return EMS_STYLE_DARK_MAP;
       }
-    } else if (url.startsWith('http://proxy.com/foobar/manifest')) {
-      return EMS_CATALOGUE_PROXIED;
-    } else if (url.startsWith('http://proxy.com/foobar/files')) {
+    } else if (url.startsWith('http://proxy.com/foobar/vector/manifest')) {
       return EMS_FILES_PROXIED;
-    } else if (url.startsWith('http://proxy.com/foobar/tiles')) {
+    } else if (url.startsWith('http://proxy.com/foobar/tiles/manifest')) {
       return EMS_TILES_PROXIED;
-    } else if (url.startsWith('https://vector-style.foobar/styles')) {
+    } else if (url.startsWith('https://tiles.foobar/vector/styles')) {
       if (url.includes('osm-bright')) {
         return EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR;
       }
-    } else if (url.startsWith('https://tiles.maps.elastic.co/data/v3.json')) {
+    } else if (url.startsWith('https://tiles.foobar/data/v3.json')) {
       return EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE;
-    } else if (url.startsWith('http://proxy.com/foobar/data/v3.json')) {
+    } else if (url.startsWith('http://proxy.com/foobar/tiles/data/v3.json')) {
       return EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE_PROXIED;
     } else {
-      throw new Error(`url unexecpted: ${url}`);
+      throw new Error(`url unexpected: ${url}`);
     }
   };
   return emsClient;

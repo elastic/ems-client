@@ -92,7 +92,8 @@ export class EMSClient {
 
   constructor({
     kbnVersion,
-    manifestServiceUrl,
+    tileApiUrl,
+    fileApiUrl,
     htmlSanitizer,
     language,
     landingPageUrl,
@@ -108,14 +109,14 @@ export class EMSClient {
     };
 
     this._sanitizer = htmlSanitizer ? htmlSanitizer : x => x;
-    this._manifestServiceUrl = manifestServiceUrl;
+    this._tileApiUrl = tileApiUrl;
+    this._fileApiUrl = fileApiUrl;
     this._loadFileLayers = null;
     this._loadTMSServices = null;
     this._emsLandingPageUrl = typeof landingPageUrl === 'string' ? landingPageUrl : '';
     this._language = typeof language === 'string' ? language : DEFAULT_LANGUAGE;
 
     this._fetchFunction = typeof fetchFunction === 'function' ? fetchFunction : fetch;
-    this._proxyPath = typeof proxyPath === 'string' ? proxyPath : '';
 
     this._invalidateSettings();
   }
@@ -200,44 +201,24 @@ export class EMSClient {
 
   _invalidateSettings() {
 
-    this._getMainCatalog = _.once(async () => {
-      return await this._getManifestWithParams(this._manifestServiceUrl);
-    });
-
     this._getDefaultTMSCatalog = _.once(async () => {
-      const catalogue = await this._getMainCatalog();
-      const firstService = catalogue.services.find(service => service.type === 'tms');
-      if (!firstService) {
-        return [];
-      }
-      const url = this._proxyPath + firstService.manifest;
-      return await this.getManifest(url);
+      return await this.getManifest(`${this._tileApiUrl}/manifest`);
     });
 
     this._getDefaultFileCatalog = _.once(async () => {
-      const catalogue = await this._getMainCatalog();
-      const firstService = catalogue.services.find(service => service.type === 'file');
-      if (!firstService) {
-        return [];
-      }
-      const url = this._proxyPath + firstService.manifest;
-      return await this.getManifest(url);
+      return await this.getManifest(`${this._fileApiUrl}/manifest`);
     });
 
     //Cache the actual instances of TMSService as these in turn cache sub-manifests for the style-files
     this._loadTMSServices = _.once(async () => {
       const tmsManifest = await this._getDefaultTMSCatalog();
-      return tmsManifest.services.map(serviceConfig => new TMSService(serviceConfig, this, this._proxyPath));
+      return tmsManifest.services.map(serviceConfig => new TMSService(serviceConfig, this));
     });
 
     this._loadFileLayers = _.once(async () => {
       const fileManifest = await this._getDefaultFileCatalog();
-      return fileManifest.layers.map(layerConfig => new FileLayer(layerConfig, this, this._proxyPath));
+      return fileManifest.layers.map(layerConfig => new FileLayer(layerConfig, this));
     });
-  }
-
-  async getMainManifest() {
-    return await this._getMainCatalog();
   }
 
   async getDefaultFileManifest() {
@@ -254,6 +235,14 @@ export class EMSClient {
 
   async getTMSServices() {
     return await this._loadTMSServices();
+  }
+
+  getTileApiUrl() {
+    return this._tileApiUrl;
+  }
+
+  getFileApiUrl() {
+    return this._fileApiUrl;
   }
 
   getLandingPageUrl() {

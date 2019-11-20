@@ -23,10 +23,13 @@ import url from 'url';
 
 export class FileLayer {
 
-  constructor(config, emsClient, proxyPath) {
+  _getAbsoluteUrl = (url) => {
+    return this._emsClient.getFileApiUrl() + url;
+  }
+
+  constructor(config, emsClient) {
     this._config = config;
     this._emsClient = emsClient;
-    this._proxyPath = proxyPath;
   }
 
   getAttributions() {
@@ -107,8 +110,8 @@ export class FileLayer {
 
   getDefaultFormatUrl() {
     const format = this._getDefaultFormat();
-    const url = this._emsClient.extendUrlWithParams(format.url);
-    return this._proxyPath + url;
+    const url = this._getAbsoluteUrl(format.url)
+    return this._emsClient.extendUrlWithParams(url);
   }
 
   getCreatedAt() {
