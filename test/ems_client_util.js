@@ -37,7 +37,7 @@ export function getEMSClient(options = {}) {
 
   const emsClient = new EMSClient({
     language: 'en',
-    kbnVersion: '7.x.x',
+    kbnVersion: '7.2.0',
     tileApiUrl: 'https://tiles.foobar',
     fileApiUrl: 'https://files.foobar',
     htmlSanitizer: x => x,
@@ -47,9 +47,9 @@ export function getEMSClient(options = {}) {
 
   emsClient.getManifest = async (url) => {
     //simulate network calls
-    if (url.startsWith('https://tiles.foobar/manifest')) {
+    if (url.startsWith('https://tiles.foobar/v7.2/manifest')) {
       return EMS_TILES;
-    } else if (url.startsWith('https://files.foobar/manifest')) {
+    } else if (url.startsWith('https://files.foobar/v7.2/manifest')) {
       return EMS_FILES;
     } else if (url.startsWith('https://tiles.foobar/raster/styles')) {
       if (url.includes('osm-bright-desaturated')) {
@@ -59,9 +59,9 @@ export function getEMSClient(options = {}) {
       } else if (url.includes('dark-matter')) {
         return EMS_STYLE_DARK_MAP;
       }
-    } else if (url.startsWith('http://proxy.com/foobar/vector/manifest')) {
+    } else if (url.startsWith('http://proxy.com/foobar/vector/v7.2/manifest')) {
       return EMS_FILES_PROXIED;
-    } else if (url.startsWith('http://proxy.com/foobar/tiles/manifest')) {
+    } else if (url.startsWith('http://proxy.com/foobar/tiles/v7.2/manifest')) {
       return EMS_TILES_PROXIED;
     } else if (url.startsWith('https://tiles.foobar/vector/styles')) {
       if (url.includes('osm-bright')) {
