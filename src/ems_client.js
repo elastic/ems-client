@@ -21,6 +21,7 @@ import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { FileLayer } from './file_layer';
 import fetch from 'node-fetch';
+import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
 const extendUrl = (url, props) => (
@@ -112,6 +113,7 @@ export class EMSClient {
     this._fileApiUrl = fileApiUrl;
     this._loadFileLayers = null;
     this._loadTMSServices = null;
+    this._emsVersion = this._getEmsVersion(kbnVersion);
     this._emsLandingPageUrl = typeof landingPageUrl === 'string' ? landingPageUrl : '';
     this._language = typeof language === 'string' ? language : DEFAULT_LANGUAGE;
 
@@ -175,6 +177,14 @@ export class EMSClient {
       });
   }
 
+  _getEmsVersion(version) {
+    if (semver.valid(version)) {
+      return `v${semver.major(version)}.${semver.minor(version)}`;
+    } else {
+      throw new Error(`Invalid version: ${version}`);
+    };
+  }
+
   /**
    * Add optional query-parameters to all requests
    *
@@ -201,11 +211,11 @@ export class EMSClient {
   _invalidateSettings() {
 
     this._getDefaultTMSCatalog = _.once(async () => {
-      return await this.getManifest(`${this._tileApiUrl}/manifest`);
+      return await this.getManifest(`${this._tileApiUrl}/${this._emsVersion}/manifest`);
     });
 
     this._getDefaultFileCatalog = _.once(async () => {
-      return await this.getManifest(`${this._fileApiUrl}/manifest`);
+      return await this.getManifest(`${this._fileApiUrl}/${this._emsVersion}/manifest`);
     });
 
     //Cache the actual instances of TMSService as these in turn cache sub-manifests for the style-files
