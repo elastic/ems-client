@@ -24,6 +24,9 @@ import fetch from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
+// TODO should we parse this from package.json?
+const EMS_VERSION = '8.0';
+
 const extendUrl = (url, props) => (
   modifyUrlLocal(url, parsed => _.merge(parsed, props))
 );
@@ -95,6 +98,7 @@ export class EMSClient {
     kbnVersion,
     tileApiUrl,
     fileApiUrl,
+    emsVersion,
     htmlSanitizer,
     language,
     landingPageUrl,
@@ -113,7 +117,7 @@ export class EMSClient {
     this._fileApiUrl = fileApiUrl;
     this._loadFileLayers = null;
     this._loadTMSServices = null;
-    this._emsVersion = this._getEmsVersion(kbnVersion);
+    this._emsVersion = this._getEmsVersion(emsVersion);
     this._emsLandingPageUrl = typeof landingPageUrl === 'string' ? landingPageUrl : '';
     this._language = typeof language === 'string' ? language : DEFAULT_LANGUAGE;
 
@@ -135,6 +139,15 @@ export class EMSClient {
       return '';
     }
     return i18nObject[this._language] ? i18nObject[this._language]  : i18nObject[DEFAULT_LANGUAGE];
+  }
+
+  _getEmsVersion(version) {
+    const v = semver.valid(semver.coerce(version)) || semver.coerce(EMS_VERSION);
+    if (v) {
+      return`v${semver.major(v)}.${semver.minor(v)}`;
+    } else {
+      throw new Error(`Invalid version: ${version}`);
+    }
   }
 
   /**
@@ -175,14 +188,6 @@ export class EMSClient {
             }
           );
       });
-  }
-
-  _getEmsVersion(version) {
-    if (semver.valid(version)) {
-      return `v${semver.major(version)}.${semver.minor(version)}`;
-    } else {
-      throw new Error(`Invalid version: ${version}`);
-    };
   }
 
   /**
