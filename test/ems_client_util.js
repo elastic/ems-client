@@ -40,6 +40,7 @@ export function getEMSClient(options = {}) {
     kbnVersion: '7.2.0',
     tileApiUrl: 'https://tiles.foobar',
     fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.2',
     htmlSanitizer: x => x,
     landingPageUrl: 'https://landing.foobar',
     ...options
