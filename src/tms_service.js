@@ -51,9 +51,12 @@ export class TMSService {
         const url = this._getAbsoluteUrl(tileUrl);
         return this._emsClient.extendUrlWithParams(url);
       });
+
+      const htmlAttribution = await this.getHTMLAttribution()
       inlinedSources[sourceName] = {
         type: 'vector',
         ...sourceJson,
+        attribution: htmlAttribution,
         tiles: extendedTileUrls
       };
     }
