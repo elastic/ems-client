@@ -166,7 +166,7 @@ export class TMSService {
       const html = url ? `<a rel="noreferrer noopener" href="${url}">${label}</a>` : label;
       return this._emsClient.sanitizeHtml(`${html}`);
     });
-    return `<p>${attributions.join(' | ')}</p>`;//!!!this is the current convention used in Kibana
+    return attributions.join(' | ');
   }
 
   getMarkdownAttribution() {

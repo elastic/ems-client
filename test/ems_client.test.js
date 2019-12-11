@@ -34,7 +34,7 @@ describe('ems_client', () => {
     const tileService = tiles[0];
     expect(await tileService.getUrlTemplate()).toBe('https://raster-style.foobar/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=kibana&my_app_version=7.x.x');
 
-    expect (tileService.getHTMLAttribution()).toBe('<p><a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a></p>');
+    expect (tileService.getHTMLAttribution()).toBe('<a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>');
     expect (await tileService.getMinZoom()).toBe(0);
     expect (await tileService.getMaxZoom()).toBe(10);
     expect (tileService.hasId('road_map')).toBe(true);
@@ -52,7 +52,7 @@ describe('ems_client', () => {
     const tileService = tiles[0];
     expect(await tileService.getUrlTemplate()).toBe('https://raster-style.foobar/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=kibana&my_app_version=7.x.x');
 
-    expect (tileService.getHTMLAttribution()).toBe('<p><a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a></p>');
+    expect (tileService.getHTMLAttribution()).toBe('<a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>');
     expect (await tileService.getMinZoom()).toBe(0);
     expect (await tileService.getMaxZoom()).toBe(10);
     expect (tileService.hasId('road_map')).toBe(true);
