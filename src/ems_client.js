@@ -24,12 +24,9 @@ import fetch from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
-// TODO should we parse this from package.json?
-const EMS_VERSION = '8.0';
+const DEFAULT_EMS_VERSION = '7.6';
 
-const extendUrl = (url, props) => (
-  modifyUrlLocal(url, parsed => _.merge(parsed, props))
-);
+const extendUrl = (url, props) => modifyUrlLocal(url, parsed => _.merge(parsed, props));
 
 /**
  * plugins cannot have upstream dependencies on core/*-kibana.
@@ -96,6 +93,7 @@ export class EMSClient {
 
   constructor({
     kbnVersion,
+    manifestServiceUrl,
     tileApiUrl,
     fileApiUrl,
     emsVersion,
@@ -103,6 +101,7 @@ export class EMSClient {
     language,
     landingPageUrl,
     fetchFunction,
+    proxyPath,
   }) {
 
 
@@ -113,6 +112,7 @@ export class EMSClient {
     };
 
     this._sanitizer = htmlSanitizer ? htmlSanitizer : x => x;
+    this._manifestServiceUrl = manifestServiceUrl;
     this._tileApiUrl = tileApiUrl;
     this._fileApiUrl = fileApiUrl;
     this._loadFileLayers = null;
@@ -122,6 +122,7 @@ export class EMSClient {
     this._language = typeof language === 'string' ? language : DEFAULT_LANGUAGE;
 
     this._fetchFunction = typeof fetchFunction === 'function' ? fetchFunction : fetch;
+    this._proxyPath = typeof proxyPath === 'string' ? proxyPath : '';
 
     this._invalidateSettings();
   }
@@ -138,13 +139,14 @@ export class EMSClient {
     if (!i18nObject) {
       return '';
     }
-    return i18nObject[this._language] ? i18nObject[this._language]  : i18nObject[DEFAULT_LANGUAGE];
+    return i18nObject[this._language] ? i18nObject[this._language] : i18nObject[DEFAULT_LANGUAGE];
   }
 
   _getEmsVersion(version) {
-    const v = semver.valid(semver.coerce(version)) || semver.coerce(EMS_VERSION);
-    if (v) {
-      return`v${semver.major(v)}.${semver.minor(v)}`;
+    const userVersion = semver.valid(semver.coerce(version));
+    const semverVersion = userVersion ? userVersion : semver.coerce(DEFAULT_EMS_VERSION);
+    if (semverVersion) {
+      return `v${semver.major(semverVersion)}.${semver.minor(semverVersion)}`;
     } else {
       throw new Error(`Invalid version: ${version}`);
     }
@@ -170,24 +172,22 @@ export class EMSClient {
   }
 
   _fetchWithTimeout(url) {
-    return new Promise(
-      (resolve, reject) => {
-        const timer = setTimeout(
-          () => reject(new Error(`Request to ${url} timed out`)),
-          this.EMS_LOAD_TIMEOUT
-        );
-        this._fetchFunction(url)
-          .then(
-            response => {
-              clearTimeout(timer);
-              resolve(response);
-            },
-            err => {
-              clearTimeout(timer);
-              reject(err);
-            }
-          );
-      });
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject(new Error(`Request to ${url} timed out`)),
+        this.EMS_LOAD_TIMEOUT
+      );
+      this._fetchFunction(url).then(
+        response => {
+          clearTimeout(timer);
+          resolve(response);
+        },
+        err => {
+          clearTimeout(timer);
+          reject(err);
+        }
+      );
+    });
   }
 
   /**
@@ -214,25 +214,68 @@ export class EMSClient {
   }
 
   _invalidateSettings() {
+    this._getMainCatalog = _.once(async () => {
+      // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
+      if (this._manifestServiceUrl) {
+        console.warn(`The "manifestServiceUrl" parameter is deprecated in v7.6.0.
+        Consider using "tileApiUrl" and "fileApiUrl" instead.`);
+        return await this._getManifestWithParams(this._manifestServiceUrl);
+      } else {
+        const services = [];
+        if (this._tileApiUrl) {
+          services.push({
+            type: 'tms',
+            manifest: `${this._tileApiUrl}/${this._emsVersion}/manifest`,
+          });
+        }
+        if (this._fileApiUrl) {
+          services.push({
+            type: 'file',
+            manifest: `${this._fileApiUrl}/${this._emsVersion}/manifest`,
+          });
+        }
+        return { services: services };
+      }
+    });
 
     this._getDefaultTMSCatalog = _.once(async () => {
-      return await this.getManifest(`${this._tileApiUrl}/${this._emsVersion}/manifest`);
+      const catalogue = await this._getMainCatalog();
+      const firstService = catalogue.services.find(service => service.type === 'tms');
+      if (!firstService) {
+        return { services: [] };
+      }
+      const url = this._proxyPath + firstService.manifest;
+      return await this.getManifest(url);
     });
 
     this._getDefaultFileCatalog = _.once(async () => {
-      return await this.getManifest(`${this._fileApiUrl}/${this._emsVersion}/manifest`);
+      const catalogue = await this._getMainCatalog();
+      const firstService = catalogue.services.find(service => service.type === 'file');
+      if (!firstService) {
+        return { layers: [] };
+      }
+      const url = this._proxyPath + firstService.manifest;
+      return await this.getManifest(url);
     });
 
     //Cache the actual instances of TMSService as these in turn cache sub-manifests for the style-files
     this._loadTMSServices = _.once(async () => {
       const tmsManifest = await this._getDefaultTMSCatalog();
-      return tmsManifest.services.map(serviceConfig => new TMSService(serviceConfig, this));
+      return tmsManifest.services.map(
+        serviceConfig => new TMSService(serviceConfig, this, this._proxyPath)
+      );
     });
 
     this._loadFileLayers = _.once(async () => {
       const fileManifest = await this._getDefaultFileCatalog();
-      return fileManifest.layers.map(layerConfig => new FileLayer(layerConfig, this));
+      return fileManifest.layers.map(
+        layerConfig => new FileLayer(layerConfig, this, this._proxyPath)
+      );
     });
+  }
+
+  async getMainManifest() {
+    return await this._getMainCatalog();
   }
 
   async getDefaultFileManifest() {
@@ -268,9 +311,11 @@ export class EMSClient {
   }
 
   extendUrlWithParams(url) {
-    return unescapeTemplateVars(extendUrl(url, {
-      query: this._queryParams
-    }));
+    return unescapeTemplateVars(
+      extendUrl(url, {
+        query: this._queryParams,
+      })
+    );
   }
 
   async findFileLayerById(id) {

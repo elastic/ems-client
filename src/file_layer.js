@@ -20,16 +20,24 @@
 
 import { ORIGIN } from './origin';
 import url from 'url';
+import { toAbsoluteUrl } from './utils';
 
 export class FileLayer {
-
+  /**
+   * Checks if url is absolute. If not, prepend the basePath.
+   */
   _getAbsoluteUrl = (url) => {
-    return this._emsClient.getFileApiUrl() + url;
+    if (/^https?:\/\//.test(url)) {
+      return url;
+    } else {
+      return toAbsoluteUrl(this._emsClient.getFileApiUrl(), url);
+    }
   }
 
-  constructor(config, emsClient) {
+  constructor(config, emsClient, proxyPath) {
     this._config = config;
     this._emsClient = emsClient;
+    this._proxyPath = proxyPath;
   }
 
   getAttributions() {
@@ -38,7 +46,7 @@ export class FileLayer {
       const label = this._emsClient.getValueInLanguage(attribution.label);
       return {
         url: url,
-        label: label
+        label: label,
       };
     });
   }
@@ -50,7 +58,7 @@ export class FileLayer {
       const html = url ? `<a href=${url}>${label}</a>` : label;
       return this._emsClient.sanitizeHtml(html);
     });
-    return attributions.join(' | ');//!!!this is the current convention used in Kibana
+    return attributions.join(' | '); //!!!this is the current convention used in Kibana
   }
 
   getFieldsInLanguage() {
@@ -58,14 +66,14 @@ export class FileLayer {
       return {
         type: field.type,
         name: field.id,
-        description: this._emsClient.getValueInLanguage(field.label)
+        description: this._emsClient.getValueInLanguage(field.label),
       };
     });
   }
 
   getDisplayName() {
     const layerName = this._emsClient.getValueInLanguage(this._config.layer_name);
-    return (layerName)  ? layerName  : '';
+    return layerName ? layerName : '';
   }
 
   getId() {
@@ -110,7 +118,7 @@ export class FileLayer {
 
   getDefaultFormatUrl() {
     const format = this._getDefaultFormat();
-    const url = this._getAbsoluteUrl(format.url)
+    const url = this._proxyPath + this._getAbsoluteUrl(format.url);
     return this._emsClient.extendUrlWithParams(url);
   }
 
