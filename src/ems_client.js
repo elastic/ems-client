@@ -25,7 +25,7 @@ import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
 // TODO should we parse this from package.json?
-const EMS_VERSION = '8.0';
+const EMS_VERSION = '7.6';
 
 const extendUrl = (url, props) => (
   modifyUrlLocal(url, parsed => _.merge(parsed, props))

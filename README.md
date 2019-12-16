@@ -23,8 +23,20 @@ Yarn
 import { EMSClient } from '@elastic/ems-client';
 
 const emsClient = new EMSClient({
+  kbnVersion: '7.6.0',
+  tileApiUrl: 'https://tiles.maps.elastic.co',
+  fileApiUrl: 'https://vector.maps.elastic.co',
+  language: 'en'
+});
+```
+
+### Legacy (prior to v7.6)
+```js
+import { EMSClient } from '@elastic/ems-client';
+
+const emsClient = new EMSClient({
   kbnVersion: '7.2.0',
-  manifestServiceUrl: 'http://catalogue.maps.elastic.co/v7.2/manifest',
+  manifestServiceUrl: 'https://catalogue.maps.elastic.co/v7.2/manifest',
   language: 'en'
 });
 ```

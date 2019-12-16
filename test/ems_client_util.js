@@ -37,10 +37,10 @@ export function getEMSClient(options = {}) {
 
   const emsClient = new EMSClient({
     language: 'en',
-    kbnVersion: '7.2.0',
+    kbnVersion: '7.6.0',
     tileApiUrl: 'https://tiles.foobar',
     fileApiUrl: 'https://files.foobar',
-    emsVersion: '7.2',
+    emsVersion: '7.6',
     htmlSanitizer: x => x,
     landingPageUrl: 'https://landing.foobar',
     ...options
@@ -48,26 +48,24 @@ export function getEMSClient(options = {}) {
 
   emsClient.getManifest = async (url) => {
     //simulate network calls
-    if (url.startsWith('https://tiles.foobar/v7.2/manifest')) {
+    if (url.startsWith('https://tiles.foobar/v7.6/manifest')) {
       return EMS_TILES;
-    } else if (url.startsWith('https://files.foobar/v7.2/manifest')) {
+    } else if (url.startsWith('https://files.foobar/v7.6/manifest')) {
       return EMS_FILES;
-    } else if (url.startsWith('https://tiles.foobar/raster/styles')) {
-      if (url.includes('osm-bright-desaturated')) {
+    } else if (url.startsWith('https://tiles.foobar/v7.6/styles')) {
+      if (url.includes('osm-bright/style.json')) {
+        return EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR;
+      } else if (url.includes('osm-bright-desaturated.json')) {
         return EMS_STYLE_ROAD_MAP_DESATURATED;
-      } else if (url.includes('osm-bright')) {
+      } else if (url.includes('osm-bright.json')) {
         return EMS_STYLE_ROAD_MAP_BRIGHT;
-      } else if (url.includes('dark-matter')) {
+      } else if (url.includes('dark-matter.json')) {
         return EMS_STYLE_DARK_MAP;
       }
-    } else if (url.startsWith('http://proxy.com/foobar/vector/v7.2/manifest')) {
+    } else if (url.startsWith('http://proxy.com/foobar/vector/v7.6/manifest')) {
       return EMS_FILES_PROXIED;
-    } else if (url.startsWith('http://proxy.com/foobar/tiles/v7.2/manifest')) {
+    } else if (url.startsWith('http://proxy.com/foobar/tiles/v7.6/manifest')) {
       return EMS_TILES_PROXIED;
-    } else if (url.startsWith('https://tiles.foobar/vector/styles')) {
-      if (url.includes('osm-bright')) {
-        return EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR;
-      }
     } else if (url.startsWith('https://tiles.foobar/data/v3.json')) {
       return EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE;
     } else if (url.startsWith('http://proxy.com/foobar/tiles/data/v3.json')) {
