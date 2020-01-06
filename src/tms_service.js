@@ -23,18 +23,22 @@ import { ORIGIN } from './origin';
 export class TMSService {
 
   _getAbsoluteUrl = (url) => {
-    return this._emsClient.getTileApiUrl() + url;
+    if (/^https?:\/\//.test(url)) {
+      return url;
+    } else {
+      return this._emsClient.getTileApiUrl() + url;
+    }
   }
 
   _getRasterStyleJson = _.once(async () => {
     const rasterUrl = this._getStyleUrlForLocale('raster');
-    const url = this._getAbsoluteUrl(rasterUrl);
+    const url = this._proxyPath + this._getAbsoluteUrl(rasterUrl);
     return this._emsClient.getManifest(this._emsClient.extendUrlWithParams(url));
   });
 
   _getVectorStyleJsonRaw = _.once(async () => {
     const vectorUrl = this._getStyleUrlForLocale('vector');
-    const url = this._getAbsoluteUrl(vectorUrl);
+    const url = this._proxyPath + this._getAbsoluteUrl(vectorUrl);
     const vectorJson =  await this._emsClient.getManifest(this._emsClient.extendUrlWithParams(url));
     return { ...vectorJson };
   });
@@ -43,12 +47,12 @@ export class TMSService {
     const vectorJson = await this._getVectorStyleJsonRaw();
     const inlinedSources = {};
     for (const sourceName of Object.getOwnPropertyNames(vectorJson.sources)) {
-      const sourceUrl = this._getAbsoluteUrl(vectorJson.sources[sourceName].url);
+      const sourceUrl = this._proxyPath + this._getAbsoluteUrl(vectorJson.sources[sourceName].url);
       const extendedUrl =  this._emsClient.extendUrlWithParams(sourceUrl);
       const sourceJson = await this._emsClient.getManifest(extendedUrl);
 
       const extendedTileUrls = sourceJson.tiles.map(tileUrl => {
-        const url = this._getAbsoluteUrl(tileUrl);
+        const url = this._proxyPath + this._getAbsoluteUrl(tileUrl);
         return this._emsClient.extendUrlWithParams(url);
       });
       // Override the attribution in the sources with the localized attribution
@@ -64,12 +68,14 @@ export class TMSService {
       ...vectorJson,
       sources: inlinedSources,
       sprite: await this._getSpriteSheetRootPath(),
+      glyphs: await this._getUrlTemplateForGlyphs(),
     };
   });
 
-  constructor(config, emsClient) {
+  constructor(config, emsClient, proxyPath) {
     this._config = config;
     this._emsClient = emsClient;
+    this._proxyPath = proxyPath;
   }
 
   _getFormats(formatType, locale) {
@@ -92,12 +98,17 @@ export class TMSService {
   }
 
   async getDefaultRasterStyle() {
-    return await this._getRasterStyleJson();
+    const tileJson = await this._getRasterStyleJson();
+    const tiles = tileJson.tiles.map(tile => this._proxyPath + this._getAbsoluteUrl(tile));
+    return {
+      ...tileJson,
+      ...{ tiles }
+    };
   }
 
   async getUrlTemplate() {
     const tileJson = await this._getRasterStyleJson();
-    const directUrl = this._getAbsoluteUrl(tileJson.tiles[0]);
+    const directUrl = this._proxyPath + this._getAbsoluteUrl(tileJson.tiles[0]);
     return this._emsClient.extendUrlWithParams(directUrl);
   }
 
@@ -106,7 +117,7 @@ export class TMSService {
     if (!tileJson.sources[sourceId] || !tileJson.sources[sourceId].tiles) {
       return null;
     }
-    const directUrl = tileJson.sources[sourceId].tiles[0];
+    const directUrl = this._proxyPath + this._getAbsoluteUrl(tileJson.sources[sourceId].tiles[0]);
     return this._emsClient.extendUrlWithParams(directUrl);
   }
 
@@ -131,7 +142,12 @@ export class TMSService {
 
   async _getSpriteSheetRootPath() {
     const vectorStyleJson = await this._getVectorStyleJsonRaw();
-    return this._getAbsoluteUrl(vectorStyleJson.sprite);
+    return this._proxyPath + this._getAbsoluteUrl(vectorStyleJson.sprite);
+  }
+
+  async _getUrlTemplateForGlyphs() {
+    const vectorStyleJson = await this._getVectorStyleJsonRaw();
+    return this._proxyPath + this._getAbsoluteUrl(vectorStyleJson.glyphs);
   }
 
   async getSpriteSheetJsonPath(isRetina = false) {

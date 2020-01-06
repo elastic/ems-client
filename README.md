@@ -26,6 +26,7 @@ const emsClient = new EMSClient({
   kbnVersion: '7.6.0',
   tileApiUrl: 'https://tiles.maps.elastic.co',
   fileApiUrl: 'https://vector.maps.elastic.co',
+  emsVersion: '7.6',
   language: 'en'
 });
 ```
