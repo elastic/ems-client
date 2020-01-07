@@ -241,7 +241,7 @@ export class EMSClient {
       const catalogue = await this._getMainCatalog();
       const firstService = catalogue.services.find(service => service.type === 'tms');
       if (!firstService) {
-        return [];
+        return { services: [] };
       }
       const url = this._proxyPath + firstService.manifest;
       return await this.getManifest(url);
