@@ -20,6 +20,7 @@
 
 import { ORIGIN } from './origin';
 import url from 'url';
+import { resolve } from './utils';
 
 export class FileLayer {
   /**
@@ -29,9 +30,9 @@ export class FileLayer {
     if (/^https?:\/\//.test(url)) {
       return url;
     } else {
-      return this._emsClient.getFileApiUrl() + url;
+      return resolve(this._emsClient.getFileApiUrl(), url);
     }
-  };
+  }
 
   constructor(config, emsClient, proxyPath) {
     this._config = config;

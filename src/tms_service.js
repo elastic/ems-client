@@ -19,6 +19,7 @@
 
 import _ from 'lodash';
 import { ORIGIN } from './origin';
+import { resolve } from './utils';
 
 export class TMSService {
 
@@ -26,7 +27,7 @@ export class TMSService {
     if (/^https?:\/\//.test(url)) {
       return url;
     } else {
-      return this._emsClient.getTileApiUrl() + url;
+      return resolve(this._emsClient.getTileApiUrl(), url);
     }
   }
 
