@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.6.0] - 2020-01-13
+
+### Added
+- Two new parameters were introduced, `tileApiUrl` and `fileApiUrl`. These should be used instead of `manifestServiceUrl`. These parameters should be set to their respective domains (e.g. `https://tiles.maps.elastic.co`, `https://vector.maps.elastic.co`). [#13](https://github.com/elastic/ems-client/pull/13)
+
+### Changed
+
+- Starting with v7.6, new Elastic Maps Service (EMS) versions will be released with every matching major and minor release of the Elastic Stack. New releases of ems-client will also be released to match the EMS versions.
+
+- Handle relative URLs in EMS v7.6 manifests.
+
+### Deprecated
+- `manifestServiceUrl` is now deprecated as the catalogue manifest has been removed in Elastic Maps Service (EMS) v7.6. It has been replaced by two new parameters `tileApiUrl` and `fileApiUrl`.
+
 ## [7.2.2] - 2019-12-11
 ### Fixed
 -  Remove paragraph element from html attribution [#15](https://github.com/elastic/ems-client/pull/15)
