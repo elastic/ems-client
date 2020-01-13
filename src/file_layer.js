@@ -20,7 +20,7 @@
 
 import { ORIGIN } from './origin';
 import url from 'url';
-import { resolve } from './utils';
+import { toAbsoluteUrl } from './utils';
 
 export class FileLayer {
   /**
@@ -30,7 +30,7 @@ export class FileLayer {
     if (/^https?:\/\//.test(url)) {
       return url;
     } else {
-      return resolve(this._emsClient.getFileApiUrl(), url);
+      return toAbsoluteUrl(this._emsClient.getFileApiUrl(), url);
     }
   }
 

@@ -24,12 +24,9 @@ import fetch from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
-// TODO should we parse this from package.json?
-const EMS_VERSION = '7.6';
+const DEFAULT_EMS_VERSION = '7.6';
 
-const extendUrl = (url, props) => (
-  modifyUrlLocal(url, parsed => _.merge(parsed, props))
-);
+const extendUrl = (url, props) => modifyUrlLocal(url, parsed => _.merge(parsed, props));
 
 /**
  * plugins cannot have upstream dependencies on core/*-kibana.
@@ -146,9 +143,10 @@ export class EMSClient {
   }
 
   _getEmsVersion(version) {
-    const v = semver.valid(semver.coerce(version)) || semver.coerce(EMS_VERSION);
-    if (v) {
-      return `v${semver.major(v)}.${semver.minor(v)}`;
+    const userVersion = semver.valid(semver.coerce(version));
+    const semverVersion = userVersion ? userVersion : semver.coerce(DEFAULT_EMS_VERSION);
+    if (semverVersion) {
+      return `v${semver.major(semverVersion)}.${semver.minor(semverVersion)}`;
     } else {
       throw new Error(`Invalid version: ${version}`);
     }
@@ -217,7 +215,10 @@ export class EMSClient {
 
   _invalidateSettings() {
     this._getMainCatalog = _.once(async () => {
+      // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
       if (this._manifestServiceUrl) {
+        console.warn(`The "manifestServiceUrl" parameter is deprecated in v7.6.0.
+        Consider using "tileApiUrl" and "fileApiUrl" instead.`);
         return await this._getManifestWithParams(this._manifestServiceUrl);
       } else {
         const services = [];

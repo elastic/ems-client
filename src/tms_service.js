@@ -19,7 +19,7 @@
 
 import _ from 'lodash';
 import { ORIGIN } from './origin';
-import { resolve } from './utils';
+import { toAbsoluteUrl } from './utils';
 
 export class TMSService {
 
@@ -27,7 +27,7 @@ export class TMSService {
     if (/^https?:\/\//.test(url)) {
       return url;
     } else {
-      return resolve(this._emsClient.getTileApiUrl(), url);
+      return toAbsoluteUrl(this._emsClient.getTileApiUrl(), url);
     }
   }
 

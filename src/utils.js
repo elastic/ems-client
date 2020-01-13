@@ -17,7 +17,12 @@
  * under the License.
  */
 
-export function resolve (host, path) {
+/**
+ * Resolves a target URL path relative to the host.
+ * This is specifically usefed by the Kibana proxy re-routing.
+ * It also handles trailing slashes in tileApiUrl and fileApiUrl parameters.
+ */
+export function toAbsoluteUrl (host, path) {
   if (!host) {
     return path;
   }
