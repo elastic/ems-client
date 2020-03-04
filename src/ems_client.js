@@ -93,6 +93,8 @@ export class EMSClient {
 
   constructor({
     kbnVersion,
+    appVersion,
+    appName,
     manifestServiceUrl,
     tileApiUrl,
     fileApiUrl,
@@ -104,11 +106,16 @@ export class EMSClient {
     proxyPath,
   }) {
 
+    // Remove kbnVersion in 8.0
+    if (kbnVersion) {
+      console.warn('The "kbnVersion" parameter for ems-client is deprecated. Please use "appVersion" instead.');
+      appVersion = appVersion || kbnVersion;
+    }
 
     this._queryParams = {
       elastic_tile_service_tos: 'agree',
-      my_app_name: 'kibana',
-      my_app_version: kbnVersion,
+      my_app_name: appName || 'kibana',
+      my_app_version: appVersion,
     };
 
     this._sanitizer = htmlSanitizer ? htmlSanitizer : x => x;
