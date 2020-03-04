@@ -23,7 +23,8 @@ Yarn
 import { EMSClient } from '@elastic/ems-client';
 
 const emsClient = new EMSClient({
-  kbnVersion: '7.6.0',
+  appVersion: '7.6.0',
+  appName: 'kibana',
   tileApiUrl: 'https://tiles.maps.elastic.co',
   fileApiUrl: 'https://vector.maps.elastic.co',
   emsVersion: '7.6',
