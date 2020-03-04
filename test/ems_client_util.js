@@ -39,7 +39,8 @@ export function getEMSClient(options = {}) {
 
   const emsClient = new EMSClient({
     language: 'en',
-    kbnVersion: '7.x.x',
+    appVersion: '7.x.x',
+    appName: 'tester',
     htmlSanitizer: x => x,
     landingPageUrl: 'https://landing.foobar',
     ...options
