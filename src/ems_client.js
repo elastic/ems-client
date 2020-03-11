@@ -24,7 +24,7 @@ import fetch from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
-const DEFAULT_EMS_VERSION = '7.6';
+const DEFAULT_EMS_VERSION = '7.7';
 
 const extendUrl = (url, props) => modifyUrlLocal(url, parsed => _.merge(parsed, props));
 

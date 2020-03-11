@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.7.0] - 2020-03-11
+
+### Changed
+- The default Elastic Maps Service version is now `7.7`.
+
+### Added
+- The `appName` parameter can now be configured to specify the client application. Previously, the client application was hard-coded to `kibana`.
+- The `appVersion` configurable parameter replaces the `kbnVersion` parameter for specifying the client application version, e.g. `7.7.0`.
+
+### Deprecated
+- The `kbnVersion` parameter has been deprecated and the `appVersion` parameter should be used instead.
+
 ## [7.6.0] - 2020-01-13
 
 ### Added
