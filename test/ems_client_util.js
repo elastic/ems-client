@@ -19,6 +19,7 @@
 
 
 import { EMSClient } from '../src';
+import fetch from 'node-fetch';
 
 import EMS_CATALOGUE from './ems_mocks/sample_manifest.json';
 import EMS_FILES from './ems_mocks/sample_files.json';
