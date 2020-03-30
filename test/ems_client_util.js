@@ -43,6 +43,7 @@ export function getEMSClient(options = {}) {
     appName: 'tester',
     htmlSanitizer: x => x,
     landingPageUrl: 'https://landing.foobar',
+    fetchFunction: fetch,
     ...options
   });
 
