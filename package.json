@@ -27,10 +27,10 @@
   "homepage": "https://github.com/elastic/ems-client#readme",
   "dependencies": {
     "lodash": "^4.17.15",
-    "node-fetch": "^1.7.3",
     "semver": "^6.3.0"
   },
   "devDependencies": {
+    "node-fetch": "^1.7.3",
     "@babel/cli": "^7.6.4",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
