@@ -20,7 +20,6 @@
 import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { FileLayer } from './file_layer';
-import fetch from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
@@ -110,6 +109,10 @@ export class EMSClient {
     if (kbnVersion) {
       console.warn('The "kbnVersion" parameter for ems-client is deprecated. Please use "appVersion" instead.');
       appVersion = appVersion || kbnVersion;
+    }
+    
+    if (!fetchFunction) {
+      console.warn('`fetchFunction` not provided. Defaulting to standard Javascript fetch');
     }
 
     this._queryParams = {
