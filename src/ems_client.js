@@ -111,8 +111,8 @@ export class EMSClient {
       appVersion = appVersion || kbnVersion;
     }
     
-    if (!fetchFunction) {
-      console.warn('`fetchFunction` not provided. Defaulting to standard Javascript fetch');
+    if (!fetchFunction || typeof fetchFunction !== 'function') {
+      throw('No `fetchFunction` provided. This argument is required.');
     }
 
     this._queryParams = {
@@ -131,7 +131,7 @@ export class EMSClient {
     this._emsLandingPageUrl = typeof landingPageUrl === 'string' ? landingPageUrl : '';
     this._language = typeof language === 'string' ? language : DEFAULT_LANGUAGE;
 
-    this._fetchFunction = typeof fetchFunction === 'function' ? fetchFunction : fetch;
+    this._fetchFunction = fetchFunction;
     this._proxyPath = typeof proxyPath === 'string' ? proxyPath : '';
 
     this._invalidateSettings();
