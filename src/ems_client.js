@@ -23,7 +23,7 @@ import { FileLayer } from './file_layer';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
-const DEFAULT_EMS_VERSION = '7.7';
+const DEFAULT_EMS_VERSION = '7.8';
 
 const extendUrl = (url, props) => modifyUrlLocal(url, parsed => _.merge(parsed, props));
 
