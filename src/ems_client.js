@@ -20,7 +20,6 @@
 import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { FileLayer } from './file_layer';
-import fetch from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
 
@@ -111,6 +110,10 @@ export class EMSClient {
       console.warn('The "kbnVersion" parameter for ems-client is deprecated. Please use "appVersion" instead.');
       appVersion = appVersion || kbnVersion;
     }
+    
+    if (!fetchFunction || typeof fetchFunction !== 'function') {
+      throw('No `fetchFunction` provided. This argument is required.');
+    }
 
     this._queryParams = {
       elastic_tile_service_tos: 'agree',
@@ -128,7 +131,7 @@ export class EMSClient {
     this._emsLandingPageUrl = typeof landingPageUrl === 'string' ? landingPageUrl : '';
     this._language = typeof language === 'string' ? language : DEFAULT_LANGUAGE;
 
-    this._fetchFunction = typeof fetchFunction === 'function' ? fetchFunction : fetch;
+    this._fetchFunction = fetchFunction;
     this._proxyPath = typeof proxyPath === 'string' ? proxyPath : '';
 
     this._invalidateSettings();

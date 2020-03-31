@@ -19,6 +19,7 @@
 
 
 import { EMSClient } from '../src';
+import fetch from 'node-fetch';
 
 import EMS_CATALOGUE from './ems_mocks/sample_manifest.json';
 import EMS_FILES from './ems_mocks/sample_files.json';
@@ -43,6 +44,7 @@ export function getEMSClient(options = {}) {
     appName: 'tester',
     htmlSanitizer: x => x,
     landingPageUrl: 'https://landing.foobar',
+    fetchFunction: fetch,
     ...options
   });
 
