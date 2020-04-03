@@ -23,6 +23,35 @@ import EMS_STYLE_BRIGHT_VECTOR_PROXIED  from './ems_mocks/sample_style_bright_ve
 
 describe('ems_client', () => {
 
+  it('should get api manifests', async () => {
+    const emsClient = getEMSClient({
+      language: 'zz',
+      tileApiUrl: 'https://tiles.foobar',
+      fileApiUrl: 'https://files.foobar',
+      emsVersion: '7.6',
+    });
+    const spy = jest.spyOn(emsClient, 'getManifest');
+    await emsClient.getTMSServices();
+    await emsClient.getFileLayers();
+
+    expect(spy).toHaveBeenNthCalledWith(1, 'https://tiles.foobar/v7.6/manifest');
+    expect(spy).toHaveBeenNthCalledWith(2, 'https://files.foobar/v7.6/manifest');
+  });
+
+  it('should handle handle end slashes in api urls correctly', async () => {
+    const emsClient = getEMSClient({
+      language: 'zz',
+      tileApiUrl: 'https://tiles.foobar/',
+      fileApiUrl: 'https://files.foobar/',
+      emsVersion: '7.6',
+    });
+    const spy = jest.spyOn(emsClient, 'getManifest');
+    await emsClient.getTMSServices();
+    await emsClient.getFileLayers();
+
+    expect(spy).toHaveBeenNthCalledWith(1, 'https://tiles.foobar/v7.6/manifest');
+    expect(spy).toHaveBeenNthCalledWith(2, 'https://files.foobar/v7.6/manifest');
+  });
 
   it('should get the tile service', async () => {
 
