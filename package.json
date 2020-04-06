@@ -1,6 +1,6 @@
 {
   "name": "@elastic/ems-client",
-  "version": "7.8.0",
+  "version": "7.8.1",
   "description": "JavaScript client library for the Elastic Maps Service",
   "main": "target/node/index.js",
   "browser": "target/web/index.js",
@@ -30,12 +30,12 @@
     "semver": "^6.3.0"
   },
   "devDependencies": {
-    "node-fetch": "^1.7.3",
     "@babel/cli": "^7.6.4",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "babel-jest": "^24.9.0",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "node-fetch": "^1.7.3"
   }
 }
