@@ -38,7 +38,7 @@ describe('ems_client', () => {
     expect(spy).toHaveBeenNthCalledWith(2, 'https://files.foobar/v7.6/manifest');
   });
 
-  it('should handle handle end slashes in api urls correctly', async () => {
+  it('should handle end slashes in api urls correctly', async () => {
     const emsClient = getEMSClient({
       language: 'zz',
       tileApiUrl: 'https://tiles.foobar/',
@@ -323,4 +323,3 @@ describe('ems_client', () => {
 
 
 });
-
