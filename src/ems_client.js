@@ -22,6 +22,7 @@ import { TMSService } from './tms_service';
 import { FileLayer } from './file_layer';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
+import { toAbsoluteUrl } from './utils';
 
 const DEFAULT_EMS_VERSION = '7.8';
 
@@ -110,7 +111,7 @@ export class EMSClient {
       console.warn('The "kbnVersion" parameter for ems-client is deprecated. Please use "appVersion" instead.');
       appVersion = appVersion || kbnVersion;
     }
-    
+
     if (!fetchFunction || typeof fetchFunction !== 'function') {
       throw('No `fetchFunction` provided. This argument is required.');
     }
@@ -235,13 +236,13 @@ export class EMSClient {
         if (this._tileApiUrl) {
           services.push({
             type: 'tms',
-            manifest: `${this._tileApiUrl}/${this._emsVersion}/manifest`,
+            manifest: toAbsoluteUrl(this._tileApiUrl,`${this._emsVersion}/manifest`),
           });
         }
         if (this._fileApiUrl) {
           services.push({
             type: 'file',
-            manifest: `${this._fileApiUrl}/${this._emsVersion}/manifest`,
+            manifest: toAbsoluteUrl(this._fileApiUrl,`${this._emsVersion}/manifest`),
           });
         }
         return { services: services };
