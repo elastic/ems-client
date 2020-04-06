@@ -23,6 +23,7 @@ import { FileLayer } from './file_layer';
 import fetch from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl } from 'url';
+import { toAbsoluteUrl } from './utils';
 
 const DEFAULT_EMS_VERSION = '7.7';
 
@@ -232,13 +233,13 @@ export class EMSClient {
         if (this._tileApiUrl) {
           services.push({
             type: 'tms',
-            manifest: `${this._tileApiUrl}/${this._emsVersion}/manifest`,
+            manifest: toAbsoluteUrl(this._tileApiUrl,`${this._emsVersion}/manifest`),
           });
         }
         if (this._fileApiUrl) {
           services.push({
             type: 'file',
-            manifest: `${this._fileApiUrl}/${this._emsVersion}/manifest`,
+            manifest: toAbsoluteUrl(this._fileApiUrl,`${this._emsVersion}/manifest`),
           });
         }
         return { services: services };
