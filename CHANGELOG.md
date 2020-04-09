@@ -32,6 +32,10 @@ always needed and in fact breaks some client-side use of this lib
 ### Deprecated
 - The `kbnVersion` parameter has been deprecated and the `appVersion` parameter should be used instead.
 
+## [7.6.1] - 2020-04-09
+### Fixed
+- Correctly handle API urls that end in slashes
+
 ## [7.6.0] - 2020-01-13
 
 ### Added
