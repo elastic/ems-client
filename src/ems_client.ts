@@ -99,7 +99,7 @@ const unescapeTemplateVars = (url: string) => {
 
 type LocalizedStrings = { [key: string]: string };
 
-interface IBaseConfig {
+interface BaseClientConfig {
   appName?: string;
   manifestServiceUrl: string;
   tileApiUrl: string;
@@ -112,27 +112,27 @@ interface IBaseConfig {
   proxyPath?: string;
 }
 
-interface IDeprecatedConfig extends IBaseConfig {
+interface DeprecatedClientConfig extends BaseClientConfig {
   kbnVersion: string;
 }
 
-interface IConfig extends IBaseConfig {
+interface ClientConfig extends BaseClientConfig {
   appVersion: string;
 }
 
-interface ICatalogService {
+interface EmsCatalogService {
   id?: string;
   name?: string;
   manifest: string;
   type: string;
 }
 
-interface ICatalogManifest {
+interface EmsCatalogManifest {
   version?: string;
-  services: ICatalogService[];
+  services: EmsCatalogService[];
 }
 
-interface ITMSCatalog {
+interface EmsTmsCatalog {
   version?: string;
   services: ITMSService[];
 }
@@ -142,7 +142,7 @@ export interface ITMSService {
   name: {
     en: string;
   };
-  attribution: ILayerAttribution[];
+  attribution: EmsLayerAttribution[];
   formats: {
     locale: string;
     format: string;
@@ -150,23 +150,23 @@ export interface ITMSService {
   }[];
 }
 
-interface IFileCatalog {
+interface EmsFileCatalog {
   version?: string;
   layers: IFileLayer[];
 }
 
-export interface ILayerAttribution {
+export interface EmsLayerAttribution {
   label: LocalizedStrings;
   url: LocalizedStrings;
 }
 
-export interface IFileLayerFormatGeoJSON {
+export interface EmsFileLayerFormatGeoJson {
   type: 'geojson';
   url: string;
   legacy_default: boolean;
 }
 
-export interface IFileLayerFormatTopoJSON {
+export interface EmsFileLayerFormatTopoJson {
   type: 'topojson';
   url: string;
   legacy_default: boolean;
@@ -178,8 +178,8 @@ export interface IFileLayerFormatTopoJSON {
 export interface IFileLayer {
   layer_id: string;
   created_at: string;
-  attribution: ILayerAttribution[];
-  formats: (IFileLayerFormatGeoJSON | IFileLayerFormatTopoJSON)[];
+  attribution: EmsLayerAttribution[];
+  formats: (EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson)[];
   fields: {
     type: string;
     id: string;
@@ -189,7 +189,7 @@ export interface IFileLayer {
   layer_name: LocalizedStrings;
 }
 
-interface IQueryParams {
+interface QueryParams {
   elastic_tile_service_tos: string;
   my_app_name: string;
   my_app_version: string;
@@ -201,7 +201,7 @@ const DEFAULT_LANGUAGE = 'en';
 
 export class EMSClient {
   readonly EMS_LOAD_TIMEOUT = 32000;
-  private _queryParams: IQueryParams;
+  private _queryParams: QueryParams;
   private readonly _appVersion: string;
   private readonly _fetchFunction: Function;
   private readonly _sanitizer: Function;
@@ -222,7 +222,7 @@ export class EMSClient {
   private _loadTMSServices!: Function;
   private _loadFileLayers!: Function;
 
-  constructor(config: IConfig | IDeprecatedConfig) {
+  constructor(config: ClientConfig | DeprecatedClientConfig) {
     // Remove kbnVersion in 8.0
     if ('kbnVersion' in config) {
       console.warn(
@@ -341,7 +341,7 @@ export class EMSClient {
 
   _invalidateSettings(): void {
     this._getMainCatalog = _.once(
-      async (): Promise<ICatalogManifest> => {
+      async (): Promise<EmsCatalogManifest> => {
         // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
         if (this._manifestServiceUrl) {
           console.warn(`The "manifestServiceUrl" parameter is deprecated in v7.6.0.
@@ -367,10 +367,10 @@ export class EMSClient {
     );
 
     this._getDefaultTMSCatalog = _.once(
-      async (): Promise<ITMSCatalog> => {
+      async (): Promise<EmsTmsCatalog> => {
         const catalogue = await this._getMainCatalog();
         const firstService = catalogue.services.find(
-          (service: ICatalogService) => service.type === 'tms'
+          (service: EmsCatalogService) => service.type === 'tms'
         );
         if (!firstService) {
           return { services: [] };
@@ -381,10 +381,10 @@ export class EMSClient {
     );
 
     this._getDefaultFileCatalog = _.once(
-      async (): Promise<IFileCatalog> => {
+      async (): Promise<EmsFileCatalog> => {
         const catalogue = await this._getMainCatalog();
         const firstService = catalogue.services.find(
-          (service: ICatalogService) => service.type === 'file'
+          (service: EmsCatalogService) => service.type === 'file'
         );
         if (!firstService) {
           return { layers: [] };
@@ -395,14 +395,14 @@ export class EMSClient {
     );
 
     //Cache the actual instances of TMSService as these in turn cache sub-manifests for the style-files
-    this._loadTMSServices = _.once(async () => {
+    this._loadTMSServices = _.once(async (): Promise<ITMSService[]> => {
       const tmsManifest = await this._getDefaultTMSCatalog();
       return tmsManifest.services.map(
         (serviceConfig: ITMSService) => new TMSService(serviceConfig, this, this._proxyPath)
       );
     });
 
-    this._loadFileLayers = _.once(async () => {
+    this._loadFileLayers = _.once(async (): Promise<IFileLayer[]> => {
       const fileManifest = await this._getDefaultFileCatalog();
       return fileManifest.layers.map(
         (layerConfig: IFileLayer) => new FileLayer(layerConfig, this, this._proxyPath)
@@ -410,15 +410,15 @@ export class EMSClient {
     });
   }
 
-  async getMainManifest() {
+  async getMainManifest(): Promise<EmsCatalogManifest> {
     return await this._getMainCatalog();
   }
 
-  async getDefaultFileManifest() {
+  async getDefaultFileManifest(): Promise<EmsFileCatalog> {
     return await this._getDefaultFileCatalog();
   }
 
-  async getDefaultTMSManifest() {
+  async getDefaultTMSManifest(): Promise<EmsTmsCatalog> {
     return await this._getDefaultTMSCatalog();
   }
 

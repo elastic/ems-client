@@ -20,25 +20,25 @@
 import _ from 'lodash';
 import { ORIGIN } from './origin';
 import { toAbsoluteUrl } from './utils';
-import { EMSClient, ITMSService, ILayerAttribution } from './ems_client';
-import { RasterSource, Sources, Style, VectorSource } from 'mapbox-gl';
+import { EMSClient, ITMSService, EmsLayerAttribution } from './ems_client';
+import { Sources, Style, VectorSource } from 'mapbox-gl';
 
-interface IEmsVectorSource extends VectorSource {
+interface EmsVectorSource extends VectorSource {
   url: string;
   tiles: string[];
 }
 
-interface IEmsVectorSources extends Sources {
-  [sourceName: string]: IEmsVectorSource;
+interface EmsVectorSources extends Sources {
+  [sourceName: string]: EmsVectorSource;
 }
 
-interface IEmsVectorStyle extends Style {
-  sources: IEmsVectorSources;
+interface EmsVectorStyle extends Style {
+  sources: EmsVectorSources;
   sprite: string;
   glyphs: string;
 }
 
-interface IEmsSprite {
+interface EmsSprite {
   height: number;
   pixelRatio: number;
   width: number;
@@ -46,11 +46,11 @@ interface IEmsSprite {
   y: number;
 }
 
-interface IEmsSpriteSheet {
-  [spriteName: string]: IEmsSprite;
+interface EmsSpriteSheet {
+  [spriteName: string]: EmsSprite;
 }
 
-interface IEmsRasterStyle {
+interface EmsRasterStyle {
   tilejson: string;
   name: string;
   attribution: string;
@@ -77,7 +77,7 @@ export class TMSService {
   };
 
   _getRasterStyleJson = _.once(
-    async (): Promise<IEmsRasterStyle | undefined> => {
+    async (): Promise<EmsRasterStyle | undefined> => {
       const rasterUrl = this._getStyleUrlForLocale('raster');
       if (rasterUrl) {
         const url = this._proxyPath + this._getAbsoluteUrl(rasterUrl);
@@ -89,7 +89,7 @@ export class TMSService {
   );
 
   _getVectorStyleJsonRaw = _.once(
-    async (): Promise<IEmsVectorStyle | undefined> => {
+    async (): Promise<EmsVectorStyle | undefined> => {
       const vectorUrl = this._getStyleUrlForLocale('vector');
       if (vectorUrl) {
         const url = this._proxyPath + this._getAbsoluteUrl(vectorUrl);
@@ -104,10 +104,10 @@ export class TMSService {
   );
 
   _getVectorStyleJsonInlined = _.once(
-    async (): Promise<IEmsVectorStyle | undefined> => {
+    async (): Promise<EmsVectorStyle | undefined> => {
       const vectorJson = await this._getVectorStyleJsonRaw();
       if (vectorJson) {
-        const inlinedSources: IEmsVectorSources = {};
+        const inlinedSources: EmsVectorSources = {};
         const { sources } = vectorJson;
         for (const sourceName of Object.getOwnPropertyNames(sources)) {
           const { url } = sources[sourceName];
@@ -170,7 +170,7 @@ export class TMSService {
     }
   }
 
-  async getDefaultRasterStyle(): Promise<IEmsRasterStyle | undefined> {
+  async getDefaultRasterStyle(): Promise<EmsRasterStyle | undefined> {
     const tileJson = await this._getRasterStyleJson();
     if (tileJson) {
       const tiles = tileJson.tiles.map(
@@ -208,17 +208,17 @@ export class TMSService {
     }
   }
 
-  async getVectorStyleSheet(): Promise<IEmsVectorStyle | undefined> {
+  async getVectorStyleSheet(): Promise<EmsVectorStyle | undefined> {
     return await this._getVectorStyleJsonInlined();
   }
 
-  async getVectorStyleSheetRaw(): Promise<IEmsVectorStyle | undefined> {
+  async getVectorStyleSheetRaw(): Promise<EmsVectorStyle | undefined> {
     return await this._getVectorStyleJsonRaw();
   }
 
   async getSpriteSheetMeta(
     isRetina: boolean = false
-  ): Promise<{ png: string; json: IEmsSpriteSheet } | undefined> {
+  ): Promise<{ png: string; json: EmsSpriteSheet } | undefined> {
     const metaUrl = await this.getSpriteSheetJsonPath(isRetina);
     const spritePngs = await this.getSpriteSheetPngPath(isRetina);
     if (metaUrl && spritePngs) {
@@ -275,7 +275,7 @@ export class TMSService {
     return this._emsClient.getValueInLanguage(this._config.name);
   }
 
-  getAttributions(): ILayerAttribution[] {
+  getAttributions(): EmsLayerAttribution[] {
     return this._config.attribution.map(attribution => {
       const url = this._emsClient.getValueInLanguage(attribution.url);
       const label = this._emsClient.getValueInLanguage(attribution.label);

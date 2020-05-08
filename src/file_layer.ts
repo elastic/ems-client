@@ -23,8 +23,8 @@ import { toAbsoluteUrl } from './utils';
 import {
   EMSClient,
   IFileLayer,
-  IFileLayerFormatGeoJSON,
-  IFileLayerFormatTopoJSON,
+  EmsFileLayerFormatGeoJson,
+  EmsFileLayerFormatTopoJson,
 } from './ems_client';
 
 export class FileLayer {
@@ -93,7 +93,7 @@ export class FileLayer {
     return this._config.layer_id === id || matchesLegacyId;
   }
 
-  _getDefaultFormat(): IFileLayerFormatGeoJSON | IFileLayerFormatTopoJSON {
+  _getDefaultFormat(): EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson {
     const defaultFormat = this._config.formats.find(format => {
       return format.legacy_default;
     });
