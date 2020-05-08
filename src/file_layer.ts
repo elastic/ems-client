@@ -17,30 +17,38 @@
  * under the License.
  */
 
-
 import { ORIGIN } from './origin';
 import url from 'url';
 import { toAbsoluteUrl } from './utils';
+import {
+  EMSClient,
+  IFileLayer,
+  IFileLayerFormatGeoJSON,
+  IFileLayerFormatTopoJSON,
+} from './ems_client';
 
 export class FileLayer {
+  private readonly _emsClient: EMSClient;
+  private readonly _config: IFileLayer;
+  private readonly _proxyPath: string;
   /**
    * Checks if url is absolute. If not, prepend the basePath.
    */
-  _getAbsoluteUrl = (url) => {
+  _getAbsoluteUrl = (url: string) => {
     if (/^https?:\/\//.test(url)) {
       return url;
     } else {
       return toAbsoluteUrl(this._emsClient.getFileApiUrl(), url);
     }
-  }
+  };
 
-  constructor(config, emsClient, proxyPath) {
+  constructor(config: IFileLayer, emsClient: EMSClient, proxyPath: string) {
     this._config = config;
     this._emsClient = emsClient;
     this._proxyPath = proxyPath;
   }
 
-  getAttributions() {
+  getAttributions(): { url: string; label: string }[] {
     return this._config.attribution.map(attribution => {
       const url = this._emsClient.getValueInLanguage(attribution.url);
       const label = this._emsClient.getValueInLanguage(attribution.label);
@@ -51,7 +59,7 @@ export class FileLayer {
     });
   }
 
-  getHTMLAttribution() {
+  getHTMLAttribution(): string {
     const attributions = this._config.attribution.map(attribution => {
       const url = this._emsClient.getValueInLanguage(attribution.url);
       const label = this._emsClient.getValueInLanguage(attribution.label);
@@ -61,7 +69,7 @@ export class FileLayer {
     return attributions.join(' | '); //!!!this is the current convention used in Kibana
   }
 
-  getFieldsInLanguage() {
+  getFieldsInLanguage(): { type: string; name: string; description: string }[] {
     return this._config.fields.map(field => {
       return {
         type: field.type,
@@ -71,21 +79,21 @@ export class FileLayer {
     });
   }
 
-  getDisplayName() {
+  getDisplayName(): string {
     const layerName = this._emsClient.getValueInLanguage(this._config.layer_name);
     return layerName ? layerName : '';
   }
 
-  getId() {
+  getId(): string {
     return this._config.layer_id;
   }
 
-  hasId(id) {
+  hasId(id: string): boolean {
     const matchesLegacyId = this._config.legacy_ids.indexOf(id) >= 0;
     return this._config.layer_id === id || matchesLegacyId;
   }
 
-  _getDefaultFormat() {
+  _getDefaultFormat(): IFileLayerFormatGeoJSON | IFileLayerFormatTopoJSON {
     const defaultFormat = this._config.formats.find(format => {
       return format.legacy_default;
     });
@@ -95,39 +103,42 @@ export class FileLayer {
     return this._config.formats[0];
   }
 
-  getEMSHotLink() {
+  getEMSHotLink(): string {
     const landingPageString = this._emsClient.getLandingPageUrl();
-    const urlObject = url.parse(landingPageString);
+    const urlObject = url.parse(landingPageString, true);
     urlObject.hash = `file/${this.getId()}`;
     urlObject.query = {
       ...urlObject.query,
-      locale: this._emsClient.getLocale()
+      locale: this._emsClient.getLocale(),
     };
     return url.format(urlObject);
   }
 
-  getDefaultFormatType() {
+  getDefaultFormatType(): string {
     const format = this._getDefaultFormat();
     return format.type;
   }
 
-  getDefaultFormatMeta() {
+  getDefaultFormatMeta(): { [key: string]: string } | undefined {
     const format = this._getDefaultFormat();
-    return format.meta;
+    if ('meta' in format) {
+      return format.meta;
+    } else {
+      return;
+    }
   }
 
-  getDefaultFormatUrl() {
+  getDefaultFormatUrl(): string {
     const format = this._getDefaultFormat();
     const url = this._proxyPath + this._getAbsoluteUrl(format.url);
     return this._emsClient.extendUrlWithParams(url);
   }
 
-  getCreatedAt() {
+  getCreatedAt(): string {
     return this._config.created_at;
   }
 
-  getOrigin() {
+  getOrigin(): string {
     return ORIGIN.EMS;
   }
-
 }

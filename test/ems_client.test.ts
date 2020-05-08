@@ -18,11 +18,10 @@
  */
 
 import { getEMSClient } from './ems_client_util';
-import EMS_STYLE_BRIGHT_PROXIED  from './ems_mocks/sample_style_bright_proxied.json';
-import EMS_STYLE_BRIGHT_VECTOR_PROXIED  from './ems_mocks/sample_style_bright_vector_proxied.json';
+import EMS_STYLE_BRIGHT_PROXIED from './ems_mocks/sample_style_bright_proxied.json';
+import EMS_STYLE_BRIGHT_VECTOR_PROXIED from './ems_mocks/sample_style_bright_vector_proxied.json';
 
 describe('ems_client', () => {
-
   it('should get api manifests', async () => {
     const emsClient = getEMSClient({
       language: 'zz',
@@ -54,7 +53,6 @@ describe('ems_client', () => {
   });
 
   it('should get the tile service', async () => {
-
     const emsClient = getEMSClient({
       tileApiUrl: 'https://tiles.foobar',
       fileApiUrl: 'https://files.foobar',
@@ -65,18 +63,21 @@ describe('ems_client', () => {
     expect(tiles.length).toBe(3);
 
     const tileService = tiles[0];
-    expect(await tileService.getUrlTemplate()).toBe('https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x');
+    expect(await tileService.getUrlTemplate()).toBe(
+      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
 
-    expect (tileService.getHTMLAttribution()).toBe('<a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>');
-    expect (await tileService.getMinZoom()).toBe(0);
-    expect (await tileService.getMaxZoom()).toBe(10);
-    expect (tileService.hasId('road_map')).toBe(true);
-
+    expect(tileService.getHTMLAttribution()).toBe(
+      '<a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
+    );
+    expect(await tileService.getMinZoom()).toBe(0);
+    expect(await tileService.getMaxZoom()).toBe(10);
+    expect(tileService.hasId('road_map')).toBe(true);
   });
 
   it('tile service- localized (fallback)', async () => {
     const emsClient = getEMSClient({
-      language: 'zz',//madeup
+      language: 'zz', //madeup
       tileApiUrl: 'https://tiles.foobar',
       fileApiUrl: 'https://files.foobar',
       emsVersion: '7.6',
@@ -86,45 +87,50 @@ describe('ems_client', () => {
     expect(tiles.length).toBe(3);
 
     const tileService = tiles[0];
-    expect(await tileService.getUrlTemplate()).toBe('https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x');
+    expect(await tileService.getUrlTemplate()).toBe(
+      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
 
-    expect (tileService.getHTMLAttribution()).toBe('<a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>');
-    expect (await tileService.getMinZoom()).toBe(0);
-    expect (await tileService.getMaxZoom()).toBe(10);
-    expect (tileService.hasId('road_map')).toBe(true);
+    expect(tileService.getHTMLAttribution()).toBe(
+      '<a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
+    );
+    expect(await tileService.getMinZoom()).toBe(0);
+    expect(await tileService.getMaxZoom()).toBe(10);
+    expect(tileService.hasId('road_map')).toBe(true);
   });
 
   it('.addQueryParams', async () => {
-
     const emsClient = getEMSClient({
       tileApiUrl: 'https://tiles.foobar',
       fileApiUrl: 'https://files.foobar',
       emsVersion: '7.6',
     });
 
-
     const tilesBefore = await emsClient.getTMSServices();
     const urlBefore = await tilesBefore[0].getUrlTemplate();
-    expect(urlBefore).toBe('https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x');
+    expect(urlBefore).toBe(
+      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
 
     emsClient.addQueryParams({
-      'foo': 'bar'
+      foo: 'bar',
     });
     let tiles = await emsClient.getTMSServices();
     let url = await tiles[0].getUrlTemplate();
-    expect(url).toBe('https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar');
+    expect(url).toBe(
+      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
+    );
 
     emsClient.addQueryParams({
-      'foo': 'schmoo',
-      'bar': 'foo'
+      foo: 'schmoo',
+      bar: 'foo',
     });
     tiles = await emsClient.getTMSServices();
     url = await tiles[0].getUrlTemplate();
-    expect(url).toBe('https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=schmoo&bar=foo');
-
-
+    expect(url).toBe(
+      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=schmoo&bar=foo'
+    );
   });
-
 
   it('.getFileLayers', async () => {
     const emsClient = getEMSClient({
@@ -149,12 +155,15 @@ describe('ems_client', () => {
     expect(layer.hasId('world_countries')).toBe(true);
 
     // expect(layer.hasId('World Countries')).toBe(true);//todo
-    expect(layer.getHTMLAttribution()).toBe('<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>');
+    expect(layer.getHTMLAttribution()).toBe(
+      '<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>'
+    );
 
-    expect(layer.getHTMLAttribution()).toBe('<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>');
+    expect(layer.getHTMLAttribution()).toBe(
+      '<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>'
+    );
 
     expect(layer.getDisplayName()).toBe('World Countries');
-
   });
 
   it('.getFileLayers[0] - localized (known)', async () => {
@@ -165,7 +174,7 @@ describe('ems_client', () => {
       emsVersion: '7.6',
     });
     emsClient.addQueryParams({
-      foo: 'bar'
+      foo: 'bar',
     });
     const layers = await emsClient.getFileLayers();
 
@@ -174,23 +183,22 @@ describe('ems_client', () => {
     expect(layer.hasId('world_countries')).toBe(true);
 
     // expect(layer.hasId('World Countries')).toBe(true);//todo
-    expect(layer.getHTMLAttribution()).toBe('<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>');
+    expect(layer.getHTMLAttribution()).toBe(
+      '<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>'
+    );
     expect(layer.getDisplayName()).toBe('pays');
 
-
     const fields = layer.getFieldsInLanguage();
-    expect(fields).toEqual([ { name: 'iso2',
-      description: 'code ISO 3166-1 alpha-2 du pays',
-      type: 'id' },
-    { name: 'iso3',
-      description: 'code ISO 3166-1 alpha-3',
-      type: 'id' },
-    { name: 'name', description: 'nom', type: 'property' } ]);
+    expect(fields).toEqual([
+      { name: 'iso2', description: 'code ISO 3166-1 alpha-2 du pays', type: 'id' },
+      { name: 'iso3', description: 'code ISO 3166-1 alpha-3', type: 'id' },
+      { name: 'name', description: 'nom', type: 'property' },
+    ]);
 
     expect(layer.getDefaultFormatType()).toBe('geojson');
-    expect(layer.getDefaultFormatUrl()).toBe('https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar');
-
-
+    expect(layer.getDefaultFormatUrl()).toBe(
+      'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
+    );
   });
 
   it('.getFileLayers[0] - localized (fallback)', async () => {
@@ -207,21 +215,21 @@ describe('ems_client', () => {
     expect(layer.hasId('world_countries')).toBe(true);
 
     // expect(layer.hasId('World Countries')).toBe(true);//todo
-    expect(layer.getHTMLAttribution()).toBe('<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>');
+    expect(layer.getHTMLAttribution()).toBe(
+      '<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>'
+    );
     expect(layer.getDisplayName()).toBe('World Countries');
 
     const fields = layer.getFieldsInLanguage();
-    expect(fields).toEqual([ { name: 'iso2',
-      description: 'ISO 3166-1 alpha-2 code',
-      type: 'id' },
-    { name: 'iso3',
-      description: 'ISO 3166-1 alpha-3 code',
-      type: 'id' },
-    { name: 'name', description: 'name', type: 'property' } ]);
+    expect(fields).toEqual([
+      { name: 'iso2', description: 'ISO 3166-1 alpha-2 code', type: 'id' },
+      { name: 'iso3', description: 'ISO 3166-1 alpha-3 code', type: 'id' },
+      { name: 'name', description: 'name', type: 'property' },
+    ]);
 
-
-    expect((await layer.getEMSHotLink())).toBe('https://landing.foobar/?locale=zz#file/world_countries');
-
+    expect(await layer.getEMSHotLink()).toBe(
+      'https://landing.foobar/?locale=zz#file/world_countries'
+    );
   });
 
   it('.findFileLayerById', async () => {
@@ -234,7 +242,6 @@ describe('ems_client', () => {
     const layer = await emsClient.findFileLayerById('world_countries');
     expect(layer.getId()).toBe('world_countries');
     expect(layer.hasId('world_countries')).toBe(true);
-
   });
 
   it('.findTMSServiceById', async () => {
@@ -246,12 +253,9 @@ describe('ems_client', () => {
     });
     const tmsService = await emsClient.findTMSServiceById('road_map');
     expect(tmsService.getId()).toBe('road_map');
-
   });
 
-
   it('should prepend proxypath', async () => {
-
     const emsClient = getEMSClient({
       tileApiUrl: 'http://proxy.com/foobar/tiles',
       fileApiUrl: 'http://proxy.com/foobar/vector',
@@ -266,17 +270,19 @@ describe('ems_client', () => {
       return EMS_STYLE_BRIGHT_PROXIED;
     };
     const urlTemplate = await tmsServices[0].getUrlTemplate();
-    expect(urlTemplate).toBe('http://proxy.com/foobar/tiles/raster/osm_bright/{x}/{y}/{z}.jpg?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x');
+    expect(urlTemplate).toBe(
+      'http://proxy.com/foobar/tiles/raster/osm_bright/{x}/{y}/{z}.jpg?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
 
     const fileLayers = await emsClient.getFileLayers();
     expect(fileLayers.length).toBe(1);
     const fileLayer = fileLayers[0];
-    expect(fileLayer.getDefaultFormatUrl()).toBe('http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x');
-
+    expect(fileLayer.getDefaultFormatUrl()).toBe(
+      'http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
   });
 
   it('should retrieve vectorstylesheet with all sources inlined)', async () => {
-
     const emsClient = getEMSClient({
       tileApiUrl: 'https://tiles.foobar',
       fileApiUrl: 'https://files.foobar',
@@ -292,12 +298,12 @@ describe('ems_client', () => {
     expect(styleSheet.layers.length).toBe(111);
     expect(styleSheet.sprite).toBe('https://tiles.foobar/styles/osm-bright/sprite');
     expect(styleSheet.sources.openmaptiles.tiles.length).toBe(1);
-    expect(styleSheet.sources.openmaptiles.tiles[0]).toBe('https://tiles.foobar/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x');
-
+    expect(styleSheet.sources.openmaptiles.tiles[0]).toBe(
+      'https://tiles.foobar/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
   });
 
   it('should retrieve vectorstylesheet with all sources inlined) (proxy)', async () => {
-
     const emsClient = getEMSClient({
       tileApiUrl: 'http://proxy.com/foobar/tiles',
       fileApiUrl: 'http://proxy.com/foobar/files',
@@ -317,9 +323,8 @@ describe('ems_client', () => {
     expect(styleSheet.layers.length).toBe(111);
     expect(styleSheet.sprite).toBe('http://proxy.com/foobar/tiles/styles/osm-bright/sprite');
     expect(styleSheet.sources.openmaptiles.tiles.length).toBe(1);
-    expect(styleSheet.sources.openmaptiles.tiles[0]).toBe('http://proxy.com/foobar/tiles/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x');
-
+    expect(styleSheet.sources.openmaptiles.tiles[0]).toBe(
+      'http://proxy.com/foobar/tiles/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
   });
-
-
 });

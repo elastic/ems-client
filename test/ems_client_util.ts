@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 import { EMSClient } from '../src';
 import fetch from 'node-fetch';
 
@@ -37,7 +36,6 @@ import EMS_FILES_PROXIED from './ems_mocks/sample_files_proxied.json';
 import EMS_TILES_PROXIED from './ems_mocks/sample_tiles_proxied.json';
 
 export function getEMSClient(options = {}) {
-
   const emsClient = new EMSClient({
     language: 'en',
     appVersion: '7.x.x',
@@ -45,10 +43,10 @@ export function getEMSClient(options = {}) {
     htmlSanitizer: x => x,
     landingPageUrl: 'https://landing.foobar',
     fetchFunction: fetch,
-    ...options
+    ...options,
   });
 
-  emsClient.getManifest = async (url) => {
+  emsClient.getManifest = async url => {
     //simulate network calls
     if (url.startsWith('https://foobar')) {
       return EMS_CATALOGUE;

@@ -20,4 +20,4 @@
 export const ORIGIN = {
   EMS: 'elastic_maps_service',
   KIBANA_YML: 'self_hosted',
-}
+};
