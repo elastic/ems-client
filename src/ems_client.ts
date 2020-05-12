@@ -27,7 +27,7 @@ import { ParsedUrlQueryInput } from 'querystring';
 
 const DEFAULT_EMS_VERSION = '7.8';
 
-interface URLMeaningfulParts {
+type URLMeaningfulParts = {
   auth?: string | null;
   hash?: string | null;
   hostname?: string | null;
@@ -36,7 +36,7 @@ interface URLMeaningfulParts {
   slashes?: boolean | null;
   port?: string | null;
   query: ParsedUrlQueryInput;
-}
+};
 
 const extendUrl = (url: string, props: URLMeaningfulParts) =>
   modifyUrlLocal(url, parsed => _.merge(parsed, props));
@@ -99,7 +99,7 @@ const unescapeTemplateVars = (url: string) => {
 
 type LocalizedStrings = { [key: string]: string };
 
-interface BaseClientConfig {
+type BaseClientConfig = {
   appName?: string;
   manifestServiceUrl: string;
   tileApiUrl: string;
@@ -110,32 +110,38 @@ interface BaseClientConfig {
   landingPageUrl?: string;
   fetchFunction: Function;
   proxyPath?: string;
-}
+};
 
-interface DeprecatedClientConfig extends BaseClientConfig {
+type DeprecatedClientConfig = BaseClientConfig & {
   kbnVersion: string;
-}
+};
 
-interface ClientConfig extends BaseClientConfig {
+type ClientConfig = BaseClientConfig & {
   appVersion: string;
-}
+};
 
-interface EmsCatalogService {
+type EmsCatalogService = {
   id?: string;
   name?: string;
   manifest: string;
   type: string;
-}
+};
 
-interface EmsCatalogManifest {
+type EmsCatalogManifest = {
   version?: string;
   services: EmsCatalogService[];
-}
+};
 
-interface EmsTmsCatalog {
+type EmsTmsCatalog = {
   version?: string;
   services: ITMSService[];
-}
+};
+
+export type EmsTmsFormat = {
+  locale: string;
+  format: string;
+  url: string;
+};
 
 export interface ITMSService {
   id: string;
@@ -143,37 +149,33 @@ export interface ITMSService {
     en: string;
   };
   attribution: EmsLayerAttribution[];
-  formats: {
-    locale: string;
-    format: string;
-    url: string;
-  }[];
+  formats: EmsTmsFormat[];
 }
 
-interface EmsFileCatalog {
+type EmsFileCatalog = {
   version?: string;
   layers: IFileLayer[];
-}
+};
 
-export interface EmsLayerAttribution {
+export type EmsLayerAttribution = {
   label: LocalizedStrings;
   url: LocalizedStrings;
-}
+};
 
-export interface EmsFileLayerFormatGeoJson {
+export type EmsFileLayerFormatGeoJson = {
   type: 'geojson';
   url: string;
   legacy_default: boolean;
-}
+};
 
-export interface EmsFileLayerFormatTopoJson {
+export type EmsFileLayerFormatTopoJson = {
   type: 'topojson';
   url: string;
   legacy_default: boolean;
   meta: {
     feature_collection_path: string;
   };
-}
+};
 
 export interface IFileLayer {
   layer_id: string;
@@ -189,12 +191,12 @@ export interface IFileLayer {
   layer_name: LocalizedStrings;
 }
 
-interface QueryParams {
+type QueryParams = {
   elastic_tile_service_tos: string;
   my_app_name: string;
   my_app_version: string;
   [key: string]: string;
-}
+};
 
 //this is not the default locale from Kibana, but the default locale supported by the Elastic Maps Service
 const DEFAULT_LANGUAGE = 'en';
@@ -253,22 +255,22 @@ export class EMSClient {
     this._invalidateSettings();
   }
 
-  getDefaultLocale() {
+  getDefaultLocale(): string {
     return DEFAULT_LANGUAGE;
   }
 
-  getLocale() {
+  getLocale(): string {
     return this._language;
   }
 
-  getValueInLanguage(i18nObject: { [language: string]: any }) {
+  getValueInLanguage(i18nObject: { [language: string]: string }) {
     if (!i18nObject) {
       return '';
     }
     return i18nObject[this._language] ? i18nObject[this._language] : i18nObject[DEFAULT_LANGUAGE];
   }
 
-  _getEmsVersion(version: string | undefined) {
+  _getEmsVersion(version: string | undefined): string {
     const userVersion = semver.valid(semver.coerce(version));
     const semverVersion = userVersion ? userVersion : semver.coerce(DEFAULT_EMS_VERSION);
     if (semverVersion) {
@@ -281,7 +283,7 @@ export class EMSClient {
   /**
    * this internal method is overridden by the tests to simulate custom manifest.
    */
-  async getManifest(manifestUrl: string) {
+  async getManifest(manifestUrl: string): Promise<any> {
     try {
       const url = extendUrl(manifestUrl, { query: this._queryParams });
       const result = await this._fetchWithTimeout(url);
@@ -321,7 +323,7 @@ export class EMSClient {
    *
    * @param additionalQueryParams
    */
-  addQueryParams(additionalQueryParams: { [key: string]: string }) {
+  addQueryParams(additionalQueryParams: { [key: string]: string }): void {
     for (const key in additionalQueryParams) {
       if (additionalQueryParams.hasOwnProperty(key)) {
         if (additionalQueryParams[key] !== this._queryParams[key]) {
@@ -334,7 +336,7 @@ export class EMSClient {
     }
   }
 
-  async _getManifestWithParams(url: string) {
+  async _getManifestWithParams(url: string): Promise<any> {
     const extendedUrl = this.extendUrlWithParams(url);
     return await this.getManifest(extendedUrl);
   }
@@ -395,19 +397,23 @@ export class EMSClient {
     );
 
     //Cache the actual instances of TMSService as these in turn cache sub-manifests for the style-files
-    this._loadTMSServices = _.once(async (): Promise<ITMSService[]> => {
-      const tmsManifest = await this._getDefaultTMSCatalog();
-      return tmsManifest.services.map(
-        (serviceConfig: ITMSService) => new TMSService(serviceConfig, this, this._proxyPath)
-      );
-    });
+    this._loadTMSServices = _.once(
+      async (): Promise<TMSService[]> => {
+        const tmsManifest = await this._getDefaultTMSCatalog();
+        return tmsManifest.services.map(
+          (serviceConfig: ITMSService) => new TMSService(serviceConfig, this, this._proxyPath)
+        );
+      }
+    );
 
-    this._loadFileLayers = _.once(async (): Promise<IFileLayer[]> => {
-      const fileManifest = await this._getDefaultFileCatalog();
-      return fileManifest.layers.map(
-        (layerConfig: IFileLayer) => new FileLayer(layerConfig, this, this._proxyPath)
-      );
-    });
+    this._loadFileLayers = _.once(
+      async (): Promise<FileLayer[]> => {
+        const fileManifest = await this._getDefaultFileCatalog();
+        return fileManifest.layers.map(
+          (layerConfig: IFileLayer) => new FileLayer(layerConfig, this, this._proxyPath)
+        );
+      }
+    );
   }
 
   async getMainManifest(): Promise<EmsCatalogManifest> {

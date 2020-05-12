@@ -20,37 +20,37 @@
 import _ from 'lodash';
 import { ORIGIN } from './origin';
 import { toAbsoluteUrl } from './utils';
-import { EMSClient, ITMSService, EmsLayerAttribution } from './ems_client';
+import { EMSClient, ITMSService, EmsTmsFormat } from './ems_client';
 import { Sources, Style, VectorSource } from 'mapbox-gl';
 
-interface EmsVectorSource extends VectorSource {
+type EmsVectorSource = VectorSource & {
   url: string;
   tiles: string[];
-}
+};
 
-interface EmsVectorSources extends Sources {
+type EmsVectorSources = Sources & {
   [sourceName: string]: EmsVectorSource;
-}
+};
 
-interface EmsVectorStyle extends Style {
+type EmsVectorStyle = Style & {
   sources: EmsVectorSources;
   sprite: string;
   glyphs: string;
-}
+};
 
-interface EmsSprite {
+type EmsSprite = {
   height: number;
   pixelRatio: number;
   width: number;
   x: number;
   y: number;
-}
+};
 
-interface EmsSpriteSheet {
+type EmsSpriteSheet = {
   [spriteName: string]: EmsSprite;
-}
+};
 
-interface EmsRasterStyle {
+type EmsRasterStyle = {
   tilejson: string;
   name: string;
   attribution: string;
@@ -61,7 +61,7 @@ interface EmsRasterStyle {
   type: string;
   tiles: string[];
   center: number[];
-}
+};
 
 export class TMSService {
   private readonly _emsClient: EMSClient;
@@ -146,13 +146,13 @@ export class TMSService {
     this._proxyPath = proxyPath;
   }
 
-  _getFormats(formatType: string, locale: string) {
+  _getFormats(formatType: string, locale: string): EmsTmsFormat[] {
     return this._config.formats.filter(
       format => format.locale === locale && format.format === formatType
     );
   }
 
-  _getStyleUrlForLocale(formatType: string) {
+  _getStyleUrlForLocale(formatType: string): string | undefined {
     let vectorFormats = this._getFormats(formatType, this._emsClient.getLocale());
     if (!vectorFormats.length) {
       //fallback to default locale
@@ -275,7 +275,7 @@ export class TMSService {
     return this._emsClient.getValueInLanguage(this._config.name);
   }
 
-  getAttributions(): EmsLayerAttribution[] {
+  getAttributions(): { url: string; label: string }[] {
     return this._config.attribution.map(attribution => {
       const url = this._emsClient.getValueInLanguage(attribution.url);
       const label = this._emsClient.getValueInLanguage(attribution.label);
