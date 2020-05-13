@@ -22,7 +22,7 @@
  * This is specifically useed by the Kibana proxy re-routing.
  * It also handles trailing slashes in tileApiUrl and fileApiUrl parameters.
  */
-export const toAbsoluteUrl = (host: string | undefined, path: string): string => {
+export function toAbsoluteUrl(host: string | undefined, path: string): string {
   if (!host) {
     return path;
   }
@@ -36,4 +36,4 @@ export const toAbsoluteUrl = (host: string | undefined, path: string): string =>
   } else {
     return host + '/' + path;
   }
-};
+}

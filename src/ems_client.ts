@@ -101,7 +101,7 @@ type LocalizedStrings = { [key: string]: string };
 
 type BaseClientConfig = {
   appName?: string;
-  manifestServiceUrl: string;
+  manifestServiceUrl?: string;
   tileApiUrl: string;
   fileApiUrl: string;
   emsVersion?: string;
@@ -134,7 +134,7 @@ type EmsCatalogManifest = {
 
 type EmsTmsCatalog = {
   version?: string;
-  services: ITMSService[];
+  services: TMSServiceConfig[];
 };
 
 export type EmsTmsFormat = {
@@ -143,18 +143,34 @@ export type EmsTmsFormat = {
   url: string;
 };
 
-export interface ITMSService {
+export type BaseEmsServiceConfig = {
+  attribution: EmsLayerAttribution[];
+};
+
+export type FileLayerConfig = BaseEmsServiceConfig & {
+  layer_id: string;
+  created_at: string;
+  formats: (EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson)[];
+  fields: {
+    type: string;
+    id: string;
+    label: LocalizedStrings;
+  }[];
+  legacy_ids: string[];
+  layer_name: LocalizedStrings;
+};
+
+export type TMSServiceConfig = BaseEmsServiceConfig & {
   id: string;
   name: {
     en: string;
   };
-  attribution: EmsLayerAttribution[];
   formats: EmsTmsFormat[];
-}
+};
 
 type EmsFileCatalog = {
   version?: string;
-  layers: IFileLayer[];
+  layers: FileLayerConfig[];
 };
 
 export type EmsLayerAttribution = {
@@ -177,20 +193,6 @@ export type EmsFileLayerFormatTopoJson = {
   };
 };
 
-export interface IFileLayer {
-  layer_id: string;
-  created_at: string;
-  attribution: EmsLayerAttribution[];
-  formats: (EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson)[];
-  fields: {
-    type: string;
-    id: string;
-    label: LocalizedStrings;
-  }[];
-  legacy_ids: string[];
-  layer_name: LocalizedStrings;
-}
-
 type QueryParams = {
   elastic_tile_service_tos: string;
   my_app_name: string;
@@ -207,7 +209,7 @@ export class EMSClient {
   private readonly _appVersion: string;
   private readonly _fetchFunction: Function;
   private readonly _sanitizer: Function;
-  private readonly _manifestServiceUrl: string;
+  private readonly _manifestServiceUrl?: string;
   private readonly _fileApiUrl: string;
   private readonly _tileApiUrl: string;
   private readonly _emsVersion: string;
@@ -283,7 +285,7 @@ export class EMSClient {
   /**
    * this internal method is overridden by the tests to simulate custom manifest.
    */
-  async getManifest(manifestUrl: string): Promise<any> {
+  async getManifest<T>(manifestUrl: string): Promise<T> {
     try {
       const url = extendUrl(manifestUrl, { query: this._queryParams });
       const result = await this._fetchWithTimeout(url);
@@ -336,7 +338,7 @@ export class EMSClient {
     }
   }
 
-  async _getManifestWithParams(url: string): Promise<any> {
+  async _getManifestWithParams<T>(url: string): Promise<T> {
     const extendedUrl = this.extendUrlWithParams(url);
     return await this.getManifest(extendedUrl);
   }
@@ -401,7 +403,7 @@ export class EMSClient {
       async (): Promise<TMSService[]> => {
         const tmsManifest = await this._getDefaultTMSCatalog();
         return tmsManifest.services.map(
-          (serviceConfig: ITMSService) => new TMSService(serviceConfig, this, this._proxyPath)
+          (serviceConfig: TMSServiceConfig) => new TMSService(serviceConfig, this, this._proxyPath)
         );
       }
     );
@@ -410,7 +412,7 @@ export class EMSClient {
       async (): Promise<FileLayer[]> => {
         const fileManifest = await this._getDefaultFileCatalog();
         return fileManifest.layers.map(
-          (layerConfig: IFileLayer) => new FileLayer(layerConfig, this, this._proxyPath)
+          (layerConfig: FileLayerConfig) => new FileLayer(layerConfig, this, this._proxyPath)
         );
       }
     );

@@ -17,56 +17,21 @@
  * under the License.
  */
 
-import { ORIGIN } from './origin';
 import url from 'url';
-import { toAbsoluteUrl } from './utils';
 import {
   EMSClient,
-  IFileLayer,
   EmsFileLayerFormatGeoJson,
   EmsFileLayerFormatTopoJson,
+  FileLayerConfig,
 } from './ems_client';
+import { AbstractEmsService } from './ems_service';
 
-export class FileLayer {
-  private readonly _emsClient: EMSClient;
-  private readonly _config: IFileLayer;
-  private readonly _proxyPath: string;
-  /**
-   * Checks if url is absolute. If not, prepend the basePath.
-   */
-  _getAbsoluteUrl = (url: string) => {
-    if (/^https?:\/\//.test(url)) {
-      return url;
-    } else {
-      return toAbsoluteUrl(this._emsClient.getFileApiUrl(), url);
-    }
-  };
+export class FileLayer extends AbstractEmsService {
+  protected readonly _config: FileLayerConfig;
 
-  constructor(config: IFileLayer, emsClient: EMSClient, proxyPath: string) {
+  constructor(config: FileLayerConfig, emsClient: EMSClient, proxyPath: string) {
+    super(config, emsClient, proxyPath);
     this._config = config;
-    this._emsClient = emsClient;
-    this._proxyPath = proxyPath;
-  }
-
-  getAttributions(): { url: string; label: string }[] {
-    return this._config.attribution.map(attribution => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
-      return {
-        url: url,
-        label: label,
-      };
-    });
-  }
-
-  getHTMLAttribution(): string {
-    const attributions = this._config.attribution.map(attribution => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
-      const html = url ? `<a href=${url}>${label}</a>` : label;
-      return this._emsClient.sanitizeHtml(html);
-    });
-    return attributions.join(' | '); //!!!this is the current convention used in Kibana
   }
 
   getFieldsInLanguage(): { type: string; name: string; description: string }[] {
@@ -138,7 +103,7 @@ export class FileLayer {
     return this._config.created_at;
   }
 
-  getOrigin(): string {
-    return ORIGIN.EMS;
+  getApiUrl(): string {
+    return this._emsClient.getFileApiUrl();
   }
 }

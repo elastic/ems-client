@@ -18,9 +18,8 @@
  */
 
 import _ from 'lodash';
-import { ORIGIN } from './origin';
-import { toAbsoluteUrl } from './utils';
-import { EMSClient, ITMSService, EmsTmsFormat } from './ems_client';
+import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
+import { AbstractEmsService } from './ems_service';
 import { Sources, Style, VectorSource } from 'mapbox-gl';
 
 type EmsVectorSource = VectorSource & {
@@ -63,25 +62,17 @@ type EmsRasterStyle = {
   center: number[];
 };
 
-export class TMSService {
-  private readonly _emsClient: EMSClient;
-  private readonly _config: ITMSService;
-  private readonly _proxyPath: string;
-
-  _getAbsoluteUrl = (url: string) => {
-    if (/^https?:\/\//.test(url)) {
-      return url;
-    } else {
-      return toAbsoluteUrl(this._emsClient.getTileApiUrl(), url);
-    }
-  };
+export class TMSService extends AbstractEmsService {
+  protected readonly _config: TMSServiceConfig;
 
   _getRasterStyleJson = _.once(
     async (): Promise<EmsRasterStyle | undefined> => {
       const rasterUrl = this._getStyleUrlForLocale('raster');
       if (rasterUrl) {
         const url = this._proxyPath + this._getAbsoluteUrl(rasterUrl);
-        return this._emsClient.getManifest(this._emsClient.extendUrlWithParams(url));
+        return this._emsClient.getManifest<EmsRasterStyle>(
+          this._emsClient.extendUrlWithParams(url)
+        );
       } else {
         return;
       }
@@ -93,7 +84,7 @@ export class TMSService {
       const vectorUrl = this._getStyleUrlForLocale('vector');
       if (vectorUrl) {
         const url = this._proxyPath + this._getAbsoluteUrl(vectorUrl);
-        const vectorJson = await this._emsClient.getManifest(
+        const vectorJson = await this._emsClient.getManifest<EmsVectorStyle>(
           this._emsClient.extendUrlWithParams(url)
         );
         return { ...vectorJson };
@@ -113,7 +104,7 @@ export class TMSService {
           const { url } = sources[sourceName];
           const sourceUrl = this._proxyPath + this._getAbsoluteUrl(url);
           const extendedUrl = this._emsClient.extendUrlWithParams(sourceUrl);
-          const sourceJson = await this._emsClient.getManifest(extendedUrl);
+          const sourceJson = await this._emsClient.getManifest<EmsVectorSource>(extendedUrl);
 
           const extendedTileUrls = sourceJson.tiles.map((tileUrl: string) => {
             const url = this._proxyPath + this._getAbsoluteUrl(tileUrl);
@@ -122,7 +113,6 @@ export class TMSService {
           // Override the attribution in the sources with the localized attribution
           const htmlAttribution = await this.getHTMLAttribution();
           inlinedSources[sourceName] = {
-            type: 'vector',
             ...sourceJson,
             attribution: htmlAttribution,
             tiles: extendedTileUrls,
@@ -140,10 +130,9 @@ export class TMSService {
     }
   );
 
-  constructor(config: ITMSService, emsClient: EMSClient, proxyPath: string) {
+  constructor(config: TMSServiceConfig, emsClient: EMSClient, proxyPath: string) {
+    super(config, emsClient, proxyPath);
     this._config = config;
-    this._emsClient = emsClient;
-    this._proxyPath = proxyPath;
   }
 
   _getFormats(formatType: string, locale: string): EmsTmsFormat[] {
@@ -223,7 +212,7 @@ export class TMSService {
     const spritePngs = await this.getSpriteSheetPngPath(isRetina);
     if (metaUrl && spritePngs) {
       const metaUrlExtended = this._emsClient.extendUrlWithParams(metaUrl);
-      const jsonMeta = await this._emsClient.getManifest(metaUrlExtended);
+      const jsonMeta = await this._emsClient.getManifest<EmsSpriteSheet>(metaUrlExtended);
       return {
         png: spritePngs,
         json: jsonMeta,
@@ -275,36 +264,6 @@ export class TMSService {
     return this._emsClient.getValueInLanguage(this._config.name);
   }
 
-  getAttributions(): { url: string; label: string }[] {
-    return this._config.attribution.map(attribution => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
-      return {
-        url: url,
-        label: label,
-      };
-    });
-  }
-
-  getHTMLAttribution(): string {
-    const attributions = this._config.attribution.map(attribution => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
-      const html = url ? `<a rel="noreferrer noopener" href="${url}">${label}</a>` : label;
-      return this._emsClient.sanitizeHtml(`${html}`);
-    });
-    return attributions.join(' | ');
-  }
-
-  getMarkdownAttribution(): string {
-    const attributions = this._config.attribution.map(attribution => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
-      return `[${label}](${url})`;
-    });
-    return attributions.join('|');
-  }
-
   async getMinZoom(): Promise<number | undefined> {
     const tileJson = await this._getRasterStyleJson();
     if (tileJson) {
@@ -331,7 +290,7 @@ export class TMSService {
     return this._config.id === id;
   }
 
-  getOrigin(): string {
-    return ORIGIN.EMS;
+  getApiUrl(): string {
+    return this._emsClient.getTileApiUrl();
   }
 }

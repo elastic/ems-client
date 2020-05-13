@@ -4,9 +4,10 @@
   "description": "JavaScript client library for the Elastic Maps Service",
   "main": "target/node/index.js",
   "browser": "target/web/index.js",
+  "types": "target/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "yarn build-web && yarn build-node",
+    "build": "tsc --emitDeclarationOnly && yarn build-web && yarn build-node",
     "build-web": "BABEL_ENV=web babel src --extensions \".ts,.tsx\" --config-file=./babel.config.js --out-dir=target/web --delete-dir-on-start",
     "build-node": "BABEL_ENV=node babel src --extensions \".ts,.tsx\" --config-file=./babel.config.js --out-dir=target/node --delete-dir-on-start"
   },
@@ -39,9 +40,12 @@
     "@types/lodash": "^4.14.150",
     "@types/mapbox-gl": "^1.9.1",
     "@types/node": "^13.13.5",
+    "@types/node-fetch": "^2.5.7",
     "@types/semver": "^7.1.0",
     "babel-jest": "^24.9.0",
-    "jest": "^24.9.0",
-    "node-fetch": "^1.7.3"
+    "jest": "^25.5.4",
+    "node-fetch": "^1.7.3",
+    "ts-jest": "^25.5.1",
+    "typescript": "^3.9.2"
   }
 }

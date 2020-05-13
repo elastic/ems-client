@@ -18,8 +18,6 @@
  */
 
 import { getEMSClient } from './ems_client_util';
-import EMS_STYLE_BRIGHT_PROXIED from './ems_mocks/sample_style_bright_proxied.json';
-import EMS_STYLE_BRIGHT_VECTOR_PROXIED from './ems_mocks/sample_style_bright_vector_proxied.json';
 
 describe('ems_client', () => {
   it('should get api manifests', async () => {
@@ -154,13 +152,8 @@ describe('ems_client', () => {
     expect(layer.getId()).toBe('world_countries');
     expect(layer.hasId('world_countries')).toBe(true);
 
-    // expect(layer.hasId('World Countries')).toBe(true);//todo
     expect(layer.getHTMLAttribution()).toBe(
-      '<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>'
-    );
-
-    expect(layer.getHTMLAttribution()).toBe(
-      '<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>'
+      '<a rel="noreferrer noopener" href="http://www.naturalearthdata.com/about/terms-of-use">Made with NaturalEarth</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
     );
 
     expect(layer.getDisplayName()).toBe('World Countries');
@@ -182,9 +175,8 @@ describe('ems_client', () => {
     expect(layer.getId()).toBe('world_countries');
     expect(layer.hasId('world_countries')).toBe(true);
 
-    // expect(layer.hasId('World Countries')).toBe(true);//todo
     expect(layer.getHTMLAttribution()).toBe(
-      '<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>'
+      '<a rel="noreferrer noopener" href="http://www.naturalearthdata.com/about/terms-of-use">Made with NaturalEarth</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
     );
     expect(layer.getDisplayName()).toBe('pays');
 
@@ -214,9 +206,8 @@ describe('ems_client', () => {
     expect(layer.getId()).toBe('world_countries');
     expect(layer.hasId('world_countries')).toBe(true);
 
-    // expect(layer.hasId('World Countries')).toBe(true);//todo
     expect(layer.getHTMLAttribution()).toBe(
-      '<a href=http://www.naturalearthdata.com/about/terms-of-use>Made with NaturalEarth</a> | <a href=https://www.elastic.co/elastic-maps-service>Elastic Maps Service</a>'
+      '<a rel="noreferrer noopener" href="http://www.naturalearthdata.com/about/terms-of-use">Made with NaturalEarth</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
     );
     expect(layer.getDisplayName()).toBe('World Countries');
 
@@ -240,8 +231,8 @@ describe('ems_client', () => {
       emsVersion: '7.6',
     });
     const layer = await emsClient.findFileLayerById('world_countries');
-    expect(layer.getId()).toBe('world_countries');
-    expect(layer.hasId('world_countries')).toBe(true);
+    expect(layer!.getId()).toBe('world_countries');
+    expect(layer!.hasId('world_countries')).toBe(true);
   });
 
   it('.findTMSServiceById', async () => {
@@ -252,7 +243,7 @@ describe('ems_client', () => {
       emsVersion: '7.6',
     });
     const tmsService = await emsClient.findTMSServiceById('road_map');
-    expect(tmsService.getId()).toBe('road_map');
+    expect(tmsService!.getId()).toBe('road_map');
   });
 
   it('should prepend proxypath', async () => {
@@ -265,10 +256,6 @@ describe('ems_client', () => {
     //should prepend the proxypath to all urls, for tiles and files
     const tmsServices = await emsClient.getTMSServices();
     expect(tmsServices.length).toBe(1);
-    const tmsService = tmsServices[0];
-    tmsService._getRasterStyleJson = () => {
-      return EMS_STYLE_BRIGHT_PROXIED;
-    };
     const urlTemplate = await tmsServices[0].getUrlTemplate();
     expect(urlTemplate).toBe(
       'http://proxy.com/foobar/tiles/raster/osm_bright/{x}/{y}/{z}.jpg?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
@@ -295,10 +282,10 @@ describe('ems_client', () => {
 
     const styleSheet = await tmsService.getVectorStyleSheet();
 
-    expect(styleSheet.layers.length).toBe(111);
-    expect(styleSheet.sprite).toBe('https://tiles.foobar/styles/osm-bright/sprite');
-    expect(styleSheet.sources.openmaptiles.tiles.length).toBe(1);
-    expect(styleSheet.sources.openmaptiles.tiles[0]).toBe(
+    expect(styleSheet!.layers!.length).toBe(111);
+    expect(styleSheet!.sprite).toBe('https://tiles.foobar/styles/osm-bright/sprite');
+    expect(styleSheet!.sources!.openmaptiles!.tiles.length).toBe(1);
+    expect(styleSheet!.sources!.openmaptiles!.tiles[0]).toBe(
       'https://tiles.foobar/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
     );
   });
@@ -314,16 +301,12 @@ describe('ems_client', () => {
     expect(tmsServices.length).toBe(1);
     const tmsService = tmsServices[0];
 
-    tmsService._getVectorStyleJsonRaw = () => {
-      return EMS_STYLE_BRIGHT_VECTOR_PROXIED;
-    };
-
     const styleSheet = await tmsService.getVectorStyleSheet();
 
-    expect(styleSheet.layers.length).toBe(111);
-    expect(styleSheet.sprite).toBe('http://proxy.com/foobar/tiles/styles/osm-bright/sprite');
-    expect(styleSheet.sources.openmaptiles.tiles.length).toBe(1);
-    expect(styleSheet.sources.openmaptiles.tiles[0]).toBe(
+    expect(styleSheet!.layers!.length).toBe(111);
+    expect(styleSheet!.sprite).toBe('http://proxy.com/foobar/tiles/styles/osm-bright/sprite');
+    expect(styleSheet!.sources!.openmaptiles!.tiles!.length).toBe(1);
+    expect(styleSheet!.sources!.openmaptiles!.tiles![0]).toBe(
       'http://proxy.com/foobar/tiles/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
     );
   });
