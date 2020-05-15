@@ -32,7 +32,7 @@ export interface IEmsService {
   getApiUrl(): string;
 }
 
-export class AbstractEmsService implements IEmsService {
+export abstract class AbstractEmsService implements IEmsService {
   protected readonly _emsClient: EMSClient;
   protected readonly _config: BaseEmsServiceConfig;
   protected readonly _proxyPath: string;
@@ -42,17 +42,6 @@ export class AbstractEmsService implements IEmsService {
     this._emsClient = emsClient;
     this._proxyPath = proxyPath;
   }
-
-  /**
-   * Checks if url is absolute. If not, prepend the basePath.
-   */
-  protected _getAbsoluteUrl = (url: string) => {
-    if (/^https?:\/\//.test(url)) {
-      return url;
-    } else {
-      return toAbsoluteUrl(this.getApiUrl(), url);
-    }
-  };
 
   getAttributions(): { url: string; label: string }[] {
     return this._config.attribution.map(attribution => {
@@ -84,23 +73,28 @@ export class AbstractEmsService implements IEmsService {
     return attributions.join('|');
   }
 
-  getDisplayName(): string {
-    return '';
-  }
-
-  getId(): string {
-    return '';
-  }
-
-  hasId(id: string): boolean {
-    return false;
-  }
-
   getOrigin(): string {
     return ORIGIN.EMS;
   }
 
-  getApiUrl(): string {
-    return '';
-  }
+  /**
+   * Checks if url is absolute. If not, prepend the basePath.
+  */
+  protected _getAbsoluteUrl = (url: string) => {
+    if (/^https?:\/\//.test(url)) {
+      return url;
+    } else {
+      return toAbsoluteUrl(this.getApiUrl(), url);
+    }
+  };
+
+  abstract getDisplayName(): string;
+
+  abstract getId(): string;
+
+  abstract hasId(id: string): boolean;
+
+  abstract getApiUrl(): string;
+
+
 }

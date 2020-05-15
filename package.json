@@ -6,7 +6,9 @@
   "browser": "target/web/index.js",
   "types": "target/index.d.ts",
   "scripts": {
-    "test": "jest",
+    "lint": "tsc --noEmit && yarn lint-es",
+    "lint-es": "eslint --ext .ts,.tsx",
+    "test": "yarn lint && jest",
     "build": "tsc --emitDeclarationOnly && yarn build-web && yarn build-node",
     "build-web": "BABEL_ENV=web babel src --extensions \".ts,.tsx\" --config-file=./babel.config.js --out-dir=target/web --delete-dir-on-start",
     "build-node": "BABEL_ENV=node babel src --extensions \".ts,.tsx\" --config-file=./babel.config.js --out-dir=target/node --delete-dir-on-start"
@@ -42,6 +44,8 @@
     "@types/node": "^13.13.5",
     "@types/node-fetch": "^2.5.7",
     "@types/semver": "^7.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
     "babel-jest": "^24.9.0",
     "jest": "^25.5.4",
     "node-fetch": "^1.7.3",

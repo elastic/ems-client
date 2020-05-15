@@ -65,7 +65,7 @@ type EmsRasterStyle = {
 export class TMSService extends AbstractEmsService {
   protected readonly _config: TMSServiceConfig;
 
-  _getRasterStyleJson = _.once(
+  private _getRasterStyleJson = _.once(
     async (): Promise<EmsRasterStyle | undefined> => {
       const rasterUrl = this._getStyleUrlForLocale('raster');
       if (rasterUrl) {
@@ -79,7 +79,7 @@ export class TMSService extends AbstractEmsService {
     }
   );
 
-  _getVectorStyleJsonRaw = _.once(
+  private _getVectorStyleJsonRaw = _.once(
     async (): Promise<EmsVectorStyle | undefined> => {
       const vectorUrl = this._getStyleUrlForLocale('vector');
       if (vectorUrl) {
@@ -94,7 +94,7 @@ export class TMSService extends AbstractEmsService {
     }
   );
 
-  _getVectorStyleJsonInlined = _.once(
+  private _getVectorStyleJsonInlined = _.once(
     async (): Promise<EmsVectorStyle | undefined> => {
       const vectorJson = await this._getVectorStyleJsonRaw();
       if (vectorJson) {
@@ -133,30 +133,6 @@ export class TMSService extends AbstractEmsService {
   constructor(config: TMSServiceConfig, emsClient: EMSClient, proxyPath: string) {
     super(config, emsClient, proxyPath);
     this._config = config;
-  }
-
-  _getFormats(formatType: string, locale: string): EmsTmsFormat[] {
-    return this._config.formats.filter(
-      format => format.locale === locale && format.format === formatType
-    );
-  }
-
-  _getStyleUrlForLocale(formatType: string): string | undefined {
-    let vectorFormats = this._getFormats(formatType, this._emsClient.getLocale());
-    if (!vectorFormats.length) {
-      //fallback to default locale
-      vectorFormats = this._getFormats(formatType, this._emsClient.getDefaultLocale());
-    }
-    if (!vectorFormats.length) {
-      // eslint-disable-next-line max-len
-      throw new Error(
-        `Cannot find ${formatType} tile layer for locale ${this._emsClient.getLocale()} or ${this._emsClient.getDefaultLocale()}`
-      );
-    }
-    const defaultStyle = vectorFormats[0];
-    if (defaultStyle && defaultStyle.hasOwnProperty('url')) {
-      return defaultStyle.url;
-    }
   }
 
   async getDefaultRasterStyle(): Promise<EmsRasterStyle | undefined> {
@@ -222,24 +198,6 @@ export class TMSService extends AbstractEmsService {
     }
   }
 
-  async _getSpriteSheetRootPath(): Promise<string> {
-    const vectorStyleJson = await this._getVectorStyleJsonRaw();
-    if (vectorStyleJson) {
-      return this._proxyPath + this._getAbsoluteUrl(vectorStyleJson.sprite);
-    } else {
-      return '';
-    }
-  }
-
-  async _getUrlTemplateForGlyphs(): Promise<string> {
-    const vectorStyleJson = await this._getVectorStyleJsonRaw();
-    if (vectorStyleJson) {
-      return this._proxyPath + this._getAbsoluteUrl(vectorStyleJson.glyphs);
-    } else {
-      return '';
-    }
-  }
-
   async getSpriteSheetJsonPath(isRetina: boolean = false): Promise<string> {
     const spriteSheetRootPath = await this._getSpriteSheetRootPath();
     if (spriteSheetRootPath) {
@@ -292,5 +250,47 @@ export class TMSService extends AbstractEmsService {
 
   getApiUrl(): string {
     return this._emsClient.getTileApiUrl();
+  }
+
+  private _getStyleUrlForLocale(formatType: string): string | undefined {
+    let vectorFormats = this._getFormats(formatType, this._emsClient.getLocale());
+    if (!vectorFormats.length) {
+      //fallback to default locale
+      vectorFormats = this._getFormats(formatType, this._emsClient.getDefaultLocale());
+    }
+    if (!vectorFormats.length) {
+      // eslint-disable-next-line max-len
+      throw new Error(
+        `Cannot find ${formatType} tile layer for locale ${this._emsClient.getLocale()} or ${this._emsClient.getDefaultLocale()}`
+      );
+    }
+    const defaultStyle = vectorFormats[0];
+    if (defaultStyle && defaultStyle.hasOwnProperty('url')) {
+      return defaultStyle.url;
+    }
+  }
+
+  private _getFormats(formatType: string, locale: string): EmsTmsFormat[] {
+    return this._config.formats.filter(
+      (format) => format.locale === locale && format.format === formatType
+    );
+  }
+
+  private async _getSpriteSheetRootPath(): Promise<string> {
+    const vectorStyleJson = await this._getVectorStyleJsonRaw();
+    if (vectorStyleJson) {
+      return this._proxyPath + this._getAbsoluteUrl(vectorStyleJson.sprite);
+    } else {
+      return '';
+    }
+  }
+
+  private async _getUrlTemplateForGlyphs(): Promise<string> {
+    const vectorStyleJson = await this._getVectorStyleJsonRaw();
+    if (vectorStyleJson) {
+      return this._proxyPath + this._getAbsoluteUrl(vectorStyleJson.glyphs);
+    } else {
+      return '';
+    }
   }
 }

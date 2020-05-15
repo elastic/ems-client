@@ -38,9 +38,6 @@ type URLMeaningfulParts = {
   query: ParsedUrlQueryInput;
 };
 
-const extendUrl = (url: string, props: URLMeaningfulParts) =>
-  modifyUrlLocal(url, parsed => _.merge(parsed, props));
-
 /**
  * plugins cannot have upstream dependencies on core/*-kibana.
  * Work-around by copy-pasting modifyUrl routine here.
@@ -85,6 +82,9 @@ function modifyUrlLocal(
     hash: modifiedParts.hash,
   } as UrlObject);
 }
+
+const extendUrl = (url: string, props: URLMeaningfulParts) =>
+  modifyUrlLocal(url, parsed => _.merge(parsed, props));
 
 /**
  *  Unescape a url template that was escaped by encodeURI() so leaflet
@@ -194,10 +194,10 @@ export type EmsFileLayerFormatTopoJson = {
 };
 
 type QueryParams = {
+  [key: string]: string;
   elastic_tile_service_tos: string;
   my_app_name: string;
   my_app_version: string;
-  [key: string]: string;
 };
 
 //this is not the default locale from Kibana, but the default locale supported by the Elastic Maps Service
