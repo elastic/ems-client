@@ -58,7 +58,7 @@ export class FileLayer extends AbstractEmsService {
     return this._config.layer_id === id || matchesLegacyId;
   }
 
-  _getDefaultFormat(): EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson {
+  private _getDefaultFormat(): EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson {
     const defaultFormat = this._config.formats.find(format => {
       return format.legacy_default;
     });

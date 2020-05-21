@@ -272,7 +272,7 @@ export class EMSClient {
     return i18nObject[this._language] ? i18nObject[this._language] : i18nObject[DEFAULT_LANGUAGE];
   }
 
-  _getEmsVersion(version: string | undefined): string {
+  private _getEmsVersion(version: string | undefined): string {
     const userVersion = semver.valid(semver.coerce(version));
     const semverVersion = userVersion ? userVersion : semver.coerce(DEFAULT_EMS_VERSION);
     if (semverVersion) {
@@ -301,7 +301,7 @@ export class EMSClient {
     }
   }
 
-  _fetchWithTimeout(url: string): Promise<Body> {
+  private _fetchWithTimeout(url: string): Promise<Body> {
     return new Promise<Body>((resolve, reject) => {
       const timer = setTimeout(
         () => reject(new Error(`Request to ${url} timed out`)),
@@ -338,12 +338,12 @@ export class EMSClient {
     }
   }
 
-  async _getManifestWithParams<T>(url: string): Promise<T> {
+  private async _getManifestWithParams<T>(url: string): Promise<T> {
     const extendedUrl = this.extendUrlWithParams(url);
     return await this.getManifest(extendedUrl);
   }
 
-  _invalidateSettings(): void {
+  private _invalidateSettings(): void {
     this._getMainCatalog = _.once(
       async (): Promise<EmsCatalogManifest> => {
         // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
