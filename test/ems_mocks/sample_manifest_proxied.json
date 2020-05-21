@@ -3,13 +3,13 @@
     {
       "id": "tiles_v2",
       "name": "Elastic Maps Tile Service",
-      "manifest": "/tiles",
+      "manifest": "/tiles/7.6/manifest",
       "type": "tms"
     },
     {
       "id": "geo_layers",
       "name": "Elastic Maps Vector Service",
-      "manifest": "/files",
+      "manifest": "/files/7.6/manifest",
       "type": "file"
     }
   ]

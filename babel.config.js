@@ -10,7 +10,7 @@ module.exports = {
             corejs: 3,
           },
         ],
-      ]
+      ],
     },
     node: {
       presets: [
@@ -22,11 +22,21 @@ module.exports = {
             },
           },
         ],
-      ]
-    }
+      ],
+    },
+    test: {
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              node: 'current',
+            },
+          },
+        ],
+      ],
+    },
   },
-  
-  plugins: [
-    '@babel/plugin-proposal-class-properties'
-  ]
+  presets: ['@babel/preset-typescript'],
+  plugins: ['@babel/plugin-proposal-class-properties'],
 };

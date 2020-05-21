@@ -45,7 +45,7 @@
     }
   },
   "sprite": "/styles/osm-bright/sprite",
-  "glyphs": "https://tiles.maps.elastic.co/fonts/{fontstack}/{range}.pbf",
+  "glyphs": "/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",

@@ -7,6 +7,6 @@
   "bounds": [-180, -85.0511, 180, 85.0511],
   "format": "png",
   "type": "baselayer",
-  "tiles": ["/tiles/raster/osm_bright/{x}/{y}/{z}/.jpg"],
+  "tiles": ["/raster/osm_bright/{x}/{y}/{z}.jpg"],
   "center": [0, 0, 2]
 }

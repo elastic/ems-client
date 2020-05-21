@@ -1,0 +1,5 @@
+{
+  "upstream": "elastic/ems-client",
+  "branches": [{ "name": "7.x", "checked": true }, "7.2", "7.6", "7.7", "7.8"],
+  "labels": ["backport"]
+}

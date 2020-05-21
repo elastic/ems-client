@@ -17,7 +17,23 @@
  * under the License.
  */
 
-export const ORIGIN = {
-  EMS: 'elastic_maps_service',
-  KIBANA_YML: 'self_hosted',
+/**
+ * Resolves a target URL path relative to the host.
+ * This is specifically useed by the Kibana proxy re-routing.
+ * It also handles trailing slashes in tileApiUrl and fileApiUrl parameters.
+ */
+export function toAbsoluteUrl(host: string | undefined, path: string): string {
+  if (!host) {
+    return path;
+  }
+  const hostEndWithSlash = host[host.length - 1] === '/';
+  const pathStartsWithSlash = path[0] === '/';
+
+  if (hostEndWithSlash === true && pathStartsWithSlash === true) {
+    return host + path.slice(1);
+  } else if (hostEndWithSlash !== pathStartsWithSlash) {
+    return host + path;
+  } else {
+    return host + '/' + path;
+  }
 }

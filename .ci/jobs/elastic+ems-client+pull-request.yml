@@ -1,0 +1,18 @@
+---
+- job:
+    name: elastic+ems-client+pull-request
+    display-name: 'elastic / ems-client # pull-request'
+    description: Testing of ems-client pull requests
+    scm:
+    - git:
+        branches:
+        - ${ghprbActualCommit}
+        refspec: +refs/pull/*:refs/remotes/origin/pr/*
+    triggers:
+    - github-pull-request:
+        org-list:
+        - elastic
+        allow-whitelist-orgs-as-admins: true
+        github-hooks: true
+        cancel-builds-on-update: true
+    publishers: []
