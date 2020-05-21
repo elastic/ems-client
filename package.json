@@ -7,7 +7,7 @@
   "types": "target/index.d.ts",
   "scripts": {
     "lint": "tsc --noEmit && yarn lint-es",
-    "lint-es": "eslint --ext .ts,.tsx",
+    "lint-es": "eslint . --ext .ts,.tsx",
     "test": "yarn lint && jest",
     "build": "tsc --emitDeclarationOnly && yarn build-web && yarn build-node",
     "build-web": "BABEL_ENV=web babel src --extensions \".ts,.tsx\" --config-file=./babel.config.js --out-dir=target/web --delete-dir-on-start",
@@ -28,6 +28,11 @@
     "url": "https://github.com/elastic/ems-client/issues"
   },
   "homepage": "https://github.com/elastic/ems-client#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test"
+    }
+  },
   "dependencies": {
     "lodash": "^4.17.15",
     "semver": "^6.3.0"
@@ -48,8 +53,12 @@
     "@typescript-eslint/parser": "^2.33.0",
     "babel-jest": "^24.9.0",
     "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "husky": "^4.2.5",
     "jest": "^25.5.4",
     "node-fetch": "^1.7.3",
+    "prettier": "^2.0.5",
     "ts-jest": "^25.5.1",
     "typescript": "^3.9.2"
   }

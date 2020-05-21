@@ -84,7 +84,7 @@ function modifyUrlLocal(
 }
 
 const extendUrl = (url: string, props: URLMeaningfulParts) =>
-  modifyUrlLocal(url, parsed => _.merge(parsed, props));
+  modifyUrlLocal(url, (parsed) => _.merge(parsed, props));
 
 /**
  *  Unescape a url template that was escaped by encodeURI() so leaflet
@@ -272,16 +272,6 @@ export class EMSClient {
     return i18nObject[this._language] ? i18nObject[this._language] : i18nObject[DEFAULT_LANGUAGE];
   }
 
-  private _getEmsVersion(version: string | undefined): string {
-    const userVersion = semver.valid(semver.coerce(version));
-    const semverVersion = userVersion ? userVersion : semver.coerce(DEFAULT_EMS_VERSION);
-    if (semverVersion) {
-      return `v${semver.major(semverVersion)}.${semver.minor(semverVersion)}`;
-    } else {
-      throw new Error(`Invalid version: ${version}`);
-    }
-  }
-
   /**
    * this internal method is overridden by the tests to simulate custom manifest.
    */
@@ -298,6 +288,96 @@ export class EMSClient {
         e = new Error(e.data || `status ${e.statusText || e.status}`);
       }
       throw new Error(`Unable to retrieve manifest from ${manifestUrl}: ${e.message}`);
+    }
+  }
+
+  /**
+   * Add optional query-parameters to all requests
+   *
+   * @param additionalQueryParams
+   */
+  addQueryParams(additionalQueryParams: { [key: string]: string }): void {
+    for (const key in additionalQueryParams) {
+      if (additionalQueryParams.hasOwnProperty(key)) {
+        if (additionalQueryParams[key] !== this._queryParams[key]) {
+          //changes detected.
+          this._queryParams = _.assign({}, this._queryParams, additionalQueryParams);
+          this._invalidateSettings();
+          break;
+        }
+      }
+    }
+  }
+
+  async getMainManifest(): Promise<EmsCatalogManifest> {
+    return await this._getMainCatalog();
+  }
+
+  async getDefaultFileManifest(): Promise<EmsFileCatalog> {
+    return await this._getDefaultFileCatalog();
+  }
+
+  async getDefaultTMSManifest(): Promise<EmsTmsCatalog> {
+    return await this._getDefaultTMSCatalog();
+  }
+
+  async getFileLayers(): Promise<FileLayer[]> {
+    return await this._loadFileLayers();
+  }
+
+  async getTMSServices(): Promise<TMSService[]> {
+    return await this._loadTMSServices();
+  }
+
+  getTileApiUrl(): string {
+    return this._tileApiUrl;
+  }
+
+  getFileApiUrl(): string {
+    return this._fileApiUrl;
+  }
+
+  getLandingPageUrl(): string {
+    return this._emsLandingPageUrl;
+  }
+
+  sanitizeHtml(html: string): string {
+    return this._sanitizer(html);
+  }
+
+  extendUrlWithParams(url: string): string {
+    return unescapeTemplateVars(
+      extendUrl(url, {
+        query: this._queryParams,
+      })
+    );
+  }
+
+  async findFileLayerById(id: string): Promise<FileLayer | undefined> {
+    const fileLayers = await this.getFileLayers();
+    for (let i = 0; i < fileLayers.length; i++) {
+      if (fileLayers[i].hasId(id)) {
+        return fileLayers[i];
+      }
+    }
+  }
+
+  async findTMSServiceById(id: string): Promise<TMSService | undefined> {
+    const tmsServices = await this.getTMSServices();
+    for (let i = 0; i < tmsServices.length; i++) {
+      if (tmsServices[i].hasId(id)) {
+        return tmsServices[i];
+      }
+    }
+  }
+
+  private _getEmsVersion(version: string | undefined): string {
+    const userVersion = semver.valid(semver.coerce(version));
+    const semverVersion = userVersion ? userVersion : semver.coerce(DEFAULT_EMS_VERSION);
+    if (semverVersion) {
+      return `v${semver.major(semverVersion)}.${semver.minor(semverVersion)}`;
+    } else {
+      throw new Error(`Invalid version: ${version}`);
     }
   }
 
@@ -318,24 +398,6 @@ export class EMSClient {
         }
       );
     });
-  }
-
-  /**
-   * Add optional query-parameters to all requests
-   *
-   * @param additionalQueryParams
-   */
-  addQueryParams(additionalQueryParams: { [key: string]: string }): void {
-    for (const key in additionalQueryParams) {
-      if (additionalQueryParams.hasOwnProperty(key)) {
-        if (additionalQueryParams[key] !== this._queryParams[key]) {
-          //changes detected.
-          this._queryParams = _.assign({}, this._queryParams, additionalQueryParams);
-          this._invalidateSettings();
-          break;
-        }
-      }
-    }
   }
 
   private async _getManifestWithParams<T>(url: string): Promise<T> {
@@ -416,67 +478,5 @@ export class EMSClient {
         );
       }
     );
-  }
-
-  async getMainManifest(): Promise<EmsCatalogManifest> {
-    return await this._getMainCatalog();
-  }
-
-  async getDefaultFileManifest(): Promise<EmsFileCatalog> {
-    return await this._getDefaultFileCatalog();
-  }
-
-  async getDefaultTMSManifest(): Promise<EmsTmsCatalog> {
-    return await this._getDefaultTMSCatalog();
-  }
-
-  async getFileLayers(): Promise<FileLayer[]> {
-    return await this._loadFileLayers();
-  }
-
-  async getTMSServices(): Promise<TMSService[]> {
-    return await this._loadTMSServices();
-  }
-
-  getTileApiUrl(): string {
-    return this._tileApiUrl;
-  }
-
-  getFileApiUrl(): string {
-    return this._fileApiUrl;
-  }
-
-  getLandingPageUrl(): string {
-    return this._emsLandingPageUrl;
-  }
-
-  sanitizeHtml(html: string): string {
-    return this._sanitizer(html);
-  }
-
-  extendUrlWithParams(url: string): string {
-    return unescapeTemplateVars(
-      extendUrl(url, {
-        query: this._queryParams,
-      })
-    );
-  }
-
-  async findFileLayerById(id: string): Promise<FileLayer | undefined> {
-    const fileLayers = await this.getFileLayers();
-    for (let i = 0; i < fileLayers.length; i++) {
-      if (fileLayers[i].hasId(id)) {
-        return fileLayers[i];
-      }
-    }
-  }
-
-  async findTMSServiceById(id: string): Promise<TMSService | undefined> {
-    const tmsServices = await this.getTMSServices();
-    for (let i = 0; i < tmsServices.length; i++) {
-      if (tmsServices[i].hasId(id)) {
-        return tmsServices[i];
-      }
-    }
   }
 }
