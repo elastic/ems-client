@@ -17,38 +17,40 @@
  * under the License.
  */
 
-
 import { EMSClient } from '../src';
 import fetch from 'node-fetch';
 
 import EMS_CATALOGUE from './ems_mocks/sample_manifest.json';
 import EMS_FILES from './ems_mocks/sample_files.json';
 import EMS_TILES from './ems_mocks/sample_tiles.json';
-import EMS_STYLE_ROAD_MAP_BRIGHT from './ems_mocks/sample_style_bright';
-import EMS_STYLE_ROAD_MAP_DESATURATED from './ems_mocks/sample_style_desaturated';
-import EMS_STYLE_DARK_MAP from './ems_mocks/sample_style_dark';
+import EMS_STYLE_ROAD_MAP_BRIGHT from './ems_mocks/sample_style_bright.json';
+import EMS_STYLE_BRIGHT_PROXIED from './ems_mocks/sample_style_bright_proxied.json';
+import EMS_STYLE_BRIGHT_VECTOR_PROXIED from './ems_mocks/sample_style_bright_vector_proxied.json';
 
-import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR from './ems_mocks/sample_style_bright_vector';
-import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE from './ems_mocks/sample_style_bright_vector_source';
-import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE_PROXIED from './ems_mocks/sample_style_bright_vector_source_proxied';
+import EMS_STYLE_ROAD_MAP_DESATURATED from './ems_mocks/sample_style_desaturated.json';
+import EMS_STYLE_DARK_MAP from './ems_mocks/sample_style_dark.json';
+
+import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR from './ems_mocks/sample_style_bright_vector.json';
+import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE from './ems_mocks/sample_style_bright_vector_source.json';
+import EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE_PROXIED from './ems_mocks/sample_style_bright_vector_source_proxied.json';
 
 import EMS_CATALOGUE_PROXIED from './ems_mocks/sample_manifest_proxied.json';
 import EMS_FILES_PROXIED from './ems_mocks/sample_files_proxied.json';
 import EMS_TILES_PROXIED from './ems_mocks/sample_tiles_proxied.json';
 
 export function getEMSClient(options = {}) {
-
   const emsClient = new EMSClient({
     language: 'en',
     appVersion: '7.x.x',
     appName: 'tester',
-    htmlSanitizer: x => x,
     landingPageUrl: 'https://landing.foobar',
     fetchFunction: fetch,
-    ...options
+    tileApiUrl: 'http://tile.foo',
+    fileApiUrl: 'http://file.foo',
+    ...options,
   });
 
-  emsClient.getManifest = async (url) => {
+  emsClient.getManifest = async (url: string): Promise<any> => {
     //simulate network calls
     if (url.startsWith('https://foobar')) {
       return EMS_CATALOGUE;
@@ -77,6 +79,10 @@ export function getEMSClient(options = {}) {
         return EMS_TILES_PROXIED;
       } else if (url.includes('/data/v3.json')) {
         return EMS_STYLE_ROAD_MAP_BRIGHT_VECTOR_SOURCE_PROXIED;
+      } else if (url.includes('osm-bright.json')) {
+        return EMS_STYLE_BRIGHT_PROXIED;
+      } else if (url.includes('osm-bright/style.json')) {
+        return EMS_STYLE_BRIGHT_VECTOR_PROXIED;
       }
     } else {
       throw new Error(`url unexpected: ${url}`);

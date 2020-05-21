@@ -17,51 +17,24 @@
  * under the License.
  */
 
-
-import { ORIGIN } from './origin';
 import url from 'url';
-import { toAbsoluteUrl } from './utils';
+import {
+  EMSClient,
+  EmsFileLayerFormatGeoJson,
+  EmsFileLayerFormatTopoJson,
+  FileLayerConfig,
+} from './ems_client';
+import { AbstractEmsService } from './ems_service';
 
-export class FileLayer {
-  /**
-   * Checks if url is absolute. If not, prepend the basePath.
-   */
-  _getAbsoluteUrl = (url) => {
-    if (/^https?:\/\//.test(url)) {
-      return url;
-    } else {
-      return toAbsoluteUrl(this._emsClient.getFileApiUrl(), url);
-    }
-  }
+export class FileLayer extends AbstractEmsService {
+  protected readonly _config: FileLayerConfig;
 
-  constructor(config, emsClient, proxyPath) {
+  constructor(config: FileLayerConfig, emsClient: EMSClient, proxyPath: string) {
+    super(config, emsClient, proxyPath);
     this._config = config;
-    this._emsClient = emsClient;
-    this._proxyPath = proxyPath;
   }
 
-  getAttributions() {
-    return this._config.attribution.map(attribution => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
-      return {
-        url: url,
-        label: label,
-      };
-    });
-  }
-
-  getHTMLAttribution() {
-    const attributions = this._config.attribution.map(attribution => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
-      const html = url ? `<a href=${url}>${label}</a>` : label;
-      return this._emsClient.sanitizeHtml(html);
-    });
-    return attributions.join(' | '); //!!!this is the current convention used in Kibana
-  }
-
-  getFieldsInLanguage() {
+  getFieldsInLanguage(): { type: string; name: string; description: string }[] {
     return this._config.fields.map(field => {
       return {
         type: field.type,
@@ -71,21 +44,21 @@ export class FileLayer {
     });
   }
 
-  getDisplayName() {
+  getDisplayName(): string {
     const layerName = this._emsClient.getValueInLanguage(this._config.layer_name);
     return layerName ? layerName : '';
   }
 
-  getId() {
+  getId(): string {
     return this._config.layer_id;
   }
 
-  hasId(id) {
+  hasId(id: string): boolean {
     const matchesLegacyId = this._config.legacy_ids.indexOf(id) >= 0;
     return this._config.layer_id === id || matchesLegacyId;
   }
 
-  _getDefaultFormat() {
+  private _getDefaultFormat(): EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson {
     const defaultFormat = this._config.formats.find(format => {
       return format.legacy_default;
     });
@@ -95,39 +68,42 @@ export class FileLayer {
     return this._config.formats[0];
   }
 
-  getEMSHotLink() {
+  getEMSHotLink(): string {
     const landingPageString = this._emsClient.getLandingPageUrl();
-    const urlObject = url.parse(landingPageString);
+    const urlObject = url.parse(landingPageString, true);
     urlObject.hash = `file/${this.getId()}`;
     urlObject.query = {
       ...urlObject.query,
-      locale: this._emsClient.getLocale()
+      locale: this._emsClient.getLocale(),
     };
     return url.format(urlObject);
   }
 
-  getDefaultFormatType() {
+  getDefaultFormatType(): string {
     const format = this._getDefaultFormat();
     return format.type;
   }
 
-  getDefaultFormatMeta() {
+  getDefaultFormatMeta(): { [key: string]: string } | undefined {
     const format = this._getDefaultFormat();
-    return format.meta;
+    if ('meta' in format) {
+      return format.meta;
+    } else {
+      return;
+    }
   }
 
-  getDefaultFormatUrl() {
+  getDefaultFormatUrl(): string {
     const format = this._getDefaultFormat();
     const url = this._proxyPath + this._getAbsoluteUrl(format.url);
     return this._emsClient.extendUrlWithParams(url);
   }
 
-  getCreatedAt() {
+  getCreatedAt(): string {
     return this._config.created_at;
   }
 
-  getOrigin() {
-    return ORIGIN.EMS;
+  getApiUrl(): string {
+    return this._emsClient.getFileApiUrl();
   }
-
 }
