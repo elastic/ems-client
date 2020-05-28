@@ -6,9 +6,10 @@
   "browser": "target/web/index.js",
   "types": "target/index.d.ts",
   "scripts": {
-    "lint": "tsc --noEmit && yarn lint-es",
-    "lint-es": "eslint . --ext .ts,.tsx",
-    "test": "yarn lint && jest",
+    "prelint": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "pretest": "yarn lint",
+    "test": "jest",
     "build": "tsc --emitDeclarationOnly && yarn build-web && yarn build-node",
     "build-web": "BABEL_ENV=web babel src --extensions \".ts,.tsx\" --config-file=./babel.config.js --out-dir=target/web --delete-dir-on-start",
     "build-node": "BABEL_ENV=node babel src --extensions \".ts,.tsx\" --config-file=./babel.config.js --out-dir=target/node --delete-dir-on-start"
