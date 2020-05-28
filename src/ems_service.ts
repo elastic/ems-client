@@ -44,7 +44,7 @@ export abstract class AbstractEmsService implements IEmsService {
   }
 
   getAttributions(): { url: string; label: string }[] {
-    return this._config.attribution.map(attribution => {
+    return this._config.attribution.map((attribution) => {
       const url = this._emsClient.getValueInLanguage(attribution.url);
       const label = this._emsClient.getValueInLanguage(attribution.label);
       return {
@@ -55,7 +55,7 @@ export abstract class AbstractEmsService implements IEmsService {
   }
 
   getHTMLAttribution(): string {
-    const attributions = this._config.attribution.map(attribution => {
+    const attributions = this._config.attribution.map((attribution) => {
       const url = this._emsClient.getValueInLanguage(attribution.url);
       const label = this._emsClient.getValueInLanguage(attribution.label);
       const html = url ? `<a rel="noreferrer noopener" href="${url}">${label}</a>` : label;
@@ -65,7 +65,7 @@ export abstract class AbstractEmsService implements IEmsService {
   }
 
   getMarkdownAttribution(): string {
-    const attributions = this._config.attribution.map(attribution => {
+    const attributions = this._config.attribution.map((attribution) => {
       const url = this._emsClient.getValueInLanguage(attribution.url);
       const label = this._emsClient.getValueInLanguage(attribution.label);
       return `[${label}](${url})`;
@@ -79,7 +79,7 @@ export abstract class AbstractEmsService implements IEmsService {
 
   /**
    * Checks if url is absolute. If not, prepend the basePath.
-  */
+   */
   protected _getAbsoluteUrl = (url: string) => {
     if (/^https?:\/\//.test(url)) {
       return url;
@@ -95,6 +95,4 @@ export abstract class AbstractEmsService implements IEmsService {
   abstract hasId(id: string): boolean;
 
   abstract getApiUrl(): string;
-
-
 }
