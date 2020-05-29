@@ -35,7 +35,7 @@ export class FileLayer extends AbstractEmsService {
   }
 
   getFieldsInLanguage(): { type: string; name: string; description: string }[] {
-    return this._config.fields.map(field => {
+    return this._config.fields.map((field) => {
       return {
         type: field.type,
         name: field.id,
@@ -56,16 +56,6 @@ export class FileLayer extends AbstractEmsService {
   hasId(id: string): boolean {
     const matchesLegacyId = this._config.legacy_ids.indexOf(id) >= 0;
     return this._config.layer_id === id || matchesLegacyId;
-  }
-
-  private _getDefaultFormat(): EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson {
-    const defaultFormat = this._config.formats.find(format => {
-      return format.legacy_default;
-    });
-    if (defaultFormat) {
-      return defaultFormat;
-    }
-    return this._config.formats[0];
   }
 
   getEMSHotLink(): string {
@@ -105,5 +95,15 @@ export class FileLayer extends AbstractEmsService {
 
   getApiUrl(): string {
     return this._emsClient.getFileApiUrl();
+  }
+
+  private _getDefaultFormat(): EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson {
+    const defaultFormat = this._config.formats.find((format) => {
+      return format.legacy_default;
+    });
+    if (defaultFormat) {
+      return defaultFormat;
+    }
+    return this._config.formats[0];
   }
 }
