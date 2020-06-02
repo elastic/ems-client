@@ -114,6 +114,7 @@ export class TMSService extends AbstractEmsService {
           const htmlAttribution = await this.getHTMLAttribution();
           inlinedSources[sourceName] = {
             ...sourceJson,
+            type: 'vector',
             attribution: htmlAttribution,
             tiles: extendedTileUrls,
           };
