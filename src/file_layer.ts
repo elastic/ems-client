@@ -34,8 +34,12 @@ export class FileLayer extends AbstractEmsService {
     this._config = config;
   }
 
+  getFields(): FileLayerConfig['fields'] {
+    return this._config.fields;
+  }
+
   getFieldsInLanguage(): { type: string; name: string; description: string }[] {
-    return this._config.fields.map((field) => {
+    return this.getFields().map((field) => {
       return {
         type: field.type,
         name: field.id,

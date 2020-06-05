@@ -151,6 +151,29 @@ describe('ems_client', () => {
     const layer = layers[0];
     expect(layer.getId()).toBe('world_countries');
     expect(layer.hasId('world_countries')).toBe(true);
+    expect(layer.getFields()).toMatchObject([
+      {
+        type: 'id',
+        id: 'iso2',
+        label: {
+          en: 'ISO 3166-1 alpha-2 code',
+        },
+      },
+      {
+        type: 'id',
+        id: 'iso3',
+        label: {
+          en: 'ISO 3166-1 alpha-3 code',
+        },
+      },
+      {
+        type: 'property',
+        id: 'name',
+        label: {
+          en: 'name',
+        },
+      },
+    ]);
 
     expect(layer.getHTMLAttribution()).toBe(
       '<a rel="noreferrer noopener" href="http://www.naturalearthdata.com/about/terms-of-use">Made with NaturalEarth</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
