@@ -174,11 +174,11 @@ export class TMSService extends AbstractEmsService {
     }
   }
 
-  async getVectorStyleSheet(): Promise<EmsVectorStyle | undefined> {
+  async getVectorStyleSheet(): Promise<unknown> {
     return await this._getVectorStyleJsonInlined();
   }
 
-  async getVectorStyleSheetRaw(): Promise<EmsVectorStyle | undefined> {
+  async getVectorStyleSheetRaw(): Promise<unknown> {
     return await this._getVectorStyleJsonRaw();
   }
 
