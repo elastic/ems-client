@@ -20,21 +20,36 @@
 import _ from 'lodash';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
 import { AbstractEmsService } from './ems_service';
-import { Sources, Style, VectorSource } from 'mapbox-gl';
 
-type EmsVectorSource = VectorSource & {
+type EmsVectorSource = {
+  type: 'vector';
   url: string;
   tiles: string[];
+  bounds?: number[];
+  scheme?: 'xyz' | 'tms';
+  minzoom?: number;
+  maxzoom?: number;
+  attribution?: string;
 };
 
-type EmsVectorSources = Sources & {
+type EmsVectorSources = {
   [sourceName: string]: EmsVectorSource;
 };
 
-type EmsVectorStyle = Style & {
+type EmsVectorStyle = {
   sources: EmsVectorSources;
   sprite: string;
   glyphs: string;
+  bearing?: number;
+  center?: number[];
+  layers?: unknown[];
+  metadata?: unknown;
+  name?: string;
+  pitch?: number;
+  light?: unknown;
+  transition?: unknown;
+  version: number;
+  zoom?: number;
 };
 
 type EmsSprite = {
@@ -174,11 +189,11 @@ export class TMSService extends AbstractEmsService {
     }
   }
 
-  async getVectorStyleSheet(): Promise<unknown> {
+  async getVectorStyleSheet(): Promise<EmsVectorStyle | undefined> {
     return await this._getVectorStyleJsonInlined();
   }
 
-  async getVectorStyleSheetRaw(): Promise<unknown> {
+  async getVectorStyleSheetRaw(): Promise<EmsVectorStyle | undefined> {
     return await this._getVectorStyleJsonRaw();
   }
 
