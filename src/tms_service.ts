@@ -125,11 +125,9 @@ export class TMSService extends AbstractEmsService {
             const url = this._proxyPath + this._getAbsoluteUrl(tileUrl);
             return this._emsClient.extendUrlWithParams(url);
           });
-          // Override the attribution in the sources with the localized attribution
-          const htmlAttribution = await this.getHTMLAttribution();
           inlinedSources[sourceName] = {
             ...sourceJson,
-            attribution: htmlAttribution,
+            type: 'vector',
             tiles: extendedTileUrls,
           };
         }
