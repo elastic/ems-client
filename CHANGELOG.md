@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.9.4] - 2020-08-14
+### Removed
+- **Breaking change** The `getHTMLAttribution` method has been removed as clients should be responsible for creating HTML links.
+
 ## [7.9.3] - 2020-06-09
 ### Fixed
 - Fixed type check issues by removing `@types/mapbox-gl` library

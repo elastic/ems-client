@@ -5073,6 +5073,11 @@
       ],
       "formats": [
         {
+          "type": "geojson",
+          "url": "/files/usa_counties_v2.geo.json",
+          "legacy_default": false
+        },
+        {
           "type": "topojson",
           "url": "/files/usa_counties_v2.topo.json?elastic_tile_service_tos=agree",
           "legacy_default": true
