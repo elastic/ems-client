@@ -23,7 +23,6 @@ import { toAbsoluteUrl } from './utils';
 
 export interface IEmsService {
   getAttributions(): { url: string; label: string }[];
-  getHTMLAttribution(): string;
   getMarkdownAttribution(): string;
   getDisplayName(): string;
   getId(): string;
@@ -52,16 +51,6 @@ export abstract class AbstractEmsService implements IEmsService {
         label: label,
       };
     });
-  }
-
-  getHTMLAttribution(): string {
-    const attributions = this._config.attribution.map((attribution) => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
-      const html = url ? `<a rel="noreferrer noopener" href="${url}">${label}</a>` : label;
-      return this._emsClient.sanitizeHtml(html);
-    });
-    return attributions.join(' | '); //!!!this is the current convention used in Kibana
   }
 
   getMarkdownAttribution(): string {
