@@ -65,9 +65,6 @@ describe('ems_client', () => {
       'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
     );
 
-    expect(tileService.getHTMLAttribution()).toBe(
-      '<a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
-    );
     expect(await tileService.getMinZoom()).toBe(0);
     expect(await tileService.getMaxZoom()).toBe(10);
     expect(tileService.hasId('road_map')).toBe(true);
@@ -89,9 +86,6 @@ describe('ems_client', () => {
       'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
     );
 
-    expect(tileService.getHTMLAttribution()).toBe(
-      '<a rel="noreferrer noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> | <a rel="noreferrer noopener" href="https://openmaptiles.org">OpenMapTiles</a> | <a rel="noreferrer noopener" href="https://www.maptiler.com">MapTiler</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
-    );
     expect(await tileService.getMinZoom()).toBe(0);
     expect(await tileService.getMaxZoom()).toBe(10);
     expect(tileService.hasId('road_map')).toBe(true);
@@ -175,10 +169,6 @@ describe('ems_client', () => {
       },
     ]);
 
-    expect(layer.getHTMLAttribution()).toBe(
-      '<a rel="noreferrer noopener" href="http://www.naturalearthdata.com/about/terms-of-use">Made with NaturalEarth</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
-    );
-
     expect(layer.getDisplayName()).toBe('World Countries');
   });
 
@@ -197,10 +187,6 @@ describe('ems_client', () => {
     const layer = layers[0];
     expect(layer.getId()).toBe('world_countries');
     expect(layer.hasId('world_countries')).toBe(true);
-
-    expect(layer.getHTMLAttribution()).toBe(
-      '<a rel="noreferrer noopener" href="http://www.naturalearthdata.com/about/terms-of-use">Made with NaturalEarth</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
-    );
     expect(layer.getDisplayName()).toBe('pays');
 
     const fields = layer.getFieldsInLanguage();
@@ -228,10 +214,6 @@ describe('ems_client', () => {
     const layer = layers[0];
     expect(layer.getId()).toBe('world_countries');
     expect(layer.hasId('world_countries')).toBe(true);
-
-    expect(layer.getHTMLAttribution()).toBe(
-      '<a rel="noreferrer noopener" href="http://www.naturalearthdata.com/about/terms-of-use">Made with NaturalEarth</a> | <a rel="noreferrer noopener" href="https://www.elastic.co/elastic-maps-service">Elastic Maps Service</a>'
-    );
     expect(layer.getDisplayName()).toBe('World Countries');
 
     const fields = layer.getFieldsInLanguage();
