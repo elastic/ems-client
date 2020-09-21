@@ -25,7 +25,7 @@ import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
 
-const DEFAULT_EMS_VERSION = '7.9';
+const DEFAULT_EMS_VERSION = '7.10';
 
 type URLMeaningfulParts = {
   auth?: string | null;
