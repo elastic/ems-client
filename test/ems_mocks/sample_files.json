@@ -24,8 +24,15 @@
       "formats": [
         {
           "type": "geojson",
-          "url": "/files/world_countries_v1.geo.json",
-          "legacy_default": true
+          "url": "/files/world_countries_v1.geo.json"
+        }, 
+        {
+          "type": "topojson",
+          "url": "/files/world_countries_v7.topo.json",
+          "legacy_default": true,
+          "meta": {
+            "feature_collection_path": "data"
+          }
         }
       ],
       "fields": [

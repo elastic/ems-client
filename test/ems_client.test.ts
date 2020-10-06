@@ -170,6 +170,14 @@ describe('ems_client', () => {
     ]);
 
     expect(layer.getDisplayName()).toBe('World Countries');
+    expect(layer.getFormatOfTypeUrl('geojson')).toBe(
+      'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+    expect(layer.getFormatOfType('geojson')).toBe('geojson');
+    expect(layer.getFormatOfTypeMeta('geojson')).toBeUndefined();
+    expect(layer.getFormatOfTypeMeta('topojson')).toStrictEqual({
+      feature_collection_path: 'data',
+    });
   });
 
   it('.getFileLayers[0] - localized (known)', async () => {
@@ -196,10 +204,11 @@ describe('ems_client', () => {
       { name: 'name', description: 'nom', type: 'property' },
     ]);
 
-    expect(layer.getDefaultFormatType()).toBe('geojson');
+    expect(layer.getDefaultFormatType()).toBe('topojson');
     expect(layer.getDefaultFormatUrl()).toBe(
-      'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
+      'https://files.foobar/files/world_countries_v7.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
     );
+    expect(layer.getDefaultFormatMeta()).toStrictEqual({ feature_collection_path: 'data' });
   });
 
   it('.getFileLayers[0] - localized (fallback)', async () => {
@@ -270,7 +279,10 @@ describe('ems_client', () => {
     expect(fileLayers.length).toBe(1);
     const fileLayer = fileLayers[0];
     expect(fileLayer.getDefaultFormatUrl()).toBe(
-      'http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+      'http://proxy.com/foobar/vector/files/world_countries_v7.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+    expect(fileLayer.getFormatOfTypeUrl('geojson')).toBe(
+      'http://proxy.com/foobar/vector/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
     );
   });
 
