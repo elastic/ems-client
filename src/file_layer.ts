@@ -146,9 +146,6 @@ export class FileLayer extends AbstractEmsService {
     const requestedFormat = this._config.formats.find((format) => {
       return format.type === type;
     });
-    if (!requestedFormat) {
-      return this._getDefaultFormat();
-    }
-    return requestedFormat;
+    return requestedFormat || this._getDefaultFormat();
   }
 }
