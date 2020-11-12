@@ -131,10 +131,10 @@ describe('ems_client', () => {
       emsVersion: '7.6',
     });
     const layers = await emsClient.getFileLayers();
-    expect(layers.length).toBe(18);
+    expect(layers.length).toBe(19);
   });
 
-  it('.getFileLayers[0]', async () => {
+  it('.getFileLayers with a single format', async () => {
     const emsClient = getEMSClient({
       tileApiUrl: 'https://tiles.foobar',
       fileApiUrl: 'https://files.foobar',
@@ -170,6 +170,59 @@ describe('ems_client', () => {
     ]);
 
     expect(layer.getDisplayName()).toBe('World Countries');
+    expect(layer.getFormatOfTypeUrl('geojson')).toBe(
+      'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+    expect(layer.getFormatOfType('geojson')).toBe('geojson');
+    expect(layer.getDefaultFormatType()).toBe('geojson');
+    expect(layer.getFormatOfTypeMeta('geojson')).toBeUndefined();
+    expect(layer.getFormatOfTypeMeta('topojson')).toBeUndefined();
+  });
+
+  it('.getFileLayers with multiple formats', async () => {
+    const emsClient = getEMSClient({
+      tileApiUrl: 'https://tiles.foobar',
+      fileApiUrl: 'https://files.foobar',
+      emsVersion: '7.6',
+    });
+    const layers = await emsClient.getFileLayers();
+
+    const layer = layers[1];
+    expect(layer.getId()).toBe('administrative_regions_lvl2');
+    expect(layer.hasId('administrative_regions_lvl2')).toBe(true);
+    expect(layer.getFields()).toMatchObject([
+      {
+        type: 'id',
+        id: 'region_iso_code',
+        label: {
+          en: 'Region ISO code',
+        },
+      },
+      {
+        type: 'property',
+        id: 'region_name',
+        label: {
+          en: 'Region name',
+        },
+      },
+    ]);
+
+    expect(layer.getDisplayName()).toBe('Administrative regions');
+    expect(layer.getFormatOfTypeUrl('geojson')).toBe(
+      'https://files.foobar/files/admin_regions_lvl2_v2.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+    expect(layer.getFormatOfTypeUrl('topojson')).toBe(
+      'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+    expect(layer.getDefaultFormatUrl()).toBe(
+      'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+    expect(layer.getFormatOfType('geojson')).toBe('geojson');
+    expect(layer.getDefaultFormatType()).toBe('topojson');
+    expect(layer.getFormatOfTypeMeta('geojson')).toBeUndefined();
+    expect(layer.getFormatOfTypeMeta('topojson')).toMatchObject({
+      feature_collection_path: 'data',
+    });
   });
 
   it('.getFileLayers[0] - localized (known)', async () => {
@@ -200,6 +253,7 @@ describe('ems_client', () => {
     expect(layer.getDefaultFormatUrl()).toBe(
       'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
     );
+    expect(layer.getDefaultFormatMeta()).toBeUndefined();
   });
 
   it('.getFileLayers[0] - localized (fallback)', async () => {
@@ -267,9 +321,12 @@ describe('ems_client', () => {
     );
 
     const fileLayers = await emsClient.getFileLayers();
-    expect(fileLayers.length).toBe(1);
+    expect(fileLayers.length).toBe(2);
     const fileLayer = fileLayers[0];
     expect(fileLayer.getDefaultFormatUrl()).toBe(
+      'http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+    expect(fileLayer.getFormatOfTypeUrl('geojson')).toBe(
       'http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
     );
   });
