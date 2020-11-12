@@ -19,7 +19,7 @@
 
 import _ from 'lodash';
 import { TMSService } from './tms_service';
-import { FileLayer } from './file_layer';
+import { EMSFormatType, FileLayer } from './file_layer';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
@@ -179,13 +179,13 @@ export type EmsLayerAttribution = {
 };
 
 export type EmsFileLayerFormatGeoJson = {
-  type: 'geojson';
+  type: EMSFormatType.geojson;
   url: string;
   legacy_default: boolean;
 };
 
 export type EmsFileLayerFormatTopoJson = {
-  type: 'topojson';
+  type: EMSFormatType.topojson;
   url: string;
   legacy_default: boolean;
   meta: {
