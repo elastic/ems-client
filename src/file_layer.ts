@@ -26,6 +26,14 @@ import {
 } from './ems_client';
 import { AbstractEmsService } from './ems_service';
 
+export enum EMSFormatType {
+  geojson = 'geojson',
+  topojson = 'topojson',
+}
+export type EMSFormatTypeStrings = keyof typeof EMSFormatType;
+
+type EMSFormats = EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson;
+
 export class FileLayer extends AbstractEmsService {
   protected readonly _config: FileLayerConfig;
 
@@ -78,19 +86,29 @@ export class FileLayer extends AbstractEmsService {
     return format.type;
   }
 
+  getFormatOfType(type: EMSFormatTypeStrings): EMSFormatTypeStrings {
+    const format = this._getFormatOfType(type);
+    return format.type;
+  }
+
   getDefaultFormatMeta(): { [key: string]: string } | undefined {
     const format = this._getDefaultFormat();
-    if ('meta' in format) {
-      return format.meta;
-    } else {
-      return;
-    }
+    return this._getFormatMeta(format);
+  }
+
+  getFormatOfTypeMeta(type: EMSFormatTypeStrings): { [key: string]: string } | undefined {
+    const format = this._getFormatOfType(type);
+    return this._getFormatMeta(format);
   }
 
   getDefaultFormatUrl(): string {
     const format = this._getDefaultFormat();
-    const url = this._proxyPath + this._getAbsoluteUrl(format.url);
-    return this._emsClient.extendUrlWithParams(url);
+    return this._getFormatUrl(format);
+  }
+
+  getFormatOfTypeUrl(type: EMSFormatTypeStrings) {
+    const format = this._getFormatOfType(type);
+    return this._getFormatUrl(format);
   }
 
   getCreatedAt(): string {
@@ -101,7 +119,20 @@ export class FileLayer extends AbstractEmsService {
     return this._emsClient.getFileApiUrl();
   }
 
-  private _getDefaultFormat(): EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson {
+  private _getFormatUrl(format: EMSFormats) {
+    const url = this._proxyPath + this._getAbsoluteUrl(format.url);
+    return this._emsClient.extendUrlWithParams(url);
+  }
+
+  private _getFormatMeta(format: EMSFormats) {
+    if ('meta' in format) {
+      return format.meta;
+    } else {
+      return;
+    }
+  }
+
+  private _getDefaultFormat(): EMSFormats {
     const defaultFormat = this._config.formats.find((format) => {
       return format.legacy_default;
     });
@@ -109,5 +140,12 @@ export class FileLayer extends AbstractEmsService {
       return defaultFormat;
     }
     return this._config.formats[0];
+  }
+
+  private _getFormatOfType(type: EMSFormatTypeStrings): EMSFormats {
+    const requestedFormat = this._config.formats.find((format) => {
+      return format.type === type;
+    });
+    return requestedFormat || this._getDefaultFormat();
   }
 }
