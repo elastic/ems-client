@@ -277,7 +277,15 @@ export class EMSClient {
    */
   async getManifest<T>(manifestUrl: string): Promise<T> {
     try {
-      const url = extendUrl(manifestUrl, { query: this._queryParams });
+      return await this.getJsonEndpoint(manifestUrl);
+    } catch (e) {
+      throw new Error(`Unable to retrieve manifest from ${manifestUrl}: ${e.message}`);
+    }
+  }
+
+  async getJsonEndpoint<T>(endpointUrl: string): Promise<T> {
+    try {
+      const url = extendUrl(endpointUrl, { query: this._queryParams });
       const result = await this._fetchWithTimeout(url);
       return result ? await result.json() : null;
     } catch (e) {
@@ -287,7 +295,7 @@ export class EMSClient {
       if (!(e instanceof Error)) {
         e = new Error(e.data || `status ${e.statusText || e.status}`);
       }
-      throw new Error(`Unable to retrieve manifest from ${manifestUrl}: ${e.message}`);
+      throw new Error(`Unable to retrieve data from ${endpointUrl}: ${e.message}`);
     }
   }
 

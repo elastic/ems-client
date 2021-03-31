@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import _ from 'lodash';
 import url from 'url';
 import {
   EMSClient,
@@ -25,6 +26,8 @@ import {
   FileLayerConfig,
 } from './ems_client';
 import { AbstractEmsService } from './ems_service';
+import { FeatureCollection } from 'geojson';
+import { TopoJSON } from 'topojson-specification';
 
 export enum EMSFormatType {
   geojson = 'geojson',
@@ -37,9 +40,29 @@ type EMSFormats = EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson;
 export class FileLayer extends AbstractEmsService {
   protected readonly _config: FileLayerConfig;
 
+  private _getVectorDataOfType = _.memoize(
+    async (format: EMSFormatTypeStrings): Promise<FeatureCollection | TopoJSON | undefined> => {
+      const fileUrl = this.getFormatOfTypeUrl(format);
+      if (fileUrl) {
+        const vectorJson = await this._emsClient.getJsonEndpoint<
+          FeatureCollection | TopoJSON | undefined
+        >(fileUrl);
+        return vectorJson;
+      } else {
+        return;
+      }
+    }
+  );
+
   constructor(config: FileLayerConfig, emsClient: EMSClient, proxyPath: string) {
     super(config, emsClient, proxyPath);
     this._config = config;
+  }
+
+  async getVectorDataOfType(
+    format: EMSFormatTypeStrings
+  ): Promise<FeatureCollection | TopoJSON | undefined> {
+    return await this._getVectorDataOfType(format);
   }
 
   getFields(): FileLayerConfig['fields'] {

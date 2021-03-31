@@ -282,6 +282,32 @@ describe('ems_client', () => {
     );
   });
 
+  it('.getFileLayers[1] - caches json response', async () => {
+    const emsClient = getEMSClient({
+      language: 'en',
+      tileApiUrl: 'https://tiles.foobar',
+      fileApiUrl: 'https://files.foobar',
+      emsVersion: '7.13',
+    });
+
+    const spy = spyOn(emsClient, 'getJsonEndpoint');
+
+    const layers = await emsClient.getFileLayers();
+    const layer = layers[1];
+
+    await layer.getVectorDataOfType('topojson');
+    await layer.getVectorDataOfType('topojson');
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(
+      'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+    await layer.getVectorDataOfType('geojson');
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith(
+      'https://files.foobar/files/admin_regions_lvl2_v2.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+  });
+
   it('.findFileLayerById', async () => {
     const emsClient = getEMSClient({
       language: 'zz', //madeup
