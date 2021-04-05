@@ -18,386 +18,427 @@
  */
 
 import { getEMSClient } from './ems_client_util';
+import { FileLayer } from '../src/file_layer';
 
-describe('ems_client', () => {
-  it('should get api manifests', async () => {
-    const emsClient = getEMSClient({
-      language: 'zz',
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const spy = jest.spyOn(emsClient, 'getManifest');
-    await emsClient.getTMSServices();
-    await emsClient.getFileLayers();
-
-    expect(spy).toHaveBeenNthCalledWith(1, 'https://tiles.foobar/v7.6/manifest');
-    expect(spy).toHaveBeenNthCalledWith(2, 'https://files.foobar/v7.6/manifest');
+it('should get api manifests', async () => {
+  const { emsClient, getManifestMock } = getEMSClient({
+    language: 'zz',
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
   });
 
-  it('should handle end slashes in api urls correctly', async () => {
-    const emsClient = getEMSClient({
-      language: 'zz',
-      tileApiUrl: 'https://tiles.foobar/',
-      fileApiUrl: 'https://files.foobar/',
-      emsVersion: '7.6',
-    });
-    const spy = jest.spyOn(emsClient, 'getManifest');
-    await emsClient.getTMSServices();
-    await emsClient.getFileLayers();
+  await emsClient.getTMSServices();
+  await emsClient.getFileLayers();
 
-    expect(spy).toHaveBeenNthCalledWith(1, 'https://tiles.foobar/v7.6/manifest');
-    expect(spy).toHaveBeenNthCalledWith(2, 'https://files.foobar/v7.6/manifest');
+  expect(getManifestMock).toHaveBeenNthCalledWith(1, 'https://tiles.foobar/v7.6/manifest');
+  expect(getManifestMock).toHaveBeenNthCalledWith(2, 'https://files.foobar/v7.6/manifest');
+});
+
+it('should handle end slashes in api urls correctly', async () => {
+  const { emsClient, getManifestMock } = getEMSClient({
+    language: 'zz',
+    tileApiUrl: 'https://tiles.foobar/',
+    fileApiUrl: 'https://files.foobar/',
+    emsVersion: '7.6',
+  });
+  await emsClient.getTMSServices();
+  await emsClient.getFileLayers();
+
+  expect(getManifestMock).toHaveBeenNthCalledWith(1, 'https://tiles.foobar/v7.6/manifest');
+  expect(getManifestMock).toHaveBeenNthCalledWith(2, 'https://files.foobar/v7.6/manifest');
+});
+
+it('should get the tile service', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+  const tiles = await emsClient.getTMSServices();
+
+  expect(tiles.length).toBe(3);
+
+  const tileService = tiles[0];
+  expect(await tileService.getUrlTemplate()).toBe(
+    'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+
+  expect(await tileService.getMinZoom()).toBe(0);
+  expect(await tileService.getMaxZoom()).toBe(10);
+  expect(tileService.hasId('road_map')).toBe(true);
+});
+
+it('tile service- localized (fallback)', async () => {
+  const { emsClient } = getEMSClient({
+    language: 'zz', //madeup
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+  const tiles = await emsClient.getTMSServices();
+
+  expect(tiles.length).toBe(3);
+
+  const tileService = tiles[0];
+  expect(await tileService.getUrlTemplate()).toBe(
+    'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+
+  expect(await tileService.getMinZoom()).toBe(0);
+  expect(await tileService.getMaxZoom()).toBe(10);
+  expect(tileService.hasId('road_map')).toBe(true);
+});
+
+it('.addQueryParams', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
   });
 
-  it('should get the tile service', async () => {
-    const emsClient = getEMSClient({
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const tiles = await emsClient.getTMSServices();
+  const tilesBefore = await emsClient.getTMSServices();
+  const urlBefore = await tilesBefore[0].getUrlTemplate();
+  expect(urlBefore).toBe(
+    'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
 
-    expect(tiles.length).toBe(3);
-
-    const tileService = tiles[0];
-    expect(await tileService.getUrlTemplate()).toBe(
-      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-
-    expect(await tileService.getMinZoom()).toBe(0);
-    expect(await tileService.getMaxZoom()).toBe(10);
-    expect(tileService.hasId('road_map')).toBe(true);
+  emsClient.addQueryParams({
+    foo: 'bar',
   });
+  let tiles = await emsClient.getTMSServices();
+  let url = await tiles[0].getUrlTemplate();
+  expect(url).toBe(
+    'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
+  );
 
-  it('tile service- localized (fallback)', async () => {
-    const emsClient = getEMSClient({
-      language: 'zz', //madeup
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const tiles = await emsClient.getTMSServices();
-
-    expect(tiles.length).toBe(3);
-
-    const tileService = tiles[0];
-    expect(await tileService.getUrlTemplate()).toBe(
-      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-
-    expect(await tileService.getMinZoom()).toBe(0);
-    expect(await tileService.getMaxZoom()).toBe(10);
-    expect(tileService.hasId('road_map')).toBe(true);
+  emsClient.addQueryParams({
+    foo: 'schmoo',
+    bar: 'foo',
   });
+  tiles = await emsClient.getTMSServices();
+  url = await tiles[0].getUrlTemplate();
+  expect(url).toBe(
+    'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=schmoo&bar=foo'
+  );
+});
 
-  it('.addQueryParams', async () => {
-    const emsClient = getEMSClient({
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-
-    const tilesBefore = await emsClient.getTMSServices();
-    const urlBefore = await tilesBefore[0].getUrlTemplate();
-    expect(urlBefore).toBe(
-      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-
-    emsClient.addQueryParams({
-      foo: 'bar',
-    });
-    let tiles = await emsClient.getTMSServices();
-    let url = await tiles[0].getUrlTemplate();
-    expect(url).toBe(
-      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
-    );
-
-    emsClient.addQueryParams({
-      foo: 'schmoo',
-      bar: 'foo',
-    });
-    tiles = await emsClient.getTMSServices();
-    url = await tiles[0].getUrlTemplate();
-    expect(url).toBe(
-      'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=schmoo&bar=foo'
-    );
+it('.getFileLayers', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
   });
+  const layers = await emsClient.getFileLayers();
+  expect(layers.length).toBe(19);
+});
 
-  it('.getFileLayers', async () => {
-    const emsClient = getEMSClient({
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const layers = await emsClient.getFileLayers();
-    expect(layers.length).toBe(19);
+it('.getFileLayers with a single format', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
   });
+  const layers = await emsClient.getFileLayers();
 
-  it('.getFileLayers with a single format', async () => {
-    const emsClient = getEMSClient({
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const layers = await emsClient.getFileLayers();
-
-    const layer = layers[0];
-    expect(layer.getId()).toBe('world_countries');
-    expect(layer.hasId('world_countries')).toBe(true);
-    expect(layer.getFields()).toMatchObject([
-      {
-        type: 'id',
-        id: 'iso2',
-        label: {
-          en: 'ISO 3166-1 alpha-2 code',
-        },
+  const layer = layers[0];
+  expect(layer.getId()).toBe('world_countries');
+  expect(layer.hasId('world_countries')).toBe(true);
+  expect(layer.getFields()).toMatchObject([
+    {
+      type: 'id',
+      id: 'iso2',
+      label: {
+        en: 'ISO 3166-1 alpha-2 code',
       },
-      {
-        type: 'id',
-        id: 'iso3',
-        label: {
-          en: 'ISO 3166-1 alpha-3 code',
-        },
+    },
+    {
+      type: 'id',
+      id: 'iso3',
+      label: {
+        en: 'ISO 3166-1 alpha-3 code',
       },
-      {
-        type: 'property',
-        id: 'name',
-        label: {
-          en: 'name',
-        },
+    },
+    {
+      type: 'property',
+      id: 'name',
+      label: {
+        en: 'name',
       },
-    ]);
+    },
+  ]);
 
-    expect(layer.getDisplayName()).toBe('World Countries');
-    expect(layer.getFormatOfTypeUrl('geojson')).toBe(
+  expect(layer.getDisplayName()).toBe('World Countries');
+  expect(layer.getFormatOfTypeUrl('geojson')).toBe(
+    'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+  expect(layer.getFormatOfType('geojson')).toBe('geojson');
+  expect(layer.getDefaultFormatType()).toBe('geojson');
+  expect(layer.getFormatOfTypeMeta('geojson')).toBeUndefined();
+  expect(layer.getFormatOfTypeMeta('topojson')).toBeUndefined();
+});
+
+it('.getFileLayers with multiple formats', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+  const layers = await emsClient.getFileLayers();
+
+  const layer = layers[1];
+  expect(layer.getId()).toBe('administrative_regions_lvl2');
+  expect(layer.hasId('administrative_regions_lvl2')).toBe(true);
+  expect(layer.getFields()).toMatchObject([
+    {
+      type: 'id',
+      id: 'region_iso_code',
+      label: {
+        en: 'Region ISO code',
+      },
+    },
+    {
+      type: 'property',
+      id: 'region_name',
+      label: {
+        en: 'Region name',
+      },
+    },
+  ]);
+
+  expect(layer.getDisplayName()).toBe('Administrative regions');
+  expect(layer.getFormatOfTypeUrl('geojson')).toBe(
+    'https://files.foobar/files/admin_regions_lvl2_v2.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+  expect(layer.getFormatOfTypeUrl('topojson')).toBe(
+    'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+  expect(layer.getDefaultFormatUrl()).toBe(
+    'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+  expect(layer.getFormatOfType('geojson')).toBe('geojson');
+  expect(layer.getDefaultFormatType()).toBe('topojson');
+  expect(layer.getFormatOfTypeMeta('geojson')).toBeUndefined();
+  expect(layer.getFormatOfTypeMeta('topojson')).toMatchObject({
+    feature_collection_path: 'data',
+  });
+});
+
+it('.getFileLayers[0] - localized (known)', async () => {
+  const { emsClient } = getEMSClient({
+    language: 'fr',
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+  emsClient.addQueryParams({
+    foo: 'bar',
+  });
+  const layers = await emsClient.getFileLayers();
+
+  const layer = layers[0];
+  expect(layer.getId()).toBe('world_countries');
+  expect(layer.hasId('world_countries')).toBe(true);
+  expect(layer.getDisplayName()).toBe('pays');
+
+  const fields = layer.getFieldsInLanguage();
+  expect(fields).toEqual([
+    { name: 'iso2', description: 'code ISO 3166-1 alpha-2 du pays', type: 'id' },
+    { name: 'iso3', description: 'code ISO 3166-1 alpha-3', type: 'id' },
+    { name: 'name', description: 'nom', type: 'property' },
+  ]);
+
+  expect(layer.getDefaultFormatType()).toBe('geojson');
+  expect(layer.getDefaultFormatUrl()).toBe(
+    'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
+  );
+  expect(layer.getDefaultFormatMeta()).toBeUndefined();
+});
+
+it('.getFileLayers[0] - localized (fallback)', async () => {
+  const { emsClient } = getEMSClient({
+    language: 'zz', //madeup
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+  const layers = await emsClient.getFileLayers();
+
+  const layer = layers[0];
+  expect(layer.getId()).toBe('world_countries');
+  expect(layer.hasId('world_countries')).toBe(true);
+  expect(layer.getDisplayName()).toBe('World Countries');
+
+  const fields = layer.getFieldsInLanguage();
+  expect(fields).toEqual([
+    { name: 'iso2', description: 'ISO 3166-1 alpha-2 code', type: 'id' },
+    { name: 'iso3', description: 'ISO 3166-1 alpha-3 code', type: 'id' },
+    { name: 'name', description: 'name', type: 'property' },
+  ]);
+
+  expect(await layer.getEMSHotLink()).toBe(
+    'https://landing.foobar/?locale=zz#file/world_countries'
+  );
+});
+
+describe('.getFileLayers[1] - getGeoJson defaults', () => {
+  const { emsClient, getManifestMock } = getEMSClient({
+    language: 'en',
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.13',
+  });
+
+  let layers: FileLayer[], topoLayer: FileLayer, fetchedJson: unknown;
+
+  beforeAll(async () => {
+    layers = await emsClient.getFileLayers();
+    topoLayer = layers[1];
+    fetchedJson = await topoLayer.getGeoJson();
+  });
+
+  it('should convert topojson to geojson', () => {
+    expect(emsClient.getCachedGeoJson(topoLayer.getId())).toMatchSnapshot();
+  });
+
+  it('should store the converted geojson in the cache', () => {
+    expect(getManifestMock).toHaveBeenNthCalledWith(1, 'https://files.foobar/v7.13/manifest');
+    expect(getManifestMock).toHaveBeenNthCalledWith(
+      2,
+      'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+    );
+  });
+
+  it('subsequent requests for the same layer should not call emsClient.getManifest', async () => {
+    const cachedJson = await topoLayer.getGeoJson();
+    expect(getManifestMock).toHaveBeenCalledTimes(2);
+    expect(fetchedJson).toStrictEqual(cachedJson);
+  });
+
+  it('should return a geojson layer and cache the result', async () => {
+    const geoLayer = layers[0];
+    await geoLayer.getGeoJson();
+    await geoLayer.getGeoJson();
+    expect(getManifestMock).toHaveBeenNthCalledWith(
+      3,
       'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
     );
-    expect(layer.getFormatOfType('geojson')).toBe('geojson');
-    expect(layer.getDefaultFormatType()).toBe('geojson');
-    expect(layer.getFormatOfTypeMeta('geojson')).toBeUndefined();
-    expect(layer.getFormatOfTypeMeta('topojson')).toBeUndefined();
+    expect(getManifestMock).toHaveBeenCalledTimes(3);
   });
 
-  it('.getFileLayers with multiple formats', async () => {
-    const emsClient = getEMSClient({
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const layers = await emsClient.getFileLayers();
+  it('should reset the cache when emsClient is changed', () => {
+    const cacheId = topoLayer.getId();
+    emsClient.addQueryParams({ foo: 'bar' }); // calls private method _invalidateSettings
+    expect(emsClient.getCachedGeoJson(cacheId)).toBeUndefined();
+  });
+});
 
-    const layer = layers[1];
-    expect(layer.getId()).toBe('administrative_regions_lvl2');
-    expect(layer.hasId('administrative_regions_lvl2')).toBe(true);
-    expect(layer.getFields()).toMatchObject([
-      {
-        type: 'id',
-        id: 'region_iso_code',
-        label: {
-          en: 'Region ISO code',
-        },
-      },
-      {
-        type: 'property',
-        id: 'region_name',
-        label: {
-          en: 'Region name',
-        },
-      },
-    ]);
-
-    expect(layer.getDisplayName()).toBe('Administrative regions');
-    expect(layer.getFormatOfTypeUrl('geojson')).toBe(
-      'https://files.foobar/files/admin_regions_lvl2_v2.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-    expect(layer.getFormatOfTypeUrl('topojson')).toBe(
-      'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-    expect(layer.getDefaultFormatUrl()).toBe(
-      'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-    expect(layer.getFormatOfType('geojson')).toBe('geojson');
-    expect(layer.getDefaultFormatType()).toBe('topojson');
-    expect(layer.getFormatOfTypeMeta('geojson')).toBeUndefined();
-    expect(layer.getFormatOfTypeMeta('topojson')).toMatchObject({
-      feature_collection_path: 'data',
-    });
+it('.getFileLayers[1] - getGeoJson limited cache', async () => {
+  const { emsClient } = getEMSClient({
+    language: 'en',
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.13',
+    cacheSize: 1,
   });
 
-  it('.getFileLayers[0] - localized (known)', async () => {
-    const emsClient = getEMSClient({
-      language: 'fr',
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    emsClient.addQueryParams({
-      foo: 'bar',
-    });
-    const layers = await emsClient.getFileLayers();
+  const layers = await emsClient.getFileLayers();
+  for await (const layer of layers.slice(0, 2)) {
+    layer.getGeoJson();
+  }
+  expect(emsClient.getCachedGeoJson(layers[0].getId())).toBeUndefined();
+  expect(emsClient.getCachedGeoJson(layers[1].getId())).toMatchSnapshot();
+});
 
-    const layer = layers[0];
-    expect(layer.getId()).toBe('world_countries');
-    expect(layer.hasId('world_countries')).toBe(true);
-    expect(layer.getDisplayName()).toBe('pays');
+it('.findFileLayerById', async () => {
+  const { emsClient } = getEMSClient({
+    language: 'zz', //madeup
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+  const layer = await emsClient.findFileLayerById('world_countries');
+  expect(layer!.getId()).toBe('world_countries');
+  expect(layer!.hasId('world_countries')).toBe(true);
+});
 
-    const fields = layer.getFieldsInLanguage();
-    expect(fields).toEqual([
-      { name: 'iso2', description: 'code ISO 3166-1 alpha-2 du pays', type: 'id' },
-      { name: 'iso3', description: 'code ISO 3166-1 alpha-3', type: 'id' },
-      { name: 'name', description: 'nom', type: 'property' },
-    ]);
+it('.findTMSServiceById', async () => {
+  const { emsClient } = getEMSClient({
+    language: 'zz', //madeup
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+  const tmsService = await emsClient.findTMSServiceById('road_map');
+  expect(tmsService!.getId()).toBe('road_map');
+});
 
-    expect(layer.getDefaultFormatType()).toBe('geojson');
-    expect(layer.getDefaultFormatUrl()).toBe(
-      'https://files.foobar/files/world_countries_v1.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x&foo=bar'
-    );
-    expect(layer.getDefaultFormatMeta()).toBeUndefined();
+it('should prepend proxypath', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'http://proxy.com/foobar/tiles',
+    fileApiUrl: 'http://proxy.com/foobar/vector',
+    emsVersion: '7.6',
   });
 
-  it('.getFileLayers[0] - localized (fallback)', async () => {
-    const emsClient = getEMSClient({
-      language: 'zz', //madeup
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const layers = await emsClient.getFileLayers();
+  //should prepend the proxypath to all urls, for tiles and files
+  const tmsServices = await emsClient.getTMSServices();
+  expect(tmsServices.length).toBe(1);
+  const urlTemplate = await tmsServices[0].getUrlTemplate();
+  expect(urlTemplate).toBe(
+    'http://proxy.com/foobar/tiles/raster/osm_bright/{x}/{y}/{z}.jpg?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
 
-    const layer = layers[0];
-    expect(layer.getId()).toBe('world_countries');
-    expect(layer.hasId('world_countries')).toBe(true);
-    expect(layer.getDisplayName()).toBe('World Countries');
+  const fileLayers = await emsClient.getFileLayers();
+  expect(fileLayers.length).toBe(2);
+  const fileLayer = fileLayers[0];
+  expect(fileLayer.getDefaultFormatUrl()).toBe(
+    'http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+  expect(fileLayer.getFormatOfTypeUrl('geojson')).toBe(
+    'http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+});
 
-    const fields = layer.getFieldsInLanguage();
-    expect(fields).toEqual([
-      { name: 'iso2', description: 'ISO 3166-1 alpha-2 code', type: 'id' },
-      { name: 'iso3', description: 'ISO 3166-1 alpha-3 code', type: 'id' },
-      { name: 'name', description: 'name', type: 'property' },
-    ]);
-
-    expect(await layer.getEMSHotLink()).toBe(
-      'https://landing.foobar/?locale=zz#file/world_countries'
-    );
+it('should retrieve vectorstylesheet with all sources inlined)', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
   });
 
-  it('.getFileLayers[1] - caches json response', async () => {
-    const emsClient = getEMSClient({
-      language: 'en',
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.13',
-    });
+  const tmsServices = await emsClient.getTMSServices();
+  expect(tmsServices.length).toBe(3);
+  const tmsService = tmsServices[0];
 
-    const spy = spyOn(emsClient, 'getJsonEndpoint');
+  const styleSheet = await tmsService.getVectorStyleSheet();
 
-    const layers = await emsClient.getFileLayers();
-    const layer = layers[1];
+  expect(styleSheet!.layers!.length).toBe(111);
+  expect(styleSheet!.sprite).toBe('https://tiles.foobar/styles/osm-bright/sprite');
+  expect(styleSheet!.sources!.openmaptiles!.tiles.length).toBe(1);
+  expect(styleSheet!.sources!.openmaptiles!.tiles[0]).toBe(
+    'https://tiles.foobar/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+  expect(styleSheet!.sources!.openmaptiles!.type).toBe('vector');
+});
 
-    await layer.getVectorDataOfType('topojson');
-    await layer.getVectorDataOfType('topojson');
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(
-      'https://files.foobar/files/admin_regions_lvl2_v2.topo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-    await layer.getVectorDataOfType('geojson');
-    expect(spy).toHaveBeenCalledTimes(2);
-    expect(spy).toHaveBeenCalledWith(
-      'https://files.foobar/files/admin_regions_lvl2_v2.geo.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
+it('should retrieve vectorstylesheet with all sources inlined) (proxy)', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'http://proxy.com/foobar/tiles',
+    fileApiUrl: 'http://proxy.com/foobar/files',
+    emsVersion: '7.6',
   });
 
-  it('.findFileLayerById', async () => {
-    const emsClient = getEMSClient({
-      language: 'zz', //madeup
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const layer = await emsClient.findFileLayerById('world_countries');
-    expect(layer!.getId()).toBe('world_countries');
-    expect(layer!.hasId('world_countries')).toBe(true);
-  });
+  const tmsServices = await emsClient.getTMSServices();
+  expect(tmsServices.length).toBe(1);
+  const tmsService = tmsServices[0];
 
-  it('.findTMSServiceById', async () => {
-    const emsClient = getEMSClient({
-      language: 'zz', //madeup
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-    const tmsService = await emsClient.findTMSServiceById('road_map');
-    expect(tmsService!.getId()).toBe('road_map');
-  });
+  const styleSheet = await tmsService.getVectorStyleSheet();
 
-  it('should prepend proxypath', async () => {
-    const emsClient = getEMSClient({
-      tileApiUrl: 'http://proxy.com/foobar/tiles',
-      fileApiUrl: 'http://proxy.com/foobar/vector',
-      emsVersion: '7.6',
-    });
-
-    //should prepend the proxypath to all urls, for tiles and files
-    const tmsServices = await emsClient.getTMSServices();
-    expect(tmsServices.length).toBe(1);
-    const urlTemplate = await tmsServices[0].getUrlTemplate();
-    expect(urlTemplate).toBe(
-      'http://proxy.com/foobar/tiles/raster/osm_bright/{x}/{y}/{z}.jpg?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-
-    const fileLayers = await emsClient.getFileLayers();
-    expect(fileLayers.length).toBe(2);
-    const fileLayer = fileLayers[0];
-    expect(fileLayer.getDefaultFormatUrl()).toBe(
-      'http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-    expect(fileLayer.getFormatOfTypeUrl('geojson')).toBe(
-      'http://proxy.com/foobar/vector/files/world_countries.json?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-  });
-
-  it('should retrieve vectorstylesheet with all sources inlined)', async () => {
-    const emsClient = getEMSClient({
-      tileApiUrl: 'https://tiles.foobar',
-      fileApiUrl: 'https://files.foobar',
-      emsVersion: '7.6',
-    });
-
-    const tmsServices = await emsClient.getTMSServices();
-    expect(tmsServices.length).toBe(3);
-    const tmsService = tmsServices[0];
-
-    const styleSheet = await tmsService.getVectorStyleSheet();
-
-    expect(styleSheet!.layers!.length).toBe(111);
-    expect(styleSheet!.sprite).toBe('https://tiles.foobar/styles/osm-bright/sprite');
-    expect(styleSheet!.sources!.openmaptiles!.tiles.length).toBe(1);
-    expect(styleSheet!.sources!.openmaptiles!.tiles[0]).toBe(
-      'https://tiles.foobar/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-    expect(styleSheet!.sources!.openmaptiles!.type).toBe('vector');
-  });
-
-  it('should retrieve vectorstylesheet with all sources inlined) (proxy)', async () => {
-    const emsClient = getEMSClient({
-      tileApiUrl: 'http://proxy.com/foobar/tiles',
-      fileApiUrl: 'http://proxy.com/foobar/files',
-      emsVersion: '7.6',
-    });
-
-    const tmsServices = await emsClient.getTMSServices();
-    expect(tmsServices.length).toBe(1);
-    const tmsService = tmsServices[0];
-
-    const styleSheet = await tmsService.getVectorStyleSheet();
-
-    expect(styleSheet!.layers!.length).toBe(111);
-    expect(styleSheet!.sprite).toBe('http://proxy.com/foobar/tiles/styles/osm-bright/sprite');
-    expect(styleSheet!.sources!.openmaptiles!.tiles!.length).toBe(1);
-    expect(styleSheet!.sources!.openmaptiles!.tiles![0]).toBe(
-      'http://proxy.com/foobar/tiles/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
-    );
-    expect(styleSheet!.sources!.openmaptiles!.type).toBe('vector');
-  });
+  expect(styleSheet!.layers!.length).toBe(111);
+  expect(styleSheet!.sprite).toBe('http://proxy.com/foobar/tiles/styles/osm-bright/sprite');
+  expect(styleSheet!.sources!.openmaptiles!.tiles!.length).toBe(1);
+  expect(styleSheet!.sources!.openmaptiles!.tiles![0]).toBe(
+    'http://proxy.com/foobar/tiles/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+  expect(styleSheet!.sources!.openmaptiles!.type).toBe('vector');
 });

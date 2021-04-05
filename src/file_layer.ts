@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import _ from 'lodash';
 import url from 'url';
 import {
   EMSClient,
@@ -27,7 +26,7 @@ import {
 } from './ems_client';
 import { AbstractEmsService } from './ems_service';
 import { FeatureCollection } from 'geojson';
-import { TopoJSON } from 'topojson-specification';
+import * as topojson from 'topojson-client';
 
 export enum EMSFormatType {
   geojson = 'geojson',
@@ -40,29 +39,37 @@ type EMSFormats = EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson;
 export class FileLayer extends AbstractEmsService {
   protected readonly _config: FileLayerConfig;
 
-  private _getVectorDataOfType = _.memoize(
-    async (format: EMSFormatTypeStrings): Promise<FeatureCollection | TopoJSON | undefined> => {
-      const fileUrl = this.getFormatOfTypeUrl(format);
-      if (fileUrl) {
-        const vectorJson = await this._emsClient.getJsonEndpoint<
-          FeatureCollection | TopoJSON | undefined
-        >(fileUrl);
-        return vectorJson;
-      } else {
-        return;
-      }
-    }
-  );
-
   constructor(config: FileLayerConfig, emsClient: EMSClient, proxyPath: string) {
     super(config, emsClient, proxyPath);
     this._config = config;
   }
 
-  async getVectorDataOfType(
-    format: EMSFormatTypeStrings
-  ): Promise<FeatureCollection | TopoJSON | undefined> {
-    return await this._getVectorDataOfType(format);
+  async getGeoJson(): Promise<FeatureCollection | undefined> {
+    const cachedGeoJson = this._emsClient.getCachedGeoJson(this.getId());
+    if (cachedGeoJson) {
+      return cachedGeoJson;
+    }
+
+    const format = this.getDefaultFormatType();
+    const fetchUrl = this.getDefaultFormatUrl();
+    // let fetchedJson;
+    let geojson;
+    const fetchedJson = await this._emsClient.getManifest(fetchUrl);
+    if (fetchedJson) {
+      if (format === 'geojson') {
+        geojson = (fetchedJson as unknown) as FeatureCollection;
+      } else if (format === 'topojson') {
+        const meta = this.getDefaultFormatMeta();
+        const featureCollectionPath = meta?.feature_collection_path ?? 'data';
+        // @ts-expect-error see https://github.com/DefinitelyTyped/DefinitelyTyped/pull/52156
+        geojson = topojson.feature(fetchedJson, featureCollectionPath) as FeatureCollection;
+      } else {
+        return;
+      }
+      this._emsClient.cacheGeoJson(this.getId(), geojson);
+      return geojson;
+    }
+    return;
   }
 
   getFields(): FileLayerConfig['fields'] {
@@ -119,7 +126,9 @@ export class FileLayer extends AbstractEmsService {
     return this._getFormatMeta(format);
   }
 
-  getFormatOfTypeMeta(type: EMSFormatTypeStrings): { [key: string]: string } | undefined {
+  getFormatOfTypeMeta(
+    type: EMSFormatTypeStrings
+  ): { [key: string]: string | undefined; feature_collection_path?: string } | undefined {
     const format = this._getFormatOfType(type);
     return this._getFormatMeta(format);
   }

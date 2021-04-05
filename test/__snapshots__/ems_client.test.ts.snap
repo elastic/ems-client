@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`.getFileLayers[1] - getGeoJson defaults should convert topojson to geojson 1`] = `
+Object {
+  "features": Array [
+    Object {
+      "geometry": Object {
+        "coordinates": Array [
+          Array [
+            Array [
+              72.77144284428442,
+              62.593,
+            ],
+            Array [
+              50.625,
+              50.06444104410441,
+            ],
+            Array [
+              91.7565793579358,
+              35.46,
+            ],
+            Array [
+              93.867,
+              58.2621401140114,
+            ],
+            Array [
+              72.77144284428442,
+              62.593,
+            ],
+          ],
+        ],
+        "type": "Polygon",
+      },
+      "properties": Object {
+        "foo": "bar",
+      },
+      "type": "Feature",
+    },
+  ],
+  "type": "FeatureCollection",
+}
+`;
+
+exports[`.getFileLayers[1] - getGeoJson limited cache 1`] = `
+Object {
+  "features": Array [
+    Object {
+      "geometry": Object {
+        "coordinates": Array [
+          Array [
+            Array [
+              72.77144284428442,
+              62.593,
+            ],
+            Array [
+              50.625,
+              50.06444104410441,
+            ],
+            Array [
+              91.7565793579358,
+              35.46,
+            ],
+            Array [
+              93.867,
+              58.2621401140114,
+            ],
+            Array [
+              72.77144284428442,
+              62.593,
+            ],
+          ],
+        ],
+        "type": "Polygon",
+      },
+      "properties": Object {
+        "foo": "bar",
+      },
+      "type": "Feature",
+    },
+  ],
+  "type": "FeatureCollection",
+}
+`;

@@ -20,10 +20,12 @@
 import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { EMSFormatType, FileLayer } from './file_layer';
+import { FeatureCollection } from 'geojson';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
+import LRUCache from 'lru-cache';
 
 const DEFAULT_EMS_VERSION = '7.12';
 
@@ -110,6 +112,7 @@ type BaseClientConfig = {
   landingPageUrl?: string;
   fetchFunction: Function;
   proxyPath?: string;
+  cacheSize?: number;
 };
 
 type DeprecatedClientConfig = BaseClientConfig & {
@@ -216,6 +219,7 @@ export class EMSClient {
   private readonly _emsLandingPageUrl: string;
   private readonly _language: string;
   private readonly _proxyPath: string;
+  private readonly _cache: LRUCache<string, FeatureCollection>;
 
   /**
    * these methods are assigned outside the constructor
@@ -253,6 +257,9 @@ export class EMSClient {
 
     this._fetchFunction = config.fetchFunction;
     this._proxyPath = config.proxyPath || '';
+    this._cache = new LRUCache<string, FeatureCollection>({
+      max: config.cacheSize || 10,
+    });
 
     this._invalidateSettings();
   }
@@ -275,15 +282,7 @@ export class EMSClient {
   /**
    * this internal method is overridden by the tests to simulate custom manifest.
    */
-  async getManifest<T>(manifestUrl: string): Promise<T> {
-    try {
-      return await this.getJsonEndpoint(manifestUrl);
-    } catch (e) {
-      throw new Error(`Unable to retrieve manifest from ${manifestUrl}: ${e.message}`);
-    }
-  }
-
-  async getJsonEndpoint<T>(endpointUrl: string): Promise<T> {
+  async getManifest<T>(endpointUrl: string): Promise<T> {
     try {
       const url = extendUrl(endpointUrl, { query: this._queryParams });
       const result = await this._fetchWithTimeout(url);
@@ -335,6 +334,15 @@ export class EMSClient {
 
   async getTMSServices(): Promise<TMSService[]> {
     return await this._loadTMSServices();
+  }
+
+  cacheGeoJson(layerId: string, geoJson: FeatureCollection): void {
+    this._cache.set(layerId, geoJson);
+    return;
+  }
+
+  getCachedGeoJson(layerId: string) {
+    return this._cache.get(layerId);
   }
 
   getTileApiUrl(): string {
@@ -414,6 +422,7 @@ export class EMSClient {
   }
 
   private _invalidateSettings(): void {
+    this._cache.reset();
     this._getMainCatalog = _.once(
       async (): Promise<EmsCatalogManifest> => {
         // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
