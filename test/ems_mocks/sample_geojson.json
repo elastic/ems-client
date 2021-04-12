@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "foo": "bar"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [72.773, 62.593],
+            [50.625, 50.064],
+            [91.757, 35.46],
+            [93.867, 58.263],
+            [72.773, 62.593]
+          ]
+        ]
+      }
+    }
+  ]
+}

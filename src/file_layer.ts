@@ -25,6 +25,8 @@ import {
   FileLayerConfig,
 } from './ems_client';
 import { AbstractEmsService } from './ems_service';
+import { FeatureCollection } from 'geojson';
+import * as topojson from 'topojson-client';
 
 export enum EMSFormatType {
   geojson = 'geojson',
@@ -40,6 +42,34 @@ export class FileLayer extends AbstractEmsService {
   constructor(config: FileLayerConfig, emsClient: EMSClient, proxyPath: string) {
     super(config, emsClient, proxyPath);
     this._config = config;
+  }
+
+  async getGeoJson(): Promise<FeatureCollection | undefined> {
+    const cachedGeoJson = this._emsClient.getCachedGeoJson(this.getId());
+    if (cachedGeoJson) {
+      return cachedGeoJson;
+    }
+
+    const format = this.getDefaultFormatType();
+    const fetchUrl = this.getDefaultFormatUrl();
+    // let fetchedJson;
+    let geojson;
+    const fetchedJson = await this._emsClient.getManifest(fetchUrl);
+    if (fetchedJson) {
+      if (format === 'geojson') {
+        geojson = (fetchedJson as unknown) as FeatureCollection;
+      } else if (format === 'topojson') {
+        const meta = this.getDefaultFormatMeta();
+        const featureCollectionPath = meta?.feature_collection_path ?? 'data';
+        // @ts-expect-error see https://github.com/DefinitelyTyped/DefinitelyTyped/pull/52156
+        geojson = topojson.feature(fetchedJson, featureCollectionPath) as FeatureCollection;
+      } else {
+        return;
+      }
+      this._emsClient.cacheGeoJson(this.getId(), geojson);
+      return geojson;
+    }
+    return;
   }
 
   getFields(): FileLayerConfig['fields'] {
@@ -96,7 +126,9 @@ export class FileLayer extends AbstractEmsService {
     return this._getFormatMeta(format);
   }
 
-  getFormatOfTypeMeta(type: EMSFormatTypeStrings): { [key: string]: string } | undefined {
+  getFormatOfTypeMeta(
+    type: EMSFormatTypeStrings
+  ): { [key: string]: string | undefined; feature_collection_path?: string } | undefined {
     const format = this._getFormatOfType(type);
     return this._getFormatMeta(format);
   }

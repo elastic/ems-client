@@ -1,0 +1,23 @@
+{
+  "type": "Topology",
+  "objects": {
+    "data": {
+      "type": "GeometryCollection",
+      "geometries": [{ "type": "Polygon", "properties": { "foo": "bar" }, "arcs": [[0]] }]
+    }
+  },
+  "arcs": [
+    [
+      [5121, 9999],
+      [-5121, -4617],
+      [9511, -5382],
+      [488, 8403],
+      [-4878, 1596]
+    ]
+  ],
+  "transform": {
+    "scale": [0.004324632463246325, 0.002713571357135714],
+    "translate": [50.625, 35.46]
+  },
+  "bbox": [50.625, 35.46, 93.867, 62.593]
+}
