@@ -1,2 +1,0 @@
-@elastic/ems-client
-Copyright 2012-2020 Elasticsearch B.V.
