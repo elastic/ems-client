@@ -181,13 +181,13 @@ it('Test field metadata', async () => {
     expect(insee).toBeDefined();
     if (insee) {
       expect(insee.alias).toBeDefined();
-      if (insee.alias && insee.alias.length >= 0) {
+      if (insee.alias && insee.alias.length > 0) {
         expect(insee.alias[0]).toBe('insee');
       }
       expect(insee.regex).toBeDefined();
       expect(insee.regex).toBe('^(\\d{2}|2[AB]|9[78]\\d)D?$');
       expect(insee.values).toBeDefined();
-      if (insee.values && insee.values.length >= 0) {
+      if (insee.values && insee.values.length > 0) {
         expect(insee.values.length).toBe(96);
         expect(insee.values[0]).toBe('30');
       }
