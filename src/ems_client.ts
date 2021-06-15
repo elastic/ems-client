@@ -142,13 +142,18 @@ export type FileLayerConfig = BaseEmsServiceConfig & {
   layer_id: string;
   created_at: string;
   formats: (EmsFileLayerFormatGeoJson | EmsFileLayerFormatTopoJson)[];
-  fields: {
-    type: string;
-    id: string;
-    label: LocalizedStrings;
-  }[];
+  fields: FileLayerField[];
   legacy_ids: string[];
   layer_name: LocalizedStrings;
+};
+
+export type FileLayerField = {
+  type: string;
+  id: string;
+  label: LocalizedStrings;
+  values?: string[];
+  regex?: string;
+  alias?: string[];
 };
 
 export type TMSServiceConfig = BaseEmsServiceConfig & {

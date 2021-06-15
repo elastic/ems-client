@@ -11,6 +11,7 @@ import {
   EmsFileLayerFormatGeoJson,
   EmsFileLayerFormatTopoJson,
   FileLayerConfig,
+  FileLayerField,
 } from './ems_client';
 import { AbstractEmsService } from './ems_service';
 import { FeatureCollection } from 'geojson';
@@ -60,7 +61,7 @@ export class FileLayer extends AbstractEmsService {
     return;
   }
 
-  getFields(): FileLayerConfig['fields'] {
+  getFields(): FileLayerField[] {
     return this._config.fields;
   }
 

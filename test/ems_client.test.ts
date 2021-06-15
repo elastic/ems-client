@@ -166,6 +166,35 @@ it('.getFileLayers with a single format', async () => {
   expect(layer.getFormatOfTypeMeta('topojson')).toBeUndefined();
 });
 
+it('Test field metadata', async () => {
+  const { emsClient } = getEMSClient({
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+  const layers = await emsClient.getFileLayers();
+
+  const france = layers.find((l) => l.getId() === 'france_departments');
+  expect(france).toBeDefined();
+  if (france) {
+    const insee = france.getFields().find((f) => f.id === 'insee');
+    expect(insee).toBeDefined();
+    if (insee) {
+      expect(insee.alias).toBeDefined();
+      if (insee.alias && insee.alias.length > 0) {
+        expect(insee.alias[0]).toBe('insee');
+      }
+      expect(insee.regex).toBeDefined();
+      expect(insee.regex).toBe('^(\\d{2}|2[AB]|9[78]\\d)D?$');
+      expect(insee.values).toBeDefined();
+      if (insee.values && insee.values.length > 0) {
+        expect(insee.values.length).toBe(96);
+        expect(insee.values[0]).toBe('30');
+      }
+    }
+  }
+});
+
 it('.getFileLayers with multiple formats', async () => {
   const { emsClient } = getEMSClient({
     tileApiUrl: 'https://tiles.foobar',
