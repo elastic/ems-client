@@ -3,11 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
-### Changed
- - **Breaking** @elastic/ems-client is now licensed under the Elastic License v2. See the LICENSE.txt file in this repository.
+## [7.14.0] - 2021-06-15
+### Added
 
-## [7.12.0]
+- New getters for optional field metadata `alias`, `regex`, and `values` #69
+
+### Changed
+
+- Default EMS version is 7.14
+- **Breaking change** @elastic/ems-client is now licensed under the Elastic License v2. See the LICENSE.txt file in this repository #64
+
+## [7.12.0] - 2020-02-08
 ### Changed
 - Default EMS version is 7.12
 
