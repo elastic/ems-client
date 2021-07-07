@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-export { EMSClient } from './ems_client';
+export { EMSClient, FileLayerField } from './ems_client';
 export { ORIGIN } from './origin';
 export { FileLayer } from './file_layer';
 export { TMSService } from './tms_service';
