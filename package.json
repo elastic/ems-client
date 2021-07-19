@@ -24,7 +24,7 @@
     "elastic maps service"
   ],
   "author": "Nick Peihl <nick.peihl@elastic.co>",
-  "license": "SEE LICENSE IN LICENSE.txt",
+  "license": "Elastic License 2.0",
   "bugs": {
     "url": "https://github.com/elastic/ems-client/issues"
   },
