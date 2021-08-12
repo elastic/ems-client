@@ -68,68 +68,60 @@ type EmsRasterStyle = {
 export class TMSService extends AbstractEmsService {
   protected readonly _config: TMSServiceConfig;
 
-  private _getRasterStyleJson = _.once(
-    async (): Promise<EmsRasterStyle | undefined> => {
-      const rasterUrl = this._getStyleUrlForLocale('raster');
-      if (rasterUrl) {
-        const url = this._proxyPath + this._getAbsoluteUrl(rasterUrl);
-        return this._emsClient.getManifest<EmsRasterStyle>(
-          this._emsClient.extendUrlWithParams(url)
-        );
-      } else {
-        return;
-      }
+  private _getRasterStyleJson = _.once(async (): Promise<EmsRasterStyle | undefined> => {
+    const rasterUrl = this._getStyleUrlForLocale('raster');
+    if (rasterUrl) {
+      const url = this._proxyPath + this._getAbsoluteUrl(rasterUrl);
+      return this._emsClient.getManifest<EmsRasterStyle>(this._emsClient.extendUrlWithParams(url));
+    } else {
+      return;
     }
-  );
+  });
 
-  private _getVectorStyleJsonRaw = _.once(
-    async (): Promise<EmsVectorStyle | undefined> => {
-      const vectorUrl = this._getStyleUrlForLocale('vector');
-      if (vectorUrl) {
-        const url = this._proxyPath + this._getAbsoluteUrl(vectorUrl);
-        const vectorJson = await this._emsClient.getManifest<EmsVectorStyle>(
-          this._emsClient.extendUrlWithParams(url)
-        );
-        return { ...vectorJson };
-      } else {
-        return;
-      }
+  private _getVectorStyleJsonRaw = _.once(async (): Promise<EmsVectorStyle | undefined> => {
+    const vectorUrl = this._getStyleUrlForLocale('vector');
+    if (vectorUrl) {
+      const url = this._proxyPath + this._getAbsoluteUrl(vectorUrl);
+      const vectorJson = await this._emsClient.getManifest<EmsVectorStyle>(
+        this._emsClient.extendUrlWithParams(url)
+      );
+      return { ...vectorJson };
+    } else {
+      return;
     }
-  );
+  });
 
-  private _getVectorStyleJsonInlined = _.once(
-    async (): Promise<EmsVectorStyle | undefined> => {
-      const vectorJson = await this._getVectorStyleJsonRaw();
-      if (vectorJson) {
-        const inlinedSources: EmsVectorSources = {};
-        const { sources } = vectorJson;
-        for (const sourceName of Object.getOwnPropertyNames(sources)) {
-          const { url } = sources[sourceName];
-          const sourceUrl = this._proxyPath + this._getAbsoluteUrl(url);
-          const extendedUrl = this._emsClient.extendUrlWithParams(sourceUrl);
-          const sourceJson = await this._emsClient.getManifest<EmsVectorSource>(extendedUrl);
+  private _getVectorStyleJsonInlined = _.once(async (): Promise<EmsVectorStyle | undefined> => {
+    const vectorJson = await this._getVectorStyleJsonRaw();
+    if (vectorJson) {
+      const inlinedSources: EmsVectorSources = {};
+      const { sources } = vectorJson;
+      for (const sourceName of Object.getOwnPropertyNames(sources)) {
+        const { url } = sources[sourceName];
+        const sourceUrl = this._proxyPath + this._getAbsoluteUrl(url);
+        const extendedUrl = this._emsClient.extendUrlWithParams(sourceUrl);
+        const sourceJson = await this._emsClient.getManifest<EmsVectorSource>(extendedUrl);
 
-          const extendedTileUrls = sourceJson.tiles.map((tileUrl: string) => {
-            const url = this._proxyPath + this._getAbsoluteUrl(tileUrl);
-            return this._emsClient.extendUrlWithParams(url);
-          });
-          inlinedSources[sourceName] = {
-            ...sourceJson,
-            type: 'vector',
-            tiles: extendedTileUrls,
-          };
-        }
-        return {
-          ...vectorJson,
-          sources: inlinedSources,
-          sprite: await this._getSpriteSheetRootPath(),
-          glyphs: await this._getUrlTemplateForGlyphs(),
+        const extendedTileUrls = sourceJson.tiles.map((tileUrl: string) => {
+          const url = this._proxyPath + this._getAbsoluteUrl(tileUrl);
+          return this._emsClient.extendUrlWithParams(url);
+        });
+        inlinedSources[sourceName] = {
+          ...sourceJson,
+          type: 'vector',
+          tiles: extendedTileUrls,
         };
-      } else {
-        return;
       }
+      return {
+        ...vectorJson,
+        sources: inlinedSources,
+        sprite: await this._getSpriteSheetRootPath(),
+        glyphs: await this._getUrlTemplateForGlyphs(),
+      };
+    } else {
+      return;
     }
-  );
+  });
 
   constructor(config: TMSServiceConfig, emsClient: EMSClient, proxyPath: string) {
     super(config, emsClient, proxyPath);

@@ -40,8 +40,9 @@ export function getEMSClient(options = {}) {
     ...options,
   });
 
-  const getManifestMock = jest.spyOn(emsClient, 'getManifest').mockImplementation(
-    async (url: string): Promise<any> => {
+  const getManifestMock = jest
+    .spyOn(emsClient, 'getManifest')
+    .mockImplementation(async (url: string): Promise<any> => {
       //simulate network calls
       if (url.startsWith('https://foobar')) {
         return EMS_CATALOGUE;
@@ -90,7 +91,6 @@ export function getEMSClient(options = {}) {
       } else {
         throw new Error(`url unexpected: ${url}`);
       }
-    }
-  );
+    });
   return { emsClient, getManifestMock };
 }
