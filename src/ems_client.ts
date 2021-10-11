@@ -9,6 +9,7 @@ import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { EMSFormatType, FileLayer } from './file_layer';
 import { FeatureCollection } from 'geojson';
+import { Response } from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
@@ -278,16 +279,17 @@ export class EMSClient {
   async getManifest<T>(endpointUrl: string): Promise<T> {
     try {
       const url = extendUrl(endpointUrl, { query: this._queryParams });
-      const result = await this._fetchWithTimeout(url);
-      return result ? await result.json() : null;
+      const response = await this._fetchWithTimeout(url);
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response ? await response.json() : null;
     } catch (e) {
-      if (!e) {
-        e = new Error('Unknown error');
+      if (e instanceof Error) {
+        throw e;
+      } else {
+        throw new Error('Unknown error');
       }
-      if (!(e instanceof Error)) {
-        e = new Error(e.data || `status ${e.statusText || e.status}`);
-      }
-      throw new Error(`Unable to retrieve data from ${endpointUrl}: ${e.message}`);
     }
   }
 
@@ -390,14 +392,14 @@ export class EMSClient {
     }
   }
 
-  private _fetchWithTimeout(url: string): Promise<Body> {
-    return new Promise<Body>((resolve, reject) => {
+  private _fetchWithTimeout(url: string): Promise<Response> {
+    return new Promise<Response>((resolve, reject) => {
       const timer = setTimeout(
         () => reject(new Error(`Request to ${url} timed out`)),
         this.EMS_LOAD_TIMEOUT
       );
       this._fetchFunction(url).then(
-        (response: Body) => {
+        (response: Response) => {
           clearTimeout(timer);
           resolve(response);
         },
