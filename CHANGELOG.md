@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.16.0] - 2021-10-13
+
+### Changed
+ - Default EMS version is 7.16
+ - Update dependencies using `yarn upgrade`
+ - Better error handling for HTTP responses
+
 ## [7.15.1] - 2021-09-01
 
 ### Changed
