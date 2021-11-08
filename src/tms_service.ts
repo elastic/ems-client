@@ -40,7 +40,7 @@ type EmsVectorStyle = {
   zoom?: number;
 };
 
-type EmsSprite = {
+export type EmsSprite = {
   height: number;
   pixelRatio: number;
   width: number;
@@ -48,7 +48,7 @@ type EmsSprite = {
   y: number;
 };
 
-type EmsSpriteSheet = {
+export type EmsSpriteSheet = {
   [spriteName: string]: EmsSprite;
 };
 

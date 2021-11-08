@@ -8,4 +8,4 @@
 export { EMSClient, FileLayerField } from './ems_client';
 export { ORIGIN } from './origin';
 export { FileLayer } from './file_layer';
-export { TMSService } from './tms_service';
+export { TMSService, EmsSprite, EmsSpriteSheet } from './tms_service';
