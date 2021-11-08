@@ -10,12 +10,16 @@ import { Style as MBStyle, VectorSource as MBVectorSource } from 'maplibre-gl';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
 import { AbstractEmsService } from './ems_service';
 
-type EmsSprite = {
+export type EmsSprite = {
   height: number;
   pixelRatio: number;
   width: number;
   x: number;
   y: number;
+};
+
+export type EmsSpriteSheet = {
+  [spriteName: string]: EmsSprite;
 };
 
 type EmsVectorSources = {
@@ -24,10 +28,6 @@ type EmsVectorSources = {
 
 type EmsVectorStyle = MBStyle & {
   sources: EmsVectorSources;
-};
-
-type EmsSpriteSheet = {
-  [spriteName: string]: EmsSprite;
 };
 
 type EmsRasterStyle = {
