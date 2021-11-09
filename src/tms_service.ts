@@ -6,7 +6,7 @@
  */
 
 import _ from 'lodash';
-import { Style as MBStyle, VectorSource as MBVectorSource } from 'maplibre-gl';
+import { Style as MapLibreStyle, VectorSource as MapLibreVectorSource } from 'maplibre-gl';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
 import { AbstractEmsService } from './ems_service';
 
@@ -23,10 +23,10 @@ export type EmsSpriteSheet = {
 };
 
 type EmsVectorSources = {
-  [sourceName: string]: MBVectorSource;
+  [sourceName: string]: MapLibreVectorSource;
 };
 
-type EmsVectorStyle = MBStyle & {
+type EmsVectorStyle = MapLibreStyle & {
   sources: EmsVectorSources;
 };
 
@@ -79,7 +79,7 @@ export class TMSService extends AbstractEmsService {
         if (url) {
           const sourceUrl = this._proxyPath + this._getAbsoluteUrl(url);
           const extendedUrl = this._emsClient.extendUrlWithParams(sourceUrl);
-          const sourceJson = await this._emsClient.getManifest<MBVectorSource>(extendedUrl);
+          const sourceJson = await this._emsClient.getManifest<MapLibreVectorSource>(extendedUrl);
           const tiles = sourceJson?.tiles?.map((tileUrl) => {
             const directUrl = this._proxyPath + this._getAbsoluteUrl(tileUrl);
             return this._emsClient.extendUrlWithParams(directUrl);
