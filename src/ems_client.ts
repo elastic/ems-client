@@ -16,7 +16,7 @@ import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
 import LRUCache from 'lru-cache';
 
-const DEFAULT_EMS_VERSION = '8.0';
+const DEFAULT_EMS_VERSION = '8.1';
 
 type URLMeaningfulParts = {
   auth?: string | null;

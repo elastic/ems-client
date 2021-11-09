@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [8.1.0] - 2021-11-09
+
+### Changed
+ - Default EMS version is 8.1
+ - Export EmsSprite and EmsSpritesheet types
+ - Inherit types from maplibre-gl
+
 ## [8.0.0] - 2021-10-20
 
 ### Changed
