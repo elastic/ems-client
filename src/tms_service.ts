@@ -46,6 +46,7 @@ type EmsSprite = {
   width: number;
   x: number;
   y: number;
+  sdf?: boolean;
 };
 
 type EmsSpriteSheet = {
