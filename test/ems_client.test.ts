@@ -431,8 +431,8 @@ it('should retrieve vectorstylesheet with all sources inlined)', async () => {
 
   expect(styleSheet!.layers!.length).toBe(111);
   expect(styleSheet!.sprite).toBe('https://tiles.foobar/styles/osm-bright/sprite');
-  expect(styleSheet!.sources!.openmaptiles!.tiles.length).toBe(1);
-  expect(styleSheet!.sources!.openmaptiles!.tiles[0]).toBe(
+  expect(styleSheet!.sources!.openmaptiles!.tiles!.length).toBe(1);
+  expect(styleSheet!.sources!.openmaptiles!.tiles![0]).toBe(
     'https://tiles.foobar/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
   );
   expect(styleSheet!.sources!.openmaptiles!.type).toBe('vector');
