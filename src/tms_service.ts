@@ -16,6 +16,7 @@ export type EmsSprite = {
   width: number;
   x: number;
   y: number;
+  sdf?: boolean;
 };
 
 export type EmsSpriteSheet = {
