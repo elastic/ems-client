@@ -52,8 +52,15 @@ it('should get the tile service', async () => {
     'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
   );
 
-  expect(await tileService.getMinZoom()).toBe(0);
-  expect(await tileService.getMaxZoom()).toBe(10);
+  expect(await tileService.getUrlTemplateForVector('openmaptiles')).toBe(
+    'https://tiles.foobar/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
+  );
+
+  expect(await tileService.getMinZoom('raster')).toBe(0);
+  expect(await tileService.getMaxZoom('raster')).toBe(10);
+
+  expect(await tileService.getMinZoom('vector')).toBe(3);
+  expect(await tileService.getMaxZoom('vector')).toBe(15);
   expect(tileService.hasId('road_map')).toBe(true);
 });
 
@@ -73,8 +80,8 @@ it('tile service- localized (fallback)', async () => {
     'https://tiles.foobar/raster/styles/osm-bright/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
   );
 
-  expect(await tileService.getMinZoom()).toBe(0);
-  expect(await tileService.getMaxZoom()).toBe(10);
+  expect(await tileService.getMinZoom('raster')).toBe(0);
+  expect(await tileService.getMaxZoom('raster')).toBe(10);
   expect(tileService.hasId('road_map')).toBe(true);
 });
 
