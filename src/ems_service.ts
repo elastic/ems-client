@@ -6,7 +6,6 @@
  */
 
 import { EMSClient, BaseEmsServiceConfig } from './ems_client';
-import { ORIGIN } from './origin';
 import { toAbsoluteUrl } from './utils';
 
 export interface IEmsService {
@@ -15,7 +14,6 @@ export interface IEmsService {
   getDisplayName(): string;
   getId(): string;
   hasId(id: string): boolean;
-  getOrigin(): string;
   getApiUrl(): string;
 }
 
@@ -48,10 +46,6 @@ export abstract class AbstractEmsService implements IEmsService {
       return `[${label}](${url})`;
     });
     return attributions.join('|');
-  }
-
-  getOrigin(): string {
-    return ORIGIN.EMS;
   }
 
   /**
