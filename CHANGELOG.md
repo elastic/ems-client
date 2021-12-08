@@ -3,6 +3,37 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [8.1.0] - 2021-11-09
+
+### Changed
+ - Default EMS version is 8.1
+ - Export EmsSprite and EmsSpritesheet types
+ - Inherit types from maplibre-gl
+
+## [8.0.0] - 2021-10-20
+
+### Changed
+ - Default EMS version is 8.0
+ - Remove unused API descriptors
+
+## [7.16.0] - 2021-10-13
+
+### Changed
+ - Default EMS version is 7.16
+ - Update dependencies using `yarn upgrade`
+ - Better error handling for HTTP responses
+
+## [7.15.1] - 2021-09-01
+
+### Changed
+- Unpinned `semver` dependency [#77](https://github.com/elastic/ems-client/pull/77)
+
+## [7.15.0] - 2021-08-12
+
+### Changed
+- Default EMS version is 7.15
+- Updated dependencies via `yarn upgrade`
+- Fix linting issues
 ## [7.14.0] - 2021-06-15
 ### Added
 

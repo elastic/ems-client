@@ -41,12 +41,11 @@ export class FileLayer extends AbstractEmsService {
 
     const format = this.getDefaultFormatType();
     const fetchUrl = this.getDefaultFormatUrl();
-    // let fetchedJson;
     let geojson;
     const fetchedJson = await this._emsClient.getManifest(fetchUrl);
     if (fetchedJson) {
       if (format === 'geojson') {
-        geojson = (fetchedJson as unknown) as FeatureCollection;
+        geojson = fetchedJson as unknown as FeatureCollection;
       } else if (format === 'topojson') {
         const meta = this.getDefaultFormatMeta();
         const featureCollectionPath = meta?.feature_collection_path ?? 'data';

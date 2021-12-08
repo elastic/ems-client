@@ -9,13 +9,14 @@ import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { EMSFormatType, FileLayer } from './file_layer';
 import { FeatureCollection } from 'geojson';
+import { Response } from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
 import LRUCache from 'lru-cache';
 
-const DEFAULT_EMS_VERSION = '7.14';
+const DEFAULT_EMS_VERSION = '8.1';
 
 type URLMeaningfulParts = {
   auth?: string | null;
@@ -278,16 +279,17 @@ export class EMSClient {
   async getManifest<T>(endpointUrl: string): Promise<T> {
     try {
       const url = extendUrl(endpointUrl, { query: this._queryParams });
-      const result = await this._fetchWithTimeout(url);
-      return result ? await result.json() : null;
+      const response = await this._fetchWithTimeout(url);
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response ? await response.json() : null;
     } catch (e) {
-      if (!e) {
-        e = new Error('Unknown error');
+      if (e instanceof Error) {
+        throw e;
+      } else {
+        throw new Error('Unknown error');
       }
-      if (!(e instanceof Error)) {
-        e = new Error(e.data || `status ${e.statusText || e.status}`);
-      }
-      throw new Error(`Unable to retrieve data from ${endpointUrl}: ${e.message}`);
     }
   }
 
@@ -390,14 +392,14 @@ export class EMSClient {
     }
   }
 
-  private _fetchWithTimeout(url: string): Promise<Body> {
-    return new Promise<Body>((resolve, reject) => {
+  private _fetchWithTimeout(url: string): Promise<Response> {
+    return new Promise<Response>((resolve, reject) => {
       const timer = setTimeout(
         () => reject(new Error(`Request to ${url} timed out`)),
         this.EMS_LOAD_TIMEOUT
       );
       this._fetchFunction(url).then(
-        (response: Body) => {
+        (response: Response) => {
           clearTimeout(timer);
           resolve(response);
         },
@@ -416,77 +418,67 @@ export class EMSClient {
 
   private _invalidateSettings(): void {
     this._cache.reset();
-    this._getMainCatalog = _.once(
-      async (): Promise<EmsCatalogManifest> => {
-        // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
-        if (this._manifestServiceUrl) {
-          console.warn(`The "manifestServiceUrl" parameter is deprecated in v7.6.0.
+    this._getMainCatalog = _.once(async (): Promise<EmsCatalogManifest> => {
+      // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
+      if (this._manifestServiceUrl) {
+        console.warn(`The "manifestServiceUrl" parameter is deprecated in v7.6.0.
         Consider using "tileApiUrl" and "fileApiUrl" instead.`);
-          return await this._getManifestWithParams(this._manifestServiceUrl);
-        } else {
-          const services = [];
-          if (this._tileApiUrl) {
-            services.push({
-              type: 'tms',
-              manifest: toAbsoluteUrl(this._tileApiUrl, `${this._emsVersion}/manifest`),
-            });
-          }
-          if (this._fileApiUrl) {
-            services.push({
-              type: 'file',
-              manifest: toAbsoluteUrl(this._fileApiUrl, `${this._emsVersion}/manifest`),
-            });
-          }
-          return { services: services };
+        return await this._getManifestWithParams(this._manifestServiceUrl);
+      } else {
+        const services = [];
+        if (this._tileApiUrl) {
+          services.push({
+            type: 'tms',
+            manifest: toAbsoluteUrl(this._tileApiUrl, `${this._emsVersion}/manifest`),
+          });
         }
+        if (this._fileApiUrl) {
+          services.push({
+            type: 'file',
+            manifest: toAbsoluteUrl(this._fileApiUrl, `${this._emsVersion}/manifest`),
+          });
+        }
+        return { services: services };
       }
-    );
+    });
 
-    this._getDefaultTMSCatalog = _.once(
-      async (): Promise<EmsTmsCatalog> => {
-        const catalogue = await this._getMainCatalog();
-        const firstService = catalogue.services.find(
-          (service: EmsCatalogService) => service.type === 'tms'
-        );
-        if (!firstService) {
-          return { services: [] };
-        }
-        const url = this._proxyPath + firstService.manifest;
-        return await this.getManifest(url);
+    this._getDefaultTMSCatalog = _.once(async (): Promise<EmsTmsCatalog> => {
+      const catalogue = await this._getMainCatalog();
+      const firstService = catalogue.services.find(
+        (service: EmsCatalogService) => service.type === 'tms'
+      );
+      if (!firstService) {
+        return { services: [] };
       }
-    );
+      const url = this._proxyPath + firstService.manifest;
+      return await this.getManifest(url);
+    });
 
-    this._getDefaultFileCatalog = _.once(
-      async (): Promise<EmsFileCatalog> => {
-        const catalogue = await this._getMainCatalog();
-        const firstService = catalogue.services.find(
-          (service: EmsCatalogService) => service.type === 'file'
-        );
-        if (!firstService) {
-          return { layers: [] };
-        }
-        const url = this._proxyPath + firstService.manifest;
-        return await this.getManifest(url);
+    this._getDefaultFileCatalog = _.once(async (): Promise<EmsFileCatalog> => {
+      const catalogue = await this._getMainCatalog();
+      const firstService = catalogue.services.find(
+        (service: EmsCatalogService) => service.type === 'file'
+      );
+      if (!firstService) {
+        return { layers: [] };
       }
-    );
+      const url = this._proxyPath + firstService.manifest;
+      return await this.getManifest(url);
+    });
 
     //Cache the actual instances of TMSService as these in turn cache sub-manifests for the style-files
-    this._loadTMSServices = _.once(
-      async (): Promise<TMSService[]> => {
-        const tmsManifest = await this._getDefaultTMSCatalog();
-        return tmsManifest.services.map(
-          (serviceConfig: TMSServiceConfig) => new TMSService(serviceConfig, this, this._proxyPath)
-        );
-      }
-    );
+    this._loadTMSServices = _.once(async (): Promise<TMSService[]> => {
+      const tmsManifest = await this._getDefaultTMSCatalog();
+      return tmsManifest.services.map(
+        (serviceConfig: TMSServiceConfig) => new TMSService(serviceConfig, this, this._proxyPath)
+      );
+    });
 
-    this._loadFileLayers = _.once(
-      async (): Promise<FileLayer[]> => {
-        const fileManifest = await this._getDefaultFileCatalog();
-        return fileManifest.layers.map(
-          (layerConfig: FileLayerConfig) => new FileLayer(layerConfig, this, this._proxyPath)
-        );
-      }
-    );
+    this._loadFileLayers = _.once(async (): Promise<FileLayer[]> => {
+      const fileManifest = await this._getDefaultFileCatalog();
+      return fileManifest.layers.map(
+        (layerConfig: FileLayerConfig) => new FileLayer(layerConfig, this, this._proxyPath)
+      );
+    });
   }
 }
