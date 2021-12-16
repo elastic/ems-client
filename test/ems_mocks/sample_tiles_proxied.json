@@ -5,7 +5,7 @@
       "name": { "en": "Road Map - Bright" },
       "attribution": [
         {
-          "label": { "en": "OpenStreetMap contributors" },
+          "label": { "en": "© OpenStreetMap contributors" },
           "url": { "en": "https://www.openstreetmap.org/copyright" }
         },
         { "label": { "en": "OpenMapTiles" }, "url": { "en": "https://openmaptiles.org" } },

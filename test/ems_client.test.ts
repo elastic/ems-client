@@ -459,3 +459,17 @@ it('should retrieve vectorstylesheet with all sources inlined) (proxy)', async (
   );
   expect(styleSheet!.sources!.openmaptiles!.type).toBe('vector');
 });
+
+it('Attributions should not have any copyright character', async () => {
+  const { emsClient } = getEMSClient({
+    language: 'zz', //madeup
+    tileApiUrl: 'https://tiles.foobar',
+    fileApiUrl: 'https://files.foobar',
+    emsVersion: '7.6',
+  });
+
+  const tmsServices = await emsClient.getTMSServices();
+  const tmsWithAtts = tmsServices.filter((tms) => tms.getMarkdownAttribution().indexOf('©') > -1);
+
+  expect(tmsWithAtts.length).toBe(0);
+});

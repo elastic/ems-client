@@ -33,7 +33,9 @@ export abstract class AbstractEmsService implements IEmsService {
   getAttributions(): { url: string; label: string }[] {
     return this._config.attribution.map((attribution) => {
       const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
+      const attLabel = this._emsClient.getValueInLanguage(attribution.label);
+      const label = attLabel.replace('©', '').trim();
+
       return {
         url: url,
         label: label,
@@ -42,9 +44,7 @@ export abstract class AbstractEmsService implements IEmsService {
   }
 
   getMarkdownAttribution(): string {
-    const attributions = this._config.attribution.map((attribution) => {
-      const url = this._emsClient.getValueInLanguage(attribution.url);
-      const label = this._emsClient.getValueInLanguage(attribution.label);
+    const attributions = this.getAttributions().map(({ url, label }) => {
       return `[${label}](${url})`;
     });
     return attributions.join('|');
