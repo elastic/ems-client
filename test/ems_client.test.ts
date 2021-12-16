@@ -469,7 +469,14 @@ it('Attributions should not have any copyright character', async () => {
   });
 
   const tmsServices = await emsClient.getTMSServices();
-  const tmsWithAtts = tmsServices.filter((tms) => tms.getMarkdownAttribution().indexOf('©') > -1);
+  const tmsWithAtts = tmsServices.filter(
+    (tms) =>
+      tms
+        .getAttributions()
+        .map(({ label }) => label)
+        .join('|')
+        .indexOf('©') > -1
+  );
 
   expect(tmsWithAtts.length).toBe(0);
 });
