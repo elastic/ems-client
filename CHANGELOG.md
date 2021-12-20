@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.17.0] - TBD
+
+### Changed
+
+- Default EMS version is 7.17
+
 ## [7.16.0] - 2021-10-13
 
 ### Changed
