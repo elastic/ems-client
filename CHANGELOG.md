@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+
+## [8.2.0] - 2022-03-24
+
+### Changed
+ - Default EMS version is 8.2
+ - Removed getOrigin method #91
+
 ## [8.1.0] - 2021-11-09
 
 ### Changed

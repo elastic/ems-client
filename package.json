@@ -1,6 +1,6 @@
 {
   "name": "@elastic/ems-client",
-  "version": "8.1.0",
+  "version": "8.2.0",
   "description": "JavaScript client library for the Elastic Maps Service",
   "main": "target/node/index.js",
   "browser": "target/web/index.js",
