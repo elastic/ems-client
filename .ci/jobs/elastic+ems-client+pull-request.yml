@@ -15,4 +15,5 @@
         allow-whitelist-orgs-as-admins: true
         github-hooks: true
         cancel-builds-on-update: true
+        status-context: ems-client
     publishers: []
