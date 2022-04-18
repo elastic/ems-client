@@ -80,7 +80,9 @@ export class TMSService extends AbstractEmsService {
         if (url) {
           const sourceUrl = this._proxyPath + this._getAbsoluteUrl(url);
           const extendedUrl = this._emsClient.extendUrlWithParams(sourceUrl);
-          const sourceJson = await this._emsClient.getManifest<VectorSourceSpecification>(extendedUrl);
+          const sourceJson = await this._emsClient.getManifest<VectorSourceSpecification>(
+            extendedUrl
+          );
           const tiles = sourceJson?.tiles?.map((tileUrl) => {
             const directUrl = this._proxyPath + this._getAbsoluteUrl(tileUrl);
             return this._emsClient.extendUrlWithParams(directUrl);
