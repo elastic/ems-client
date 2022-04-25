@@ -6,7 +6,11 @@
  */
 
 import _ from 'lodash';
-import { StyleSpecification, VectorSourceSpecification } from 'maplibre-gl';
+import {
+  StyleSpecification,
+  SymbolLayerSpecification,
+  VectorSourceSpecification,
+} from 'maplibre-gl';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
 import { AbstractEmsService } from './ems_service';
 
@@ -119,7 +123,17 @@ export class TMSService extends AbstractEmsService {
     style: EmsVectorStyle,
     lang: LanguageIso6391Code
   ): EmsVectorStyle {
-    console.log(`TODO: tranform style to show ${lang} labels`);
+    style.layers
+      .filter((l) => l.layout && l.layout.hasOwnProperty('text-field'))
+      .forEach((l) => {
+        const { layout } = l as SymbolLayerSpecification;
+        if (layout) {
+          const label = layout['text-field'];
+          if (label && typeof label === 'string' && label.includes('name')) {
+            layout['text-field'] = `{name:${lang}}`;
+          }
+        }
+      });
     return style;
   }
 
