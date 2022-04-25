@@ -44,6 +44,8 @@ type EmsRasterStyle = {
   center: number[];
 };
 
+export type LanguageIso6391Code = string;
+
 export class TMSService extends AbstractEmsService {
   protected readonly _config: TMSServiceConfig;
 
@@ -108,6 +110,17 @@ export class TMSService extends AbstractEmsService {
   constructor(config: TMSServiceConfig, emsClient: EMSClient, proxyPath: string) {
     super(config, emsClient, proxyPath);
     this._config = config;
+  }
+
+  /*
+  This static function transforms a style to use the passed language
+  */
+  public static transformLanguage(
+    style: EmsVectorStyle,
+    lang: LanguageIso6391Code
+  ): EmsVectorStyle {
+    console.log(`TODO: tranform style to show ${lang} labels`);
+    return style;
   }
 
   async getDefaultRasterStyle(): Promise<EmsRasterStyle | undefined> {
