@@ -48,7 +48,17 @@ type EmsRasterStyle = {
   center: number[];
 };
 
-export type LanguageIso6391Code = string;
+export const SupportedLanguages = {
+  en: 'en',
+  'ch-CN': 'zh',
+  'ja-JP': 'ja',
+  'fr-FR': 'fr',
+  es: 'es',
+  ar: 'ar',
+  'hi-IN': 'hi',
+  'ru-RU': 'ru',
+  'pt-PT': 'pt',
+};
 
 export class TMSService extends AbstractEmsService {
   protected readonly _config: TMSServiceConfig;
@@ -121,16 +131,46 @@ export class TMSService extends AbstractEmsService {
   */
   public static transformLanguage(
     style: EmsVectorStyle,
-    lang: LanguageIso6391Code
+    lang: keyof typeof SupportedLanguages
   ): EmsVectorStyle {
+    const omtLang = SupportedLanguages[lang];
+
+    if (!omtLang) {
+      throw new Error(`Language [${lang}] is not supported`);
+    }
+
     style.layers
       .filter((l) => l.layout && l.layout.hasOwnProperty('text-field'))
       .forEach((l) => {
         const { layout } = l as SymbolLayerSpecification;
         if (layout) {
           const label = layout['text-field'];
-          if (label && typeof label === 'string' && label.includes('name')) {
-            layout['text-field'] = `{name:${lang}}`;
+
+          if (typeof label === 'string') {
+            // Capture {name:xx} labels
+            const labelMatch = label.match(/\{name:(.{2})\}/);
+            if (labelMatch && labelMatch[1] != omtLang) {
+              // Only apply if the languages are different
+              layout['text-field'] = [
+                'coalesce',
+                ['get', `name:${omtLang}`],
+                ['get', `name:${labelMatch[1]}`],
+              ];
+            } else if (label === '{name:latin}\n{name:nonlatin}') {
+              // Capture the common pattern {name:latin}\n{name:nonlatin}
+              layout['text-field'] = [
+                'coalesce',
+                ['get', `name:${omtLang}`],
+                ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
+              ];
+            } else if (label.includes('name')) {
+              // Capture any other label using `name`
+              layout['text-field'] = [
+                'coalesce',
+                ['get', `name:${omtLang}`],
+                ['get', 'name:latin'],
+              ];
+            }
           }
         }
       });
