@@ -156,20 +156,22 @@ export class TMSService extends AbstractEmsService {
                 ['get', `name:${omtLang}`],
                 ['get', `name:${labelMatch[1]}`],
               ];
-            } else if (label === '{name:latin}\n{name:nonlatin}') {
-              // Capture the common pattern {name:latin}\n{name:nonlatin}
-              layout['text-field'] = [
-                'coalesce',
-                ['get', `name:${omtLang}`],
-                ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
-              ];
-            } else if (label.includes('name')) {
-              // Capture any other label using `name`
-              layout['text-field'] = [
-                'coalesce',
-                ['get', `name:${omtLang}`],
-                ['get', 'name:latin'],
-              ];
+            } else {
+              if (label === '{name:latin}\n{name:nonlatin}') {
+                // Capture the common pattern {name:latin}\n{name:nonlatin}
+                layout['text-field'] = [
+                  'coalesce',
+                  ['get', `name:${omtLang}`],
+                  ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
+                ];
+              } else if (label.includes('name')) {
+                // Capture any other label using `name`
+                layout['text-field'] = [
+                  'coalesce',
+                  ['get', `name:${omtLang}`],
+                  ['get', 'name:latin'],
+                ];
+              }
             }
           }
         }
