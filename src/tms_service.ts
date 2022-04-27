@@ -7,12 +7,14 @@
 
 import _ from 'lodash';
 import {
+  LayerSpecification,
   StyleSpecification,
   SymbolLayerSpecification,
   VectorSourceSpecification,
 } from 'maplibre-gl';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
 import { AbstractEmsService } from './ems_service';
+import { layerPaintProperty, colorizeColor } from './utils';
 
 export type EmsSprite = {
   height: number;
@@ -31,7 +33,7 @@ type EmsVectorSources = {
   [sourceName: string]: VectorSourceSpecification;
 };
 
-type EmsVectorStyle = StyleSpecification & {
+export type EmsVectorStyle = StyleSpecification & {
   sources: EmsVectorSources;
 };
 
@@ -180,6 +182,55 @@ export class TMSService extends AbstractEmsService {
         }
       });
     return style;
+  }
+
+  /*
+
+  */
+  static computeLayer(layer: LayerSpecification, color: string) {
+    if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
+      const paint = layer.paint as layerPaintProperty;
+      const types = Object.keys(paint).filter((key) => {
+        return (
+          [
+            'background-color',
+            'circle-color',
+            'circle-stroke-color',
+            'fill-color',
+            'fill-extrusion-color',
+            'fill-outline-color',
+            'icon-color',
+            'icon-halo-color',
+            'line-color',
+            'text-color',
+            'text-halo-color',
+          ].indexOf(key) !== -1
+        );
+      }) as Array<keyof layerPaintProperty>;
+      const sources = types.map((type) => {
+        const paintColor = paint[type];
+        if (paintColor) {
+          //const colorDesaturated = desaturateColor(paintColor);
+          const colorHueChanged = colorizeColor(paintColor, color);
+          return { [type]: colorHueChanged };
+        }
+      });
+      layer.paint = Object.assign({}, paint, ...sources);
+    }
+    return layer;
+  }
+
+  /*
+  Transform a style to colorize it
+  */
+  public static transformColor(style: EmsVectorStyle, color: string) {
+    const newStyle: EmsVectorStyle = Object.assign({}, style);
+    newStyle.name = `${style.name}-desaturated-${color}`;
+    const layers = newStyle.layers;
+    newStyle.layers = layers.map((layer) => {
+      return TMSService.computeLayer(layer, color);
+    });
+    return newStyle;
   }
 
   async getDefaultRasterStyle(): Promise<EmsRasterStyle | undefined> {
