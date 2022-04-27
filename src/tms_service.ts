@@ -48,19 +48,22 @@ type EmsRasterStyle = {
   center: number[];
 };
 
-export const SupportedLanguages = {
-  en: 'en',
-  'ch-CN': 'zh',
-  'ja-JP': 'ja',
-  'fr-FR': 'fr',
-  es: 'es',
-  ar: 'ar',
-  'hi-IN': 'hi',
-  'ru-RU': 'ru',
-  'pt-PT': 'pt',
-};
-
 export class TMSService extends AbstractEmsService {
+  /*
+  List of supported languages with labels and OMT code
+  */
+  public static SupportedLanguages = {
+    en: { label: 'English', omtCode: 'en' },
+    'ch-CN': { label: 'Chinese', omtCode: 'zh' },
+    'ja-JP': { label: 'Japanese', omtCode: 'ja' },
+    'fr-FR': { label: 'French', omtCode: 'fr' },
+    es: { label: 'Spanish', omtCode: 'es' },
+    ar: { label: 'Arabic', omtCode: 'ar' },
+    'hi-IN': { label: 'Hindi', omtCode: 'hi' },
+    'ru-RU': { label: 'Russian', omtCode: 'ru' },
+    'pt-PT': { label: 'Portuguese', omtCode: 'pt' },
+  };
+
   protected readonly _config: TMSServiceConfig;
 
   private _getRasterStyleJson = _.once(async (): Promise<EmsRasterStyle | undefined> => {
@@ -131,9 +134,9 @@ export class TMSService extends AbstractEmsService {
   */
   public static transformLanguage(
     style: EmsVectorStyle,
-    lang: keyof typeof SupportedLanguages
+    lang: keyof typeof TMSService.SupportedLanguages
   ): EmsVectorStyle {
-    const omtLang = SupportedLanguages[lang];
+    const omtLang = TMSService.SupportedLanguages[lang]?.omtCode;
 
     if (!omtLang) {
       throw new Error(`Language [${lang}] is not supported`);
