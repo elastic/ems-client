@@ -8,9 +8,9 @@
 import _ from 'lodash';
 import {
   DataDrivenPropertyValueSpecification,
+  FormattedSpecification,
   LayerSpecification,
   StyleSpecification,
-  SymbolLayerSpecification,
   VectorSourceSpecification,
 } from 'maplibre-gl';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
@@ -137,28 +137,20 @@ export class TMSService extends AbstractEmsService {
   layout['text-field'] to apply using map.setLayoutProperty
   */
   public static transformLanguageProperty(
-    style: EmsVectorStyle,
+    layer: LayerSpecification,
     lang: keyof typeof TMSService.SupportedLanguages
-  ): { id: string; textField: DataDrivenPropertyValueSpecification<string> | undefined }[] {
-    const omtLang = TMSService.SupportedLanguages[lang]?.omtCode;
+  ): DataDrivenPropertyValueSpecification<FormattedSpecification> | undefined {
+    const newLayer = { ...layer };
 
-    if (!omtLang) {
-      throw new Error(`Language [${lang}] is not supported`);
+    if (
+      newLayer.type === 'symbol' &&
+      newLayer.layout !== undefined &&
+      typeof newLayer.layout['text-field'] === 'string'
+    ) {
+      return TMSService._getTextField(newLayer.layout['text-field'], lang);
     }
 
-    return style.layers
-      .filter((l) => l.layout && l.layout.hasOwnProperty('text-field'))
-      .map((l) => {
-        const { layout } = l as SymbolLayerSpecification;
-        let textField;
-        if (layout && layout['text-field']) {
-          textField = TMSService._getTextField(layout['text-field'], omtLang);
-        }
-        return {
-          id: l.id,
-          textField,
-        };
-      });
+    return;
   }
 
   /*
@@ -186,7 +178,10 @@ export class TMSService extends AbstractEmsService {
     });
   }
 
-  private static _getTextField(label: DataDrivenPropertyValueSpecification<string>, lang: string) {
+  private static _getTextField(
+    label: DataDrivenPropertyValueSpecification<FormattedSpecification>,
+    lang: string
+  ) {
     let result;
 
     if (typeof label === 'string') {
