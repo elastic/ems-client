@@ -7,6 +7,7 @@
 
 import _ from 'lodash';
 import {
+  DataDrivenPropertyValueSpecification,
   LayerSpecification,
   StyleSpecification,
   SymbolLayerSpecification,
@@ -14,7 +15,7 @@ import {
 } from 'maplibre-gl';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
 import { AbstractEmsService } from './ems_service';
-import { layerPaintProperty, colorizeColor, blendMode } from './utils';
+import { layerPaintProperty, colorizeColor, blendMode, mbColorDefinition } from './utils';
 
 export type EmsSprite = {
   height: number;
@@ -132,67 +133,91 @@ export class TMSService extends AbstractEmsService {
   }
 
   /*
-  This static function transforms a style to use the passed language
+  This method returns an array of objects with the layers and the new
+  layout['text-field'] to apply using map.setLayoutProperty
   */
-  public static transformLanguage(
+  public static transformLanguageProperty(
     style: EmsVectorStyle,
     lang: keyof typeof TMSService.SupportedLanguages
-  ): EmsVectorStyle {
+  ): { id: string; textField: DataDrivenPropertyValueSpecification<string> | undefined }[] {
     const omtLang = TMSService.SupportedLanguages[lang]?.omtCode;
 
     if (!omtLang) {
       throw new Error(`Language [${lang}] is not supported`);
     }
 
-    style.layers
+    return style.layers
       .filter((l) => l.layout && l.layout.hasOwnProperty('text-field'))
-      .forEach((l) => {
+      .map((l) => {
         const { layout } = l as SymbolLayerSpecification;
-        if (layout) {
-          const label = layout['text-field'];
-
-          if (typeof label === 'string') {
-            // Capture {name:xx} labels
-            const labelMatch = label.match(/\{name:(.{2})\}/);
-            if (labelMatch && labelMatch[1] != omtLang) {
-              // Only apply if the languages are different
-              layout['text-field'] = [
-                'coalesce',
-                ['get', `name:${omtLang}`],
-                ['get', `name:${labelMatch[1]}`],
-              ];
-            } else {
-              if (label === '{name:latin}\n{name:nonlatin}') {
-                // Capture the common pattern {name:latin}\n{name:nonlatin}
-                layout['text-field'] = [
-                  'coalesce',
-                  ['get', `name:${omtLang}`],
-                  ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
-                ];
-              } else if (label.includes('name')) {
-                // Capture any other label using `name`
-                layout['text-field'] = [
-                  'coalesce',
-                  ['get', `name:${omtLang}`],
-                  ['get', 'name:latin'],
-                ];
-              }
-            }
-          }
+        let textField;
+        if (layout && layout['text-field']) {
+          textField = TMSService._getTextField(layout['text-field'], omtLang);
         }
+        return {
+          id: l.id,
+          textField,
+        };
       });
-    return style;
   }
 
   /*
-
+  This method returns an array of objects per layer, containing a list of
+  properties with new colors to apply using map.setPaintProperty
   */
-  static computeLayer(
+  public static transformColorProperty(
+    style: EmsVectorStyle,
+    color: string,
+    operation: blendMode,
+    percentage: number
+  ):
+    | {
+        id: string;
+        properties:
+          | { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[]
+          | undefined;
+      }[]
+    | undefined {
+    return style.layers.map((layer) => {
+      return {
+        id: layer.id,
+        properties: this.computeLayerProperties(layer, color, operation, percentage),
+      };
+    });
+  }
+
+  private static _getTextField(label: DataDrivenPropertyValueSpecification<string>, lang: string) {
+    let result;
+
+    if (typeof label === 'string') {
+      // Capture {name:xx} labels
+      const labelMatch = label.match(/\{name:(.{2})\}/);
+      if (labelMatch && labelMatch[1] != lang) {
+        // Only apply if the languages are different
+        result = ['coalesce', ['get', `name:${lang}`], ['get', `name:${labelMatch[1]}`]];
+      } else {
+        if (label === '{name:latin}\n{name:nonlatin}') {
+          // Capture the common pattern {name:latin}\n{name:nonlatin}
+          result = [
+            'coalesce',
+            ['get', `name:${lang}`],
+            ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
+          ];
+        } else if (label.includes('name')) {
+          // Capture any other label using `name`
+          result = ['coalesce', ['get', `name:${lang}`], ['get', 'name:latin']];
+        }
+      }
+    }
+    return result;
+  }
+
+  private static computeLayerProperties(
     layer: LayerSpecification,
     color: string,
     operation: blendMode,
     percentage: number
-  ) {
+  ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] | undefined {
     if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
       const paint = layer.paint as layerPaintProperty;
       const types = Object.keys(paint).filter((key) => {
@@ -212,35 +237,14 @@ export class TMSService extends AbstractEmsService {
           ].indexOf(key) !== -1
         );
       }) as Array<keyof layerPaintProperty>;
-      const sources = types.map((type) => {
+      return types.map((type) => {
         const paintColor = paint[type];
-        if (paintColor) {
-          //const colorDesaturated = desaturateColor(paintColor);
-          const colorHueChanged = colorizeColor(paintColor, color, operation, percentage);
-          return { [type]: colorHueChanged };
-        }
+        return {
+          property: type,
+          color: paintColor ? colorizeColor(paintColor, color, operation, percentage) : paintColor,
+        };
       });
-      layer.paint = Object.assign({}, paint, ...sources);
     }
-    return layer;
-  }
-
-  /*
-  Transform a style to colorize it
-  */
-  public static transformColor(
-    style: EmsVectorStyle,
-    color: string,
-    operation: blendMode,
-    percentage: number
-  ) {
-    const newStyle: EmsVectorStyle = Object.assign({}, style);
-    newStyle.name = `${style.name}-desaturated-${color}`;
-    const layers = newStyle.layers;
-    newStyle.layers = layers.map((layer) => {
-      return TMSService.computeLayer(layer, color, operation, percentage);
-    });
-    return newStyle;
   }
 
   async getDefaultRasterStyle(): Promise<EmsRasterStyle | undefined> {
