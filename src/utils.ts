@@ -58,6 +58,16 @@ export type layerPaintProperty = {
   'text-halo-color'?: DataDrivenPropertyValueSpecification<ColorSpecification>;
 };
 
+export type blendMode =
+  | 'multiply'
+  | 'darken'
+  | 'lighten'
+  | 'screen'
+  | 'overlay'
+  | 'burn'
+  | 'dodge'
+  | 'mix';
+
 /*
 Function to transform a maplibre color definition by a given function.
 */
@@ -96,9 +106,15 @@ More details: https://gka.github.io/chroma.js/#chroma-blend
 */
 export function colorizeColor(
   sourceColor: mbColorDefinition,
-  destColor: string
+  destColor: string,
+  operation: blendMode = 'screen',
+  percentage: number = 0.5
 ): mbColorDefinition {
   return transformColor(sourceColor, (color: string) => {
-    return chroma.blend(chroma(color), destColor, 'screen');
+    if (operation !== 'mix') {
+      return chroma.blend(chroma(color), destColor, operation);
+    } else {
+      return chroma.mix(chroma(color), destColor, percentage);
+    }
   });
 }

@@ -14,7 +14,7 @@ import {
 } from 'maplibre-gl';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
 import { AbstractEmsService } from './ems_service';
-import { layerPaintProperty, colorizeColor } from './utils';
+import { layerPaintProperty, colorizeColor, blendMode } from './utils';
 
 export type EmsSprite = {
   height: number;
@@ -187,7 +187,12 @@ export class TMSService extends AbstractEmsService {
   /*
 
   */
-  static computeLayer(layer: LayerSpecification, color: string) {
+  static computeLayer(
+    layer: LayerSpecification,
+    color: string,
+    operation: blendMode,
+    percentage: number
+  ) {
     if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
       const paint = layer.paint as layerPaintProperty;
       const types = Object.keys(paint).filter((key) => {
@@ -211,7 +216,7 @@ export class TMSService extends AbstractEmsService {
         const paintColor = paint[type];
         if (paintColor) {
           //const colorDesaturated = desaturateColor(paintColor);
-          const colorHueChanged = colorizeColor(paintColor, color);
+          const colorHueChanged = colorizeColor(paintColor, color, operation, percentage);
           return { [type]: colorHueChanged };
         }
       });
@@ -223,12 +228,17 @@ export class TMSService extends AbstractEmsService {
   /*
   Transform a style to colorize it
   */
-  public static transformColor(style: EmsVectorStyle, color: string) {
+  public static transformColor(
+    style: EmsVectorStyle,
+    color: string,
+    operation: blendMode,
+    percentage: number
+  ) {
     const newStyle: EmsVectorStyle = Object.assign({}, style);
     newStyle.name = `${style.name}-desaturated-${color}`;
     const layers = newStyle.layers;
     newStyle.layers = layers.map((layer) => {
-      return TMSService.computeLayer(layer, color);
+      return TMSService.computeLayer(layer, color, operation, percentage);
     });
     return newStyle;
   }
