@@ -205,18 +205,13 @@ export class TMSService extends AbstractEmsService {
     if (labelMatch && labelMatch[1] != lang) {
       // Only apply if the languages are different
       return ['coalesce', ['get', `name:${lang}`], ['get', `name:${labelMatch[1]}`]];
-    } else {
-      if (label.includes('latin') && label.includes('nonlatin')) {
-        // Capture the common pattern {name:latin}\n{name:nonlatin}
-        return [
-          'coalesce',
-          ['get', `name:${lang}`],
-          ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
-        ];
-      } else if (label.includes('name')) {
-        // Capture any other label using `name`
-        return ['coalesce', ['get', `name:${lang}`], ['get', 'name:latin']];
-      }
+    } else if (label.includes('latin') && label.includes('nonlatin')) {
+      // Capture the common pattern {name:latin}\n{name:nonlatin}
+      return [
+        'coalesce',
+        ['get', `name:${lang}`],
+        ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
+      ];
     }
 
     // If no case is found, return the input label
