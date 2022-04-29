@@ -65,6 +65,9 @@ export class TMSService extends AbstractEmsService {
     'hi-IN': { label: 'Hindi', omtCode: 'hi' },
     'ru-RU': { label: 'Russian', omtCode: 'ru' },
     'pt-PT': { label: 'Portuguese', omtCode: 'pt' },
+    it: { label: 'Italian', omtCode: 'it' },
+    de: { label: 'German', omtCode: 'de' },
+    ko: { label: 'Korean', omtCode: 'ko' },
   };
 
   protected readonly _config: TMSServiceConfig;
