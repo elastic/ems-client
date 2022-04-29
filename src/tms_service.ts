@@ -141,15 +141,14 @@ export class TMSService extends AbstractEmsService {
     lang: keyof typeof TMSService.SupportedLanguages
   ): DataDrivenPropertyValueSpecification<FormattedSpecification> | undefined {
     const newLayer = { ...layer };
+    const omtLang = this.SupportedLanguages[lang].omtCode;
 
-    if (
-      newLayer.type === 'symbol' &&
-      newLayer.layout !== undefined &&
-      typeof newLayer.layout['text-field'] === 'string'
-    ) {
-      return TMSService._getTextField(newLayer.layout['text-field'], lang);
+    if (newLayer.type === 'symbol' && newLayer.layout !== undefined) {
+      const textField = newLayer.layout['text-field'];
+      if (textField && typeof textField === 'string') {
+        return TMSService._getTextField(textField, omtLang);
+      }
     }
-
     return;
   }
 
@@ -157,62 +156,12 @@ export class TMSService extends AbstractEmsService {
   This method returns an array of objects per layer, containing a list of
   properties with new colors to apply using map.setPaintProperty
   */
-  public static transformColorProperty(
-    style: EmsVectorStyle,
-    color: string,
-    operation: blendMode,
-    percentage: number
-  ):
-    | {
-        id: string;
-        properties:
-          | { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[]
-          | undefined;
-      }[]
-    | undefined {
-    return style.layers.map((layer) => {
-      return {
-        id: layer.id,
-        properties: this.computeLayerProperties(layer, color, operation, percentage),
-      };
-    });
-  }
-
-  private static _getTextField(
-    label: DataDrivenPropertyValueSpecification<FormattedSpecification>,
-    lang: string
-  ) {
-    let result;
-
-    if (typeof label === 'string') {
-      // Capture {name:xx} labels
-      const labelMatch = label.match(/\{name:(.{2})\}/);
-      if (labelMatch && labelMatch[1] != lang) {
-        // Only apply if the languages are different
-        result = ['coalesce', ['get', `name:${lang}`], ['get', `name:${labelMatch[1]}`]];
-      } else {
-        if (label === '{name:latin}\n{name:nonlatin}') {
-          // Capture the common pattern {name:latin}\n{name:nonlatin}
-          result = [
-            'coalesce',
-            ['get', `name:${lang}`],
-            ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
-          ];
-        } else if (label.includes('name')) {
-          // Capture any other label using `name`
-          result = ['coalesce', ['get', `name:${lang}`], ['get', 'name:latin']];
-        }
-      }
-    }
-    return result;
-  }
-
-  private static computeLayerProperties(
+  public static transformColorProperties(
     layer: LayerSpecification,
     color: string,
     operation: blendMode,
     percentage: number
-  ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] | undefined {
+  ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] {
     if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
       const paint = layer.paint as layerPaintProperty;
       const types = Object.keys(paint).filter((key) => {
@@ -239,7 +188,36 @@ export class TMSService extends AbstractEmsService {
           color: paintColor ? colorizeColor(paintColor, color, operation, percentage) : paintColor,
         };
       });
+    } else {
+      return [];
     }
+  }
+
+  private static _getTextField(
+    label: string,
+    lang: string
+  ): DataDrivenPropertyValueSpecification<string> {
+    // Capture {name:xx} labels
+    const labelMatch = label.match(/\{name:(.{2})\}/);
+    if (labelMatch && labelMatch[1] != lang) {
+      // Only apply if the languages are different
+      return ['coalesce', ['get', `name:${lang}`], ['get', `name:${labelMatch[1]}`]];
+    } else {
+      if (label.includes('latin') && label.includes('nonlatin')) {
+        // Capture the common pattern {name:latin}\n{name:nonlatin}
+        return [
+          'coalesce',
+          ['get', `name:${lang}`],
+          ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
+        ];
+      } else if (label.includes('name')) {
+        // Capture any other label using `name`
+        return ['coalesce', ['get', `name:${lang}`], ['get', 'name:latin']];
+      }
+    }
+
+    // If no case is found, return the input label
+    return label;
   }
 
   async getDefaultRasterStyle(): Promise<EmsRasterStyle | undefined> {
