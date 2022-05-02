@@ -201,10 +201,10 @@ export class TMSService extends AbstractEmsService {
     lang: string
   ): DataDrivenPropertyValueSpecification<string> {
     // Capture {name:xx} labels
-    const labelMatch = label.match(/\{name:(.{2})\}/);
+    const labelMatch = label.match(/\{name([:_])(.{2})\}/);
     if (labelMatch && labelMatch[1] != lang) {
       // Only apply if the languages are different
-      return ['coalesce', ['get', `name:${lang}`], ['get', `name:${labelMatch[1]}`]];
+      return ['coalesce', ['get', `name:${lang}`], ['get', `name${labelMatch[1]}${labelMatch[2]}`]];
     } else if (label.includes('latin') && label.includes('nonlatin')) {
       // Capture the common pattern {name:latin}\n{name:nonlatin}
       return [
