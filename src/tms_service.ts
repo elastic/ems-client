@@ -34,7 +34,7 @@ type EmsVectorSources = {
   [sourceName: string]: VectorSourceSpecification;
 };
 
-export type EmsVectorStyle = StyleSpecification & {
+type EmsVectorStyle = StyleSpecification & {
   sources: EmsVectorSources;
 };
 
