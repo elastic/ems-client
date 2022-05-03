@@ -172,6 +172,9 @@ export class TMSService extends AbstractEmsService {
   ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] {
     if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
       const paint = layer.paint as layerPaintProperty;
+      if (layer.type === 'symbol' && Object.keys(paint).length === 0) {
+        paint['text-color'] = 'rgb(0,0,0)';
+      }
       const types = Object.keys(paint).filter((key) => {
         return (
           [
