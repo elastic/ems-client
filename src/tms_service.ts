@@ -55,20 +55,20 @@ export class TMSService extends AbstractEmsService {
   /*
   List of supported languages with labels and OMT code
   */
-  public static SupportedLanguages = {
-    en: { label: 'English', omtCode: 'en' },
-    'ch-CN': { label: 'Chinese', omtCode: 'zh' },
-    'ja-JP': { label: 'Japanese', omtCode: 'ja' },
-    'fr-FR': { label: 'French', omtCode: 'fr' },
-    es: { label: 'Spanish', omtCode: 'es' },
-    ar: { label: 'Arabic', omtCode: 'ar' },
-    'hi-IN': { label: 'Hindi', omtCode: 'hi' },
-    'ru-RU': { label: 'Russian', omtCode: 'ru' },
-    'pt-PT': { label: 'Portuguese', omtCode: 'pt' },
-    it: { label: 'Italian', omtCode: 'it' },
-    de: { label: 'German', omtCode: 'de' },
-    ko: { label: 'Korean', omtCode: 'ko' },
-  };
+  public static SupportedLanguages = [
+    { key: 'ar', label: 'Arabic', omt: 'ar' },
+    { key: 'zh-cn', label: 'Chinese', omt: 'zh' },
+    { key: 'de', label: 'German', omt: 'de' },
+    { key: 'en', label: 'English', omt: 'en' },
+    { key: 'es', label: 'Spanish', omt: 'es' },
+    { key: 'fr-fr', label: 'French', omt: 'fr' },
+    { key: 'hi-in', label: 'Hindi', omt: 'hi' },
+    { key: 'it', label: 'Italian', omt: 'it' },
+    { key: 'ja-jp', label: 'Japanese', omt: 'ja' },
+    { key: 'ko', label: 'Korean', omt: 'ko' },
+    { key: 'pt-pt', label: 'Portuguese', omt: 'pt' },
+    { key: 'ru-ru', label: 'Russian', omt: 'ru' },
+  ];
 
   protected readonly _config: TMSServiceConfig;
 
@@ -141,10 +141,15 @@ export class TMSService extends AbstractEmsService {
   */
   public static transformLanguageProperty(
     layer: LayerSpecification,
-    lang: keyof typeof TMSService.SupportedLanguages
+    lang: string
   ): DataDrivenPropertyValueSpecification<FormattedSpecification> | undefined {
+    const supportedLang = this.SupportedLanguages.find((l) => l.key === lang);
+    if (supportedLang === undefined) {
+      throw Error(`${lang} is not a supported language`);
+    }
+
     const newLayer = { ...layer };
-    const omtLang = this.SupportedLanguages[lang].omtCode;
+    const omtLang = supportedLang.omt;
 
     if (newLayer.type === 'symbol' && newLayer.layout !== undefined) {
       const textField = newLayer.layout['text-field'];
