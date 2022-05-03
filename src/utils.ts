@@ -99,10 +99,14 @@ export function desaturateColor(paintColor: mbColorDefinition): mbColorDefinitio
 }
 
 /*
-Blends an originar maplibre color definition with a destination
-color, using the 'screen' method from the chroma-js library.
+Blends an original maplibre color definition with a destination
+color. Accepts different blending modes and an additional `mix`
+option that needs a percentage.
 
-More details: https://gka.github.io/chroma.js/#chroma-blend
+More details: 
+
+https://gka.github.io/chroma.js/#chroma-blend
+https://gka.github.io/chroma.js/#chroma-mix
 */
 export function colorizeColor(
   sourceColor: mbColorDefinition,
