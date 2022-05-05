@@ -10,6 +10,10 @@ import { TMSService } from '../src';
 import { mlLayerTypes } from './ems_client_util';
 import chroma from 'chroma-js';
 
+function chroma2css(color: chroma.Color): string {
+  return `rgba(${color.rgba().join(',')})`;
+}
+
 describe('Transform colours', () => {
   it('should return an empty array for non symbol layers without any paint property to update', () => {
     mlLayerTypes
@@ -35,22 +39,31 @@ describe('Transform colours', () => {
   });
 
   it('should return a text-color for symbol layers without a paint property', () => {
-    const inColor = chroma('teal').alpha(0.5);
-    const outColor = chroma.blend(chroma('black'), inColor, 'lighten');
+    const inColor = chroma('#D36086');
+    const textColor = chroma('rgba(0,0,0,1)');
+    const inOp = 'lighten';
+    const outColor = chroma.blend(textColor, inColor, inOp);
 
-    const layer = {
+    const transform = TMSService.transformColorProperties;
+
+    const layerWithTextColor = {
+      id: 'layer',
+      type: 'symbol',
+      paint: {
+        'text-color': chroma2css(textColor),
+      },
+    } as LayerSpecification;
+
+    const layerWithoutTextColor = {
       id: 'layer',
       type: 'symbol',
       paint: {},
     } as LayerSpecification;
 
-    expect(
-      TMSService.transformColorProperties(layer, inColor.hex('rgba'), 'lighten', 0)
-    ).toMatchObject([
-      {
-        property: 'text-color',
-        color: `rgba(${outColor.rgba().join(',')})`,
-      },
-    ]);
+    const resultWithTextColor = transform(layerWithTextColor, inColor.hex('rgba'), inOp, 0);
+    const resultWithoutTextColor = transform(layerWithoutTextColor, inColor.hex('rgba'), inOp, 0);
+
+    expect(resultWithTextColor).toMatchObject(resultWithoutTextColor);
+    expect(resultWithoutTextColor[0].color).toBe(chroma2css(outColor));
   });
 });
