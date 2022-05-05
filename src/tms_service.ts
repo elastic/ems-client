@@ -54,20 +54,23 @@ type EmsRasterStyle = {
 export class TMSService extends AbstractEmsService {
   /*
   List of supported languages with labels and OMT code
+
+  Localized languages from 
+  https://meta.wikimedia.org/wiki/Template:List_of_language_names_ordered_by_code
   */
   public static SupportedLanguages = [
-    { key: 'ar', label: 'Arabic', omt: 'ar' },
-    { key: 'zh-cn', label: 'Chinese', omt: 'zh' },
-    { key: 'de', label: 'German', omt: 'de' },
-    { key: 'en', label: 'English', omt: 'en' },
-    { key: 'es', label: 'Spanish', omt: 'es' },
-    { key: 'fr-fr', label: 'French', omt: 'fr' },
-    { key: 'hi-in', label: 'Hindi', omt: 'hi' },
-    { key: 'it', label: 'Italian', omt: 'it' },
-    { key: 'ja-jp', label: 'Japanese', omt: 'ja' },
-    { key: 'ko', label: 'Korean', omt: 'ko' },
-    { key: 'pt-pt', label: 'Portuguese', omt: 'pt' },
-    { key: 'ru-ru', label: 'Russian', omt: 'ru' },
+    { key: 'ar', label: 'العربية', label_en: 'Arabic', omt: 'ar' },
+    { key: 'de', label: 'Deutsch', label_en: 'German', omt: 'de' },
+    { key: 'en', label: 'English', label_en: 'English', omt: 'en' },
+    { key: 'es', label: 'Español', label_en: 'Spanish', omt: 'es' },
+    { key: 'fr-fr', label: 'Français', label_en: 'French', omt: 'fr' },
+    { key: 'hi-in', label: 'हिन्दी', label_en: 'Hindi', omt: 'hi' },
+    { key: 'it', label: 'Italiano', label_en: 'Italian', omt: 'it' },
+    { key: 'ja-jp', label: '日本語', label_en: 'Japanese', omt: 'ja' },
+    { key: 'ko', label: '한국어', label_en: 'Korean', omt: 'ko' },
+    { key: 'pt-pt', label: 'Português', label_en: 'Portuguese', omt: 'pt' },
+    { key: 'ru-ru', label: 'русский', label_en: 'Russian', omt: 'ru' },
+    { key: 'zh-cn', label: '简体中文', label_en: 'Chinese', omt: 'zh' },
   ];
 
   protected readonly _config: TMSServiceConfig;
