@@ -59,18 +59,18 @@ export class TMSService extends AbstractEmsService {
   https://meta.wikimedia.org/wiki/Template:List_of_language_names_ordered_by_code
   */
   public static SupportedLanguages = [
-    { key: 'ar', label: 'العربية', label_en: 'Arabic', omt: 'ar' },
-    { key: 'de', label: 'Deutsch', label_en: 'German', omt: 'de' },
-    { key: 'en', label: 'English', label_en: 'English', omt: 'en' },
-    { key: 'es', label: 'Español', label_en: 'Spanish', omt: 'es' },
-    { key: 'fr-fr', label: 'Français', label_en: 'French', omt: 'fr' },
-    { key: 'hi-in', label: 'हिन्दी', label_en: 'Hindi', omt: 'hi' },
-    { key: 'it', label: 'Italiano', label_en: 'Italian', omt: 'it' },
-    { key: 'ja-jp', label: '日本語', label_en: 'Japanese', omt: 'ja' },
-    { key: 'ko', label: '한국어', label_en: 'Korean', omt: 'ko' },
-    { key: 'pt-pt', label: 'Português', label_en: 'Portuguese', omt: 'pt' },
-    { key: 'ru-ru', label: 'русский', label_en: 'Russian', omt: 'ru' },
-    { key: 'zh-cn', label: '简体中文', label_en: 'Chinese', omt: 'zh' },
+    { key: 'ar', omt: 'ar' },
+    { key: 'de', omt: 'de' },
+    { key: 'en', omt: 'en' },
+    { key: 'es', omt: 'es' },
+    { key: 'fr-fr', omt: 'fr' },
+    { key: 'hi-in', omt: 'hi' },
+    { key: 'it', omt: 'it' },
+    { key: 'ja-jp', omt: 'ja' },
+    { key: 'ko', omt: 'ko' },
+    { key: 'pt-pt', omt: 'pt' },
+    { key: 'ru-ru', omt: 'ru' },
+    { key: 'zh-cn', omt: 'zh' },
   ];
 
   /*
