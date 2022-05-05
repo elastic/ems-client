@@ -73,6 +73,15 @@ export class TMSService extends AbstractEmsService {
     { key: 'zh-cn', label: '简体中文', label_en: 'Chinese', omt: 'zh' },
   ];
 
+  /*
+  Suggested default operations for the different EMS styles
+  */
+  public static colorOperationDefaults = [
+    { style: 'road_map', operation: 'mix', percentage: 0.25 },
+    { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
+    { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
+  ];
+
   protected readonly _config: TMSServiceConfig;
 
   private _getRasterStyleJson = _.once(async (): Promise<EmsRasterStyle | undefined> => {
