@@ -35,7 +35,7 @@ describe('Transform colours', () => {
       paint: {},
     } as LayerSpecification;
 
-    expect(TMSService.transformColorProperties(layer, '#FF0000', 'lighten', 0)).toMatchObject([]);
+    expect(TMSService.transformColorProperties(layer, '#FF0000', 'lighten', 0)).toEqual([]);
   });
 
   it('should return a text-color for symbol layers without a paint property', () => {
