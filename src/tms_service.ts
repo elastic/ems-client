@@ -53,23 +53,71 @@ type EmsRasterStyle = {
 
 export class TMSService extends AbstractEmsService {
   /*
-  List of supported languages with labels and OMT code
+  List of supported languages with labels and OMT codes extracted
+  from https://openmaptiles.org/languages
 
-  Localized languages from 
-  https://meta.wikimedia.org/wiki/Template:List_of_language_names_ordered_by_code
+  Keys are values for i18.locale from Kibana settings
+  and OMT codes for the rest. 
   */
   public static SupportedLanguages = [
     { key: 'ar', omt: 'ar' },
+    { key: 'az', omt: 'az' },
+    { key: 'be', omt: 'be' },
+    { key: 'bg', omt: 'bg' },
+    { key: 'br', omt: 'br' },
+    { key: 'bs', omt: 'bs' },
+    { key: 'ca', omt: 'ca' },
+    { key: 'cs', omt: 'cs' },
+    { key: 'cy', omt: 'cy' },
+    { key: 'da', omt: 'da' },
     { key: 'de', omt: 'de' },
+    { key: 'el', omt: 'el' },
     { key: 'en', omt: 'en' },
+    { key: 'eo', omt: 'eo' },
     { key: 'es', omt: 'es' },
+    { key: 'et', omt: 'et' },
+    { key: 'fi', omt: 'fi' },
     { key: 'fr-fr', omt: 'fr' },
+    { key: 'fy', omt: 'fy' },
+    { key: 'ga', omt: 'ga' },
+    { key: 'gd', omt: 'gd' },
+    { key: 'he', omt: 'he' },
     { key: 'hi-in', omt: 'hi' },
+    { key: 'hr', omt: 'hr' },
+    { key: 'hu', omt: 'hu' },
+    { key: 'hy', omt: 'hy' },
+    { key: 'is', omt: 'is' },
     { key: 'it', omt: 'it' },
+    { key: 'ja_kana', omt: 'ja_kana' },
+    { key: 'ja_rm', omt: 'ja_rm' },
     { key: 'ja-jp', omt: 'ja' },
+    { key: 'ka', omt: 'ka' },
+    { key: 'kk', omt: 'kk' },
+    { key: 'kn', omt: 'kn' },
+    { key: 'ko_rm', omt: 'ko_rm' },
     { key: 'ko', omt: 'ko' },
+    { key: 'la', omt: 'la' },
+    { key: 'lb', omt: 'lb' },
+    { key: 'lt', omt: 'lt' },
+    { key: 'lv', omt: 'lv' },
+    { key: 'mk', omt: 'mk' },
+    { key: 'mt', omt: 'mt' },
+    { key: 'nl', omt: 'nl' },
+    { key: 'no', omt: 'no' },
+    { key: 'pl', omt: 'pl' },
     { key: 'pt-pt', omt: 'pt' },
+    { key: 'rm', omt: 'rm' },
+    { key: 'ro', omt: 'ro' },
     { key: 'ru-ru', omt: 'ru' },
+    { key: 'sk', omt: 'sk' },
+    { key: 'sl', omt: 'sl' },
+    { key: 'sq', omt: 'sq' },
+    { key: 'sr-Ltn', omt: 'sr-Ltn' },
+    { key: 'sr', omt: 'sr' },
+    { key: 'sv', omt: 'sv' },
+    { key: 'th', omt: 'th' },
+    { key: 'tr', omt: 'tr' },
+    { key: 'uk', omt: 'uk' },
     { key: 'zh-cn', omt: 'zh' },
   ];
 
