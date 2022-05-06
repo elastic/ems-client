@@ -59,7 +59,7 @@ describe('Support for languages', () => {
 
     const transformLangEn = TMSService.transformLanguageProperty(enDashLayer, 'en');
 
-    expect(transformLangEn).toMatchObject(['coalesce', ['get', 'name:en'], ['get', 'name_en']]);
+    expect(transformLangEn).toEqual(['coalesce', ['get', 'name:en'], ['get', 'name_en']]);
     const enColonLayer = {
       id: 'sampLayer',
       type: 'symbol',
