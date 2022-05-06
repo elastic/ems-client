@@ -94,3 +94,15 @@ export function getEMSClient(options = {}) {
     });
   return { emsClient, getManifestMock };
 }
+
+export const mlLayerTypes = [
+  'background',
+  'circle',
+  'fill-extrusion',
+  'fill',
+  'heatmap',
+  'hillshade',
+  'line',
+  'raster',
+  'symbol',
+];

@@ -6,9 +6,16 @@
  */
 
 import _ from 'lodash';
-import { StyleSpecification, VectorSourceSpecification } from 'maplibre-gl';
+import {
+  DataDrivenPropertyValueSpecification,
+  FormattedSpecification,
+  LayerSpecification,
+  StyleSpecification,
+  VectorSourceSpecification,
+} from 'maplibre-gl';
 import { EMSClient, EmsTmsFormat, TMSServiceConfig } from './ems_client';
 import { AbstractEmsService } from './ems_service';
+import { layerPaintProperty, colorizeColor, blendMode, mbColorDefinition } from './utils';
 
 export type EmsSprite = {
   height: number;
@@ -45,6 +52,84 @@ type EmsRasterStyle = {
 };
 
 export class TMSService extends AbstractEmsService {
+  /*
+  List of supported languages with labels and OMT codes extracted
+  from https://openmaptiles.org/languages
+
+  Keys are values for i18.locale from Kibana settings
+  and OMT codes for the rest. 
+  */
+  public static SupportedLanguages = [
+    { key: 'ar', omt: 'ar' },
+    { key: 'az', omt: 'az' },
+    { key: 'be', omt: 'be' },
+    { key: 'bg', omt: 'bg' },
+    { key: 'br', omt: 'br' },
+    { key: 'bs', omt: 'bs' },
+    { key: 'ca', omt: 'ca' },
+    { key: 'cs', omt: 'cs' },
+    { key: 'cy', omt: 'cy' },
+    { key: 'da', omt: 'da' },
+    { key: 'de', omt: 'de' },
+    { key: 'el', omt: 'el' },
+    { key: 'en', omt: 'en' },
+    { key: 'eo', omt: 'eo' },
+    { key: 'es', omt: 'es' },
+    { key: 'et', omt: 'et' },
+    { key: 'fi', omt: 'fi' },
+    { key: 'fr-fr', omt: 'fr' },
+    { key: 'fy', omt: 'fy' },
+    { key: 'ga', omt: 'ga' },
+    { key: 'gd', omt: 'gd' },
+    { key: 'he', omt: 'he' },
+    { key: 'hi-in', omt: 'hi' },
+    { key: 'hr', omt: 'hr' },
+    { key: 'hu', omt: 'hu' },
+    { key: 'hy', omt: 'hy' },
+    { key: 'is', omt: 'is' },
+    { key: 'it', omt: 'it' },
+    { key: 'ja_kana', omt: 'ja_kana' },
+    { key: 'ja_rm', omt: 'ja_rm' },
+    { key: 'ja-jp', omt: 'ja' },
+    { key: 'ka', omt: 'ka' },
+    { key: 'kk', omt: 'kk' },
+    { key: 'kn', omt: 'kn' },
+    { key: 'ko_rm', omt: 'ko_rm' },
+    { key: 'ko', omt: 'ko' },
+    { key: 'la', omt: 'la' },
+    { key: 'lb', omt: 'lb' },
+    { key: 'lt', omt: 'lt' },
+    { key: 'lv', omt: 'lv' },
+    { key: 'mk', omt: 'mk' },
+    { key: 'mt', omt: 'mt' },
+    { key: 'nl', omt: 'nl' },
+    { key: 'no', omt: 'no' },
+    { key: 'pl', omt: 'pl' },
+    { key: 'pt-pt', omt: 'pt' },
+    { key: 'rm', omt: 'rm' },
+    { key: 'ro', omt: 'ro' },
+    { key: 'ru-ru', omt: 'ru' },
+    { key: 'sk', omt: 'sk' },
+    { key: 'sl', omt: 'sl' },
+    { key: 'sq', omt: 'sq' },
+    { key: 'sr-Ltn', omt: 'sr-Ltn' },
+    { key: 'sr', omt: 'sr' },
+    { key: 'sv', omt: 'sv' },
+    { key: 'th', omt: 'th' },
+    { key: 'tr', omt: 'tr' },
+    { key: 'uk', omt: 'uk' },
+    { key: 'zh-cn', omt: 'zh' },
+  ];
+
+  /*
+  Suggested default operations for the different EMS styles
+  */
+  public static colorOperationDefaults = [
+    { style: 'road_map', operation: 'mix', percentage: 0.25 },
+    { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
+    { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
+  ];
+
   protected readonly _config: TMSServiceConfig;
 
   private _getRasterStyleJson = _.once(async (): Promise<EmsRasterStyle | undefined> => {
@@ -108,6 +193,91 @@ export class TMSService extends AbstractEmsService {
   constructor(config: TMSServiceConfig, emsClient: EMSClient, proxyPath: string) {
     super(config, emsClient, proxyPath);
     this._config = config;
+  }
+
+  /*
+  This method returns an array of objects with the layers and the new
+  layout['text-field'] to apply using map.setLayoutProperty
+  */
+  public static transformLanguageProperty(
+    layer: LayerSpecification,
+    lang: string
+  ): DataDrivenPropertyValueSpecification<FormattedSpecification> | undefined {
+    const supportedLang = this.SupportedLanguages.find((l) => l.key === lang);
+    if (layer.type === 'symbol' && layer.layout !== undefined && supportedLang !== undefined) {
+      const omtLang = supportedLang.omt;
+      const textField = layer.layout['text-field'];
+      if (textField && typeof textField === 'string') {
+        return TMSService._getTextField(textField, omtLang);
+      }
+    }
+    return;
+  }
+
+  /*
+  This method returns an array of objects per layer, containing a list of
+  properties with new colors to apply using map.setPaintProperty
+  */
+  public static transformColorProperties(
+    layer: LayerSpecification,
+    color: string,
+    operation: blendMode,
+    percentage: number
+  ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] {
+    if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
+      const paint = layer.paint as layerPaintProperty;
+      if (layer.type === 'symbol' && Object.keys(paint).length === 0) {
+        paint['text-color'] = 'rgb(0,0,0)';
+      }
+      const types = Object.keys(paint).filter((key) => {
+        return (
+          [
+            'background-color',
+            'circle-color',
+            'circle-stroke-color',
+            'fill-color',
+            'fill-extrusion-color',
+            'fill-outline-color',
+            'icon-color',
+            'icon-halo-color',
+            'line-color',
+            'text-color',
+            'text-halo-color',
+          ].indexOf(key) !== -1
+        );
+      }) as Array<keyof layerPaintProperty>;
+      return types.map((type) => {
+        const paintColor = paint[type];
+        return {
+          property: type,
+          color: paintColor ? colorizeColor(paintColor, color, operation, percentage) : paintColor,
+        };
+      });
+    } else {
+      return [];
+    }
+  }
+
+  private static _getTextField(
+    label: string,
+    lang: string
+  ): DataDrivenPropertyValueSpecification<string> {
+    // Capture {name:xx} labels
+    const labelMatch = label.match(/\{name([:_])(.{2})\}/);
+    if (labelMatch && labelMatch[1] != lang) {
+      // Only apply if the languages are different
+      return ['coalesce', ['get', `name:${lang}`], ['get', `name${labelMatch[1]}${labelMatch[2]}`]];
+    } else if (label.includes('latin') && label.includes('nonlatin')) {
+      // Capture the common pattern {name:latin}\n{name:nonlatin}
+      return [
+        'coalesce',
+        ['get', `name:${lang}`],
+        ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
+      ];
+    }
+
+    // If no case is found, return the input label
+    return label;
   }
 
   async getDefaultRasterStyle(): Promise<EmsRasterStyle | undefined> {
