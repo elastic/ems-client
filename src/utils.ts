@@ -76,7 +76,7 @@ function transformColor(paintColor: mbColorDefinition, func: Function): mbColorD
       const newColor = transformColor(stop[1], func);
       return [stop[0], newColor];
     });
-    const newPaintColor = Object.assign({}, paintColor, { stops: stops });
+    const newPaintColor = { ...paintColor, ...stops };
     return newPaintColor;
   } else return paintColor;
 }
