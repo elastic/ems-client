@@ -32,7 +32,7 @@ describe('Support for languages', () => {
     expect(TMSService.transformLanguageProperty(layer, 'en')).toBeUndefined();
   });
 
-  it('should handle inexistent languages', () => {
+  it('should return nothing for inexistent languages', () => {
     const enDashLayer = {
       id: 'sampLayer',
       type: 'symbol',
@@ -41,11 +41,8 @@ describe('Support for languages', () => {
       },
     } as LayerSpecification;
     const invalidLang = 'I_DONT_EXIST';
-    const invalidLangError = `${invalidLang} is not a supported language`;
 
-    expect(() => {
-      TMSService.transformLanguageProperty(enDashLayer, invalidLang);
-    }).toThrow(invalidLangError);
+    expect(TMSService.transformLanguageProperty(enDashLayer, invalidLang)).toBeUndefined();
   });
 
   it('should handle {name_XX} and {name:XX} definitions', () => {

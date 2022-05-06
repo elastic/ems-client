@@ -156,15 +156,9 @@ export class TMSService extends AbstractEmsService {
     lang: string
   ): DataDrivenPropertyValueSpecification<FormattedSpecification> | undefined {
     const supportedLang = this.SupportedLanguages.find((l) => l.key === lang);
-    if (supportedLang === undefined) {
-      throw Error(`${lang} is not a supported language`);
-    }
-
-    const newLayer = { ...layer };
-    const omtLang = supportedLang.omt;
-
-    if (newLayer.type === 'symbol' && newLayer.layout !== undefined) {
-      const textField = newLayer.layout['text-field'];
+    if (layer.type === 'symbol' && layer.layout !== undefined && supportedLang !== undefined) {
+      const omtLang = supportedLang.omt;
+      const textField = layer.layout['text-field'];
       if (textField && typeof textField === 'string') {
         return TMSService._getTextField(textField, omtLang);
       }
