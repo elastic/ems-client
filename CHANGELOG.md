@@ -3,13 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.3.0] - 2022-05-06
+## [8.3.1] - 2022-05-06
+
+ - Added static methods to help translating basemap labels and blending colors to paint properties #105
+- Add optional `format` argument to `getMinZoom` and `getMaxZoom` #90
+
+## [8.3.0] - 2022-04-18
 
 ### Changed
  - Default EMS version is 8.3 #104
  - Bump maplibre-gl to 2.1.9 #103
- - Added static methods to help translating basemap labels and blending colors to paint properties #105
-- Add optional `format` argument to `getMinZoom` and `getMaxZoom` #90
 
 ## [8.2.0] - 2022-03-24
 
