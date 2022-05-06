@@ -102,7 +102,7 @@ describe('Support for languages', () => {
 
     const transform = TMSService.transformLanguageProperty(layer, 'ja-jp');
 
-    expect(transform).toMatchObject([
+    expect(transform).toEqual([
       'coalesce',
       ['get', 'name:ja'],
       ['concat', ['get', 'name:latin'], '\n', ['get', 'name:nonlatin']],
