@@ -19,8 +19,8 @@
     4
   ],
   "description": "A tileset showcasing all layers in OpenMapTiles. https://openmaptiles.org",
-  "maxzoom": 10,
-  "minzoom": 0,
+  "maxzoom": 15,
+  "minzoom": 3,
   "pixel_scale": "256",
   "vector_layers": [
     {

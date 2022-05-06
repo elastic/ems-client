@@ -365,21 +365,37 @@ export class TMSService extends AbstractEmsService {
     return this._emsClient.getValueInLanguage(this._config.name);
   }
 
-  async getMinZoom(): Promise<number | undefined> {
-    const tileJson = await this._getRasterStyleJson();
-    if (tileJson) {
-      return tileJson.minzoom;
-    } else {
-      return;
+  async getMinZoom(format = 'vector'): Promise<number | undefined> {
+    switch (format) {
+      case 'vector':
+        const { sources } = (await this._getVectorStyleJsonInlined()) || { sources: {} };
+        return Math.min(
+          ...Object.values(sources)
+            .map(({ minzoom }) => minzoom)
+            .filter((minzoom): minzoom is number => Number.isFinite(minzoom))
+        );
+      case 'raster':
+        const { minzoom } = (await this._getRasterStyleJson()) || {};
+        return minzoom;
+      default:
+        return;
     }
   }
 
-  async getMaxZoom(): Promise<number | undefined> {
-    const tileJson = await this._getRasterStyleJson();
-    if (tileJson) {
-      return tileJson.maxzoom;
-    } else {
-      return;
+  async getMaxZoom(format = 'vector'): Promise<number | undefined> {
+    switch (format) {
+      case 'vector':
+        const { sources } = (await this._getVectorStyleJsonInlined()) || { sources: {} };
+        return Math.max(
+          ...Object.values(sources)
+            .map(({ maxzoom }) => maxzoom)
+            .filter((maxzoom): maxzoom is number => Number.isFinite(maxzoom))
+        );
+      case 'raster':
+        const { maxzoom } = (await this._getRasterStyleJson()) || {};
+        return maxzoom;
+      default:
+        return;
     }
   }
 
