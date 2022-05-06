@@ -12,7 +12,7 @@ import { mlLayerTypes } from './ems_client_util';
 describe('Support for languages', () => {
   it('should return undefined for non symbol layers', () => {
     mlLayerTypes
-      .filter((l) => l != 'symbol')
+      .filter((l) => l !== 'symbol')
       .forEach((type) => {
         const layer = {
           id: 'aLayer',
