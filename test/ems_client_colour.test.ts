@@ -63,7 +63,17 @@ describe('Transform colours', () => {
     const resultWithTextColor = transform(layerWithTextColor, inColor.hex('rgba'), inOp, 0);
     const resultWithoutTextColor = transform(layerWithoutTextColor, inColor.hex('rgba'), inOp, 0);
 
-    expect(resultWithTextColor).toMatchObject(resultWithoutTextColor);
-    expect(resultWithoutTextColor[0].color).toBe(chroma2css(outColor));
+    expect(resultWithTextColor).toEqual([
+      {
+        color: chroma2css(outColor),
+        property: 'text-color',
+      },
+    ]);
+    expect(resultWithoutTextColor).toEqual([
+      {
+        color: chroma2css(outColor),
+        property: 'text-color',
+      },
+    ]);
   });
 });

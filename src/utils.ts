@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import chroma from 'chroma-js';
+import chroma, { ChromaStatic } from 'chroma-js';
 import {
   ColorSpecification,
   DataDrivenPropertyValueSpecification,
@@ -58,7 +58,7 @@ export type layerPaintProperty = {
   'text-halo-color'?: DataDrivenPropertyValueSpecification<ColorSpecification>;
 };
 
-export type blendMode = Parameters<ChromaStatic["blend"]>[2] | 'mix';
+export type blendMode = Parameters<ChromaStatic['blend']>[2] | 'mix';
 
 /*
 Function to transform a maplibre color definition by a given function.
