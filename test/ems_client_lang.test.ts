@@ -70,7 +70,7 @@ describe('Support for languages', () => {
 
     const transformLangJa = TMSService.transformLanguageProperty(enColonLayer, 'ja-jp');
 
-    expect(transformLangJa).toMatchObject(['coalesce', ['get', 'name:ja'], ['get', 'name:en']]);
+    expect(transformLangJa).toEqual(['coalesce', ['get', 'name:ja'], ['get', 'name:en']]);
   });
 
   it('should handle {name:latin}\\n{name:nonlatin} definitions', () => {
