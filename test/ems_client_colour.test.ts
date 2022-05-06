@@ -24,7 +24,7 @@ describe('Transform colours', () => {
           type,
           layout: {},
         } as LayerSpecification;
-        expect(TMSService.transformColorProperties(layer, '#FF0000', 'burn', 0)).toMatchObject([]);
+        expect(TMSService.transformColorProperties(layer, '#FF0000', 'burn', 0)).toEqual([]);
       });
   });
 
