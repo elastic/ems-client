@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+
+## [8.3.2] - 2022-05-16
+
+- Export `blendMode` type #111
+- Fix transforming color definitions with stops #112
+
 ## [8.3.1] - 2022-05-06
 
  - Added static methods to help translating basemap labels and blending colors to paint properties #105
