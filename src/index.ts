@@ -8,3 +8,4 @@
 export { EMSClient, FileLayerField } from './ems_client';
 export { FileLayer } from './file_layer';
 export { TMSService, EmsSprite, EmsSpriteSheet } from './tms_service';
+export { blendMode } from './utils';
