@@ -222,7 +222,7 @@ export class TMSService extends AbstractEmsService {
     layer: LayerSpecification,
     color: string,
     operation: blendMode,
-    percentage: number
+    percentage?: number
   ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] {
     if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
       const paint = layer.paint as layerPaintProperty;
