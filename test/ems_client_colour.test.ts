@@ -111,4 +111,30 @@ describe('Transform colours', () => {
       }),
     });
   });
+
+  it('should return the same colors if no input color is specified', () => {
+    const fillColors = ['#ff0000', '#00ff00', '#0000ff'];
+
+    const transform = TMSService.transformColorProperties;
+
+    const fillColorPaint = {
+      base: 1,
+      stops: fillColors.map((fillColor) => {
+        return [1, fillColor];
+      }),
+    };
+
+    const layerWithFillColor = {
+      id: 'layer',
+      type: 'fill',
+      paint: {
+        'fill-color': fillColorPaint,
+      } as unknown,
+    } as FillLayerSpecification;
+
+    const { color, property } = transform(layerWithFillColor, undefined, 'lighten', 0)[0];
+
+    expect(property).toEqual('fill-color');
+    expect(color).toEqual(fillColorPaint);
+  });
 });
