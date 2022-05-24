@@ -220,9 +220,9 @@ export class TMSService extends AbstractEmsService {
   */
   public static transformColorProperties(
     layer: LayerSpecification,
-    color: string,
-    operation: blendMode,
-    percentage: number
+    color?: string,
+    operation?: blendMode,
+    percentage?: number
   ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] {
     if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
       const paint = layer.paint as layerPaintProperty;
@@ -250,7 +250,10 @@ export class TMSService extends AbstractEmsService {
         const paintColor = paint[type];
         return {
           property: type,
-          color: paintColor ? colorizeColor(paintColor, color, operation, percentage) : paintColor,
+          color:
+            paintColor && color
+              ? colorizeColor(paintColor, color, operation, percentage)
+              : paintColor,
         };
       });
     } else {

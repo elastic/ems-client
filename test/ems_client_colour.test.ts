@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { LayerSpecification } from 'maplibre-gl';
+import { FillLayerSpecification, LayerSpecification } from 'maplibre-gl';
 import { TMSService } from '../src';
 import { mlLayerTypes } from './ems_client_util';
 import chroma from 'chroma-js';
@@ -75,5 +75,66 @@ describe('Transform colours', () => {
         property: 'text-color',
       },
     ]);
+  });
+
+  it('should work with color expressions with stops', () => {
+    const inColor = chroma('#D36086');
+    const fillColors = [chroma('rgba(0,0,0,1)'), chroma('rgba(255,0,0,1)')];
+    const inOp = 'lighten';
+
+    const outColors = fillColors.map((fillColor) => {
+      return chroma.blend(fillColor, inColor, inOp);
+    });
+
+    const transform = TMSService.transformColorProperties;
+
+    const layerWithTextColor = {
+      id: 'layer',
+      type: 'fill',
+      source: '',
+      paint: {
+        'fill-color': {
+          base: 1,
+          stops: fillColors.map((fillColor) => {
+            return [1, chroma2css(fillColor)];
+          }),
+        } as unknown,
+      },
+    } as FillLayerSpecification;
+
+    const { color } = transform(layerWithTextColor, inColor.hex('rgba'), inOp, 0)[0];
+
+    expect(color).toEqual({
+      base: 1,
+      stops: outColors.map((fillColor) => {
+        return [1, chroma2css(fillColor)];
+      }),
+    });
+  });
+
+  it('should return the same colors if no input color is specified', () => {
+    const fillColors = ['#ff0000', '#00ff00', '#0000ff'];
+
+    const transform = TMSService.transformColorProperties;
+
+    const fillColorPaint = {
+      base: 1,
+      stops: fillColors.map((fillColor) => {
+        return [1, fillColor];
+      }),
+    };
+
+    const layerWithFillColor = {
+      id: 'layer',
+      type: 'fill',
+      paint: {
+        'fill-color': fillColorPaint,
+      } as unknown,
+    } as FillLayerSpecification;
+
+    const { color, property } = transform(layerWithFillColor)[0];
+
+    expect(property).toEqual('fill-color');
+    expect(color).toEqual(fillColorPaint);
   });
 });
