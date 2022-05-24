@@ -220,8 +220,8 @@ export class TMSService extends AbstractEmsService {
   */
   public static transformColorProperties(
     layer: LayerSpecification,
-    color: string | undefined,
-    operation: blendMode,
+    color?: string,
+    operation?: blendMode,
     percentage?: number
   ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] {
     if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {

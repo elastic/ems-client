@@ -132,7 +132,7 @@ describe('Transform colours', () => {
       } as unknown,
     } as FillLayerSpecification;
 
-    const { color, property } = transform(layerWithFillColor, undefined, 'lighten', 0)[0];
+    const { color, property } = transform(layerWithFillColor)[0];
 
     expect(property).toEqual('fill-color');
     expect(color).toEqual(fillColorPaint);
