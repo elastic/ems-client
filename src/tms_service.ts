@@ -124,7 +124,11 @@ export class TMSService extends AbstractEmsService {
   /*
   Suggested default operations for the different EMS styles
   */
-  public static colorOperationDefaults = [
+  public static colorOperationDefaults: {
+    style: string;
+    operation: blendMode;
+    percentage: number;
+  }[] = [
     { style: 'road_map', operation: 'mix', percentage: 0.25 },
     { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
     { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
