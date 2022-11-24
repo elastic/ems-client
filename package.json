@@ -35,14 +35,14 @@
     }
   },
   "dependencies": {
-    "@types/geojson": "^7946.0.7",
+    "@types/geojson": "^7946.0.10",
     "@types/lru-cache": "^5.1.0",
-    "@types/topojson-client": "^3.0.0",
+    "@types/topojson-client": "^3.1.1",
     "@types/topojson-specification": "^1.0.1",
     "chroma-js": "^2.1.0",
     "lodash": "^4.17.15",
     "lru-cache": "^6.0.0",
-    "semver": "^7.3.2",
+    "semver": "^7.3.8",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {

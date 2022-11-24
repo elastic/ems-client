@@ -40,7 +40,7 @@
           set -e
           set +x
 
-          NODE_IMG="node:10"
+          NODE_IMG="node:16"
 
           docker pull $NODE_IMG
           docker run --rm -i \
@@ -51,7 +51,7 @@
               --volume $PWD:/app \
               --workdir /app \
               $NODE_IMG \
-              bash -c 'npm config set spin false && /opt/yarn*/bin/yarn && yarn test && yarn run build'
+              bash -c '/opt/yarn*/bin/yarn && yarn test && yarn run build'
 
     publishers:
       - email:
