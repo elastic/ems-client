@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [8.4.0] - 2023-01-11
+
+- Default EMS version is 8.4
+- Add types to colorOperationDefaults #123
+- Update dependencies #131 #133 #134 #138
+
 ## [8.3.3] - 2022-05-24
 
 - Make percentage an optional parameter #117
