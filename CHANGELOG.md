@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [8.5.0] - TBD
+
+- Default EMS version is 8.5
+
+
 ## [8.4.0] - 2023-01-11
 
 - Default EMS version is 8.4
