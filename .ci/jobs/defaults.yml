@@ -40,7 +40,7 @@
           set -e
           set +x
 
-          NODE_IMG="node:16"
+          NODE_IMG="node:hydrogen"
 
           docker pull $NODE_IMG
           docker run --rm -i \
