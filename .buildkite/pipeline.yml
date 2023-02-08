@@ -5,6 +5,3 @@ steps:
       - "yarn install"
       - "yarn test"
       - "yarn build"
-
-notify:
-  - slack: "#maps-ops"
