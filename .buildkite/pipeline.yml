@@ -1,3 +1,18 @@
 steps:
-  - label: ":wave: Greetings"            # Label (with rich emojis https://ela.st/bk-emoji).
-    command: "echo 'My first pipeline!'" # Command to run (evaluated by Bash).
+  - label: ":arrow_double_down: Install yarn"
+    command: "npm install --global yarn"
+
+  - wait: ~
+
+  - label: ":yarn: Install dependencies"
+    command: "yarn install"
+
+  - wait: ~
+
+  - label: ":jest: Test"
+    command: "yarn test"
+
+  - wait: ~
+
+  - label: ":hammer_and_wrench: Build"
+    command: "yarn build"
