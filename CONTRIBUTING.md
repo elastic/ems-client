@@ -19,3 +19,21 @@ If you have access to make releases, the process is as follows:
 1. Update the latest major branch on upstream with `git push upstream <major_branch>`
 1. Build the targets with `yarn build`
 1. Publish to npm with `npm publish --access public`
+
+
+## Continuous Integration
+
+This repository is tracked by Elastic [Buildkite infrastructure](https://buildkite.com/elastic) to ensure the tests suite passes and a build is successfully generated. The pipeline is located at [`.buildkite/pipeline.yml`](.buildkite/pipeline.yml), and defines the execution of the `test` and `build` scripts from `package.json`.
+
+Builds are triggered on the following conditions:
+
+* Any push to `master`
+* Any Pull Request coming from a branch in the `elastic/ems-client` repository
+* It will run automatically on `master` on a weekly basis
+* Comments from Elastic team members on a Pull Request like: `buildkite test this`
+
+Builds will be skipped when:
+
+* Pull Requests from forks
+* Pull Requests with the `skip-ci` label
+* Pull Requests with all files modified matching any of the regular expressions in `.buildkite/pull-requests.json => skip_ci_on_only_changed`
