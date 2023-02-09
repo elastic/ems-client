@@ -19,3 +19,5 @@ If you have access to make releases, the process is as follows:
 1. Update the latest major branch on upstream with `git push upstream <major_branch>`
 1. Build the targets with `yarn build`
 1. Publish to npm with `npm publish --access public`
+
+This change should not trigger a Buildkite build.
