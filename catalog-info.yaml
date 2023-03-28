@@ -26,7 +26,7 @@ spec:
       teams: # Who has access to the pipeline.
         ems: {}
         everyone:
-          access_level: BUILD_AND_READ
+          access_level: READ_ONLY
       provider_settings:
         publish_commit_status: true
       schedules:
