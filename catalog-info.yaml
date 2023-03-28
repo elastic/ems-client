@@ -11,17 +11,25 @@ metadata:
 
 spec:
   type: buildkite-pipeline
+  owner: group:ems
   system: buildkite
   implementation:
     apiVersion: buildkite.elastic.dev/v1
     kind: Pipeline
     metadata:
-      name: ems-client
+      name: EMS Client
+      description: Pipeline to run the EMS Client tests suite on
     spec:
       repository: elastic/ems-client
       pipeline_file: ".buildkite/pipeline.yml"
-      teams:
-        # your-team:
-        #  access_level: MANAGE_BUILD_AND_READ
+      default_branch: master
+      teams: # Who has access to the pipeline.
+        ems: {}
         everyone:
-          access_level: READ_ONLY
+          access_level: BUILD_AND_READ
+      provider_settings:
+        publish_commit_status: true
+      schedules:
+        Weekly build on master branch:
+          cronline: "@weekly"
+          message: "Weekly tests and build"
