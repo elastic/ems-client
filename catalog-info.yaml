@@ -54,6 +54,8 @@ spec:
       repository: elastic/ems-client
       pipeline_file: ".buildkite/pipeline.yml"
       default_branch: master
+      env:
+        ELASTIC_PR_COMMENTS_ENABLED: 'true'
       teams: # Who has access to the pipeline.
         ems: {}
         everyone:
