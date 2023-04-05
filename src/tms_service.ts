@@ -124,7 +124,11 @@ export class TMSService extends AbstractEmsService {
   /*
   Suggested default operations for the different EMS styles
   */
-  public static colorOperationDefaults = [
+  public static colorOperationDefaults: {
+    style: string;
+    operation: blendMode;
+    percentage: number;
+  }[] = [
     { style: 'road_map', operation: 'mix', percentage: 0.25 },
     { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
     { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
@@ -220,9 +224,9 @@ export class TMSService extends AbstractEmsService {
   */
   public static transformColorProperties(
     layer: LayerSpecification,
-    color: string,
-    operation: blendMode,
-    percentage: number
+    color?: string,
+    operation?: blendMode,
+    percentage?: number
   ): { property: keyof layerPaintProperty; color: mbColorDefinition | undefined }[] {
     if (['background', 'fill', 'line', 'symbol'].indexOf(layer.type) !== -1 && layer.paint) {
       const paint = layer.paint as layerPaintProperty;
@@ -250,7 +254,10 @@ export class TMSService extends AbstractEmsService {
         const paintColor = paint[type];
         return {
           property: type,
-          color: paintColor ? colorizeColor(paintColor, color, operation, percentage) : paintColor,
+          color:
+            paintColor && color
+              ? colorizeColor(paintColor, color, operation, percentage)
+              : paintColor,
         };
       });
     } else {
