@@ -3,7 +3,4 @@ agents:
 
 steps:
   - label: ":hammer_and_wrench: Test and build"
-    commands: 
-      - "yarn install"
-      - "yarn test"
-      - "yarn build"
+    command: ".buildkite/build.sh"
