@@ -41,7 +41,7 @@
     "@types/topojson-specification": "^1.0.1",
     "lodash": "^4.17.15",
     "lru-cache": "^6.0.0",
-    "semver": "^7.3.8",
+    "semver": "7.5.2",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
