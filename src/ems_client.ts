@@ -17,6 +17,9 @@ import LRUCache from 'lru-cache';
 
 const DEFAULT_EMS_VERSION = '8.5';
 
+const REST_API_REGEX = /\d{4}-\d{2}-\d{2}/;
+const LATEST_API_URL_PATH = 'latest';
+
 type URLMeaningfulParts = {
   auth?: string | null;
   hash?: string | null;
@@ -213,6 +216,7 @@ export class EMSClient {
   private readonly _language: string;
   private readonly _proxyPath: string;
   private readonly _cache: LRUCache<string, FeatureCollection>;
+  private readonly _isRestApi: boolean = false;
 
   /**
    * these methods are assigned outside the constructor
@@ -244,7 +248,14 @@ export class EMSClient {
     this._manifestServiceUrl = config.manifestServiceUrl;
     this._tileApiUrl = config.tileApiUrl;
     this._fileApiUrl = config.fileApiUrl;
-    this._emsVersion = this._getEmsVersion(config.emsVersion);
+
+    if (config.emsVersion?.match(REST_API_REGEX)) {
+      this._emsVersion = config.emsVersion;
+      this._isRestApi = true;
+    } else {
+      this._emsVersion = this._getEmsVersion(config.emsVersion);
+    }
+
     this._emsLandingPageUrl = config.landingPageUrl || '';
     this._language = config.language || DEFAULT_LANGUAGE;
 
@@ -426,15 +437,17 @@ export class EMSClient {
       } else {
         const services = [];
         if (this._tileApiUrl) {
+          const version = this._isRestApi ? LATEST_API_URL_PATH : this._emsVersion;
           services.push({
             type: 'tms',
-            manifest: toAbsoluteUrl(this._tileApiUrl, `${this._emsVersion}/manifest`),
+            manifest: toAbsoluteUrl(this._tileApiUrl, `${version}/manifest`),
           });
         }
         if (this._fileApiUrl) {
+          const version = this._isRestApi ? LATEST_API_URL_PATH : this._emsVersion;
           services.push({
             type: 'file',
-            manifest: toAbsoluteUrl(this._fileApiUrl, `${this._emsVersion}/manifest`),
+            manifest: toAbsoluteUrl(this._fileApiUrl, `${version}/manifest`),
           });
         }
         return { services: services };
