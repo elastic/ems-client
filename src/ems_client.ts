@@ -9,16 +9,19 @@ import { TMSService } from './tms_service';
 import { EMSFormatType, FileLayer } from './file_layer';
 import { FeatureCollection } from 'geojson';
 import { Response } from 'node-fetch';
-import semver from 'semver';
+
+import coerce from 'semver/functions/coerce';
+import valid from 'semver/functions/valid';
+import major from 'semver/functions/major';
+import minor from 'semver/functions/minor';
+
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
 import LRUCache from 'lru-cache';
 
-const DEFAULT_EMS_VERSION = '8.5';
-
 const REST_API_REGEX = /\d{4}-\d{2}-\d{2}/;
-const LATEST_API_URL_PATH = 'latest';
+export const LATEST_API_URL_PATH = 'latest';
 
 type URLMeaningfulParts = {
   auth?: string | null;
@@ -393,10 +396,9 @@ export class EMSClient {
   }
 
   private _getEmsVersion(version: string | undefined): string {
-    const userVersion = semver.valid(semver.coerce(version));
-    const semverVersion = userVersion ? userVersion : semver.coerce(DEFAULT_EMS_VERSION);
+    const semverVersion = valid(coerce(version));
     if (semverVersion) {
-      return `v${semver.major(semverVersion)}.${semver.minor(semverVersion)}`;
+      return `v${major(semverVersion)}.${minor(semverVersion)}`;
     } else {
       throw new Error(`Invalid version: ${version}`);
     }
