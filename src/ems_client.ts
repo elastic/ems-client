@@ -10,10 +10,10 @@ import { EMSFormatType, FileLayer } from './file_layer';
 import { FeatureCollection } from 'geojson';
 import { Response } from 'node-fetch';
 
-import coerce from 'semver/functions/coerce';
-import valid from 'semver/functions/valid';
-import major from 'semver/functions/major';
-import minor from 'semver/functions/minor';
+import semverCoerce from 'semver/functions/coerce';
+import semverValid from 'semver/functions/valid';
+import semverMajor from 'semver/functions/major';
+import semverMinor from 'semver/functions/minor';
 
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
@@ -396,9 +396,9 @@ export class EMSClient {
   }
 
   private _getEmsVersion(version: string | undefined): string {
-    const semverVersion = valid(coerce(version));
+    const semverVersion = semverValid(semverCoerce(version));
     if (semverVersion) {
-      return `v${major(semverVersion)}.${minor(semverVersion)}`;
+      return `v${semverMajor(semverVersion)}.${semverMinor(semverVersion)}`;
     } else {
       throw new Error(`Invalid version: ${version}`);
     }
