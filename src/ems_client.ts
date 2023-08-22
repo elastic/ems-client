@@ -211,7 +211,6 @@ export class EMSClient {
   private readonly _appVersion: string;
   private readonly _fetchFunction: Function;
   private readonly _sanitizer: Function;
-  private readonly _manifestServiceUrl?: string;
   private readonly _fileApiUrl: string;
   private readonly _tileApiUrl: string;
   private readonly _emsVersion: string;
@@ -248,16 +247,11 @@ export class EMSClient {
     };
 
     this._sanitizer = config.htmlSanitizer ? config.htmlSanitizer : (x: string) => x;
-    this._manifestServiceUrl = config.manifestServiceUrl;
     this._tileApiUrl = config.tileApiUrl;
     this._fileApiUrl = config.fileApiUrl;
 
-    if (config.emsVersion?.match(REST_API_REGEX)) {
-      this._emsVersion = config.emsVersion;
-      this._isRestApi = true;
-    } else {
-      this._emsVersion = this._getEmsVersion(config.emsVersion);
-    }
+    this._emsVersion = this._getEmsVersion(config.emsVersion);
+    this._isRestApi = this._emsVersion == config.emsVersion;
 
     this._emsLandingPageUrl = config.landingPageUrl || '';
     this._language = config.language || DEFAULT_LANGUAGE;
@@ -396,6 +390,10 @@ export class EMSClient {
   }
 
   private _getEmsVersion(version: string | undefined): string {
+    if (version?.match(REST_API_REGEX)) {
+      return version;
+    }
+
     const semverVersion = semverValid(semverCoerce(version));
     if (semverVersion) {
       return `v${semverMajor(semverVersion)}.${semverMinor(semverVersion)}`;
@@ -423,37 +421,25 @@ export class EMSClient {
     });
   }
 
-  private async _getManifestWithParams<T>(url: string): Promise<T> {
-    const extendedUrl = this.extendUrlWithParams(url);
-    return await this.getManifest(extendedUrl);
-  }
-
   private _invalidateSettings(): void {
     this._cache.reset();
     this._getMainCatalog = _.once(async (): Promise<EmsCatalogManifest> => {
-      // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
-      if (this._manifestServiceUrl) {
-        console.warn(`The "manifestServiceUrl" parameter is deprecated in v7.6.0.
-        Consider using "tileApiUrl" and "fileApiUrl" instead.`);
-        return await this._getManifestWithParams(this._manifestServiceUrl);
-      } else {
-        const services = [];
-        if (this._tileApiUrl) {
-          const version = this._isRestApi ? LATEST_API_URL_PATH : this._emsVersion;
-          services.push({
-            type: 'tms',
-            manifest: toAbsoluteUrl(this._tileApiUrl, `${version}/manifest`),
-          });
-        }
-        if (this._fileApiUrl) {
-          const version = this._isRestApi ? LATEST_API_URL_PATH : this._emsVersion;
-          services.push({
-            type: 'file',
-            manifest: toAbsoluteUrl(this._fileApiUrl, `${version}/manifest`),
-          });
-        }
-        return { services: services };
+      const services = [];
+      if (this._tileApiUrl) {
+        const version = this._isRestApi ? LATEST_API_URL_PATH : this._emsVersion;
+        services.push({
+          type: 'tms',
+          manifest: toAbsoluteUrl(this._tileApiUrl, `${version}/manifest`),
+        });
       }
+      if (this._fileApiUrl) {
+        const version = this._isRestApi ? LATEST_API_URL_PATH : this._emsVersion;
+        services.push({
+          type: 'file',
+          manifest: toAbsoluteUrl(this._fileApiUrl, `${version}/manifest`),
+        });
+      }
+      return { services: services };
     });
 
     this._getDefaultTMSCatalog = _.once(async (): Promise<EmsTmsCatalog> => {
