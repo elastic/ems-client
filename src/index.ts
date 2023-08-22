@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-export { EMSClient, FileLayerField } from './ems_client';
+export { EMSClient, FileLayerField, LATEST_API_URL_PATH } from './ems_client';
 export { FileLayer } from './file_layer';
 export { TMSService, EmsSprite, EmsSpriteSheet } from './tms_service';
 export { blendMode } from './utils';

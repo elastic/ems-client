@@ -9,13 +9,19 @@ import { TMSService } from './tms_service';
 import { EMSFormatType, FileLayer } from './file_layer';
 import { FeatureCollection } from 'geojson';
 import { Response } from 'node-fetch';
-import semver from 'semver';
+
+import semverCoerce from 'semver/functions/coerce';
+import semverValid from 'semver/functions/valid';
+import semverMajor from 'semver/functions/major';
+import semverMinor from 'semver/functions/minor';
+
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
 import LRUCache from 'lru-cache';
 
-const DEFAULT_EMS_VERSION = '8.5';
+const REST_API_REGEX = /\d{4}-\d{2}-\d{2}/;
+export const LATEST_API_URL_PATH = 'latest';
 
 type URLMeaningfulParts = {
   auth?: string | null;
@@ -205,7 +211,6 @@ export class EMSClient {
   private readonly _appVersion: string;
   private readonly _fetchFunction: Function;
   private readonly _sanitizer: Function;
-  private readonly _manifestServiceUrl?: string;
   private readonly _fileApiUrl: string;
   private readonly _tileApiUrl: string;
   private readonly _emsVersion: string;
@@ -213,6 +218,7 @@ export class EMSClient {
   private readonly _language: string;
   private readonly _proxyPath: string;
   private readonly _cache: LRUCache<string, FeatureCollection>;
+  private readonly _isRestApi: boolean = false;
 
   /**
    * these methods are assigned outside the constructor
@@ -241,10 +247,12 @@ export class EMSClient {
     };
 
     this._sanitizer = config.htmlSanitizer ? config.htmlSanitizer : (x: string) => x;
-    this._manifestServiceUrl = config.manifestServiceUrl;
     this._tileApiUrl = config.tileApiUrl;
     this._fileApiUrl = config.fileApiUrl;
+
     this._emsVersion = this._getEmsVersion(config.emsVersion);
+    this._isRestApi = this._emsVersion == config.emsVersion;
+
     this._emsLandingPageUrl = config.landingPageUrl || '';
     this._language = config.language || DEFAULT_LANGUAGE;
 
@@ -382,10 +390,13 @@ export class EMSClient {
   }
 
   private _getEmsVersion(version: string | undefined): string {
-    const userVersion = semver.valid(semver.coerce(version));
-    const semverVersion = userVersion ? userVersion : semver.coerce(DEFAULT_EMS_VERSION);
+    if (version?.match(REST_API_REGEX)) {
+      return version;
+    }
+
+    const semverVersion = semverValid(semverCoerce(version));
     if (semverVersion) {
-      return `v${semver.major(semverVersion)}.${semver.minor(semverVersion)}`;
+      return `v${semverMajor(semverVersion)}.${semverMinor(semverVersion)}`;
     } else {
       throw new Error(`Invalid version: ${version}`);
     }
@@ -410,35 +421,25 @@ export class EMSClient {
     });
   }
 
-  private async _getManifestWithParams<T>(url: string): Promise<T> {
-    const extendedUrl = this.extendUrlWithParams(url);
-    return await this.getManifest(extendedUrl);
-  }
-
   private _invalidateSettings(): void {
     this._cache.reset();
     this._getMainCatalog = _.once(async (): Promise<EmsCatalogManifest> => {
-      // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
-      if (this._manifestServiceUrl) {
-        console.warn(`The "manifestServiceUrl" parameter is deprecated in v7.6.0.
-        Consider using "tileApiUrl" and "fileApiUrl" instead.`);
-        return await this._getManifestWithParams(this._manifestServiceUrl);
-      } else {
-        const services = [];
-        if (this._tileApiUrl) {
-          services.push({
-            type: 'tms',
-            manifest: toAbsoluteUrl(this._tileApiUrl, `${this._emsVersion}/manifest`),
-          });
-        }
-        if (this._fileApiUrl) {
-          services.push({
-            type: 'file',
-            manifest: toAbsoluteUrl(this._fileApiUrl, `${this._emsVersion}/manifest`),
-          });
-        }
-        return { services: services };
+      const services = [];
+      if (this._tileApiUrl) {
+        const version = this._isRestApi ? LATEST_API_URL_PATH : this._emsVersion;
+        services.push({
+          type: 'tms',
+          manifest: toAbsoluteUrl(this._tileApiUrl, `${version}/manifest`),
+        });
       }
+      if (this._fileApiUrl) {
+        const version = this._isRestApi ? LATEST_API_URL_PATH : this._emsVersion;
+        services.push({
+          type: 'file',
+          manifest: toAbsoluteUrl(this._fileApiUrl, `${version}/manifest`),
+        });
+      }
+      return { services: services };
     });
 
     this._getDefaultTMSCatalog = _.once(async (): Promise<EmsTmsCatalog> => {

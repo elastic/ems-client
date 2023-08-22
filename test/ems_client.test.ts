@@ -7,6 +7,7 @@
 
 import { getEMSClient } from './ems_client_util';
 import { FileLayer } from '../src/file_layer';
+import { LATEST_API_URL_PATH } from '../src/ems_client';
 
 it('should get api manifests', async () => {
   const { emsClient, getManifestMock } = getEMSClient({
@@ -465,4 +466,36 @@ it('should retrieve vectorstylesheet with all sources inlined) (proxy)', async (
     'http://proxy.com/foobar/tiles/data/v3/{z}/{x}/{y}.pbf?elastic_tile_service_tos=agree&my_app_name=tester&my_app_version=7.x.x'
   );
   expect(styleSheet!.sources!.openmaptiles!.type).toBe('vector');
+});
+
+it('should use LATEST_API_URL_PATH for date based versions (serverless)', async () => {
+  const version = '2023-01-01';
+  const { emsClient } = getEMSClient({
+    appVersion: version,
+    emsVersion: version,
+  });
+
+  const { services } = await emsClient.getMainManifest();
+
+  expect(services.length).toBeGreaterThan(0);
+
+  ['tms', 'file'].map((type) => {
+    const service = services.find((s) => s.type === type);
+    const manifestUrl = service?.manifest;
+
+    expect(manifestUrl).toBeDefined();
+    expect(manifestUrl?.match(LATEST_API_URL_PATH)).toBeTruthy();
+  });
+});
+
+it('should fail for non SemVer or Date based versions (serverless)', async () => {
+  const version = 'foo';
+  const t = () => {
+    getEMSClient({
+      appVersion: version,
+      emsVersion: version,
+    });
+  };
+
+  expect(t).toThrow(Error);
 });
