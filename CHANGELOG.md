@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.5.0] - TBD
+## [8.5.1] TBD
+
+- Update release documentation #194
+
+## [8.5.0] - 2023-08-23
 
 - Migration from Jenkins to Buildkite for automatic testing #145 #147
 - Detached the releases of EMS Client from the services consumed #185
