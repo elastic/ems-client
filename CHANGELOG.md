@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [8.5.0] - TBD
 
-- Default EMS version is 8.5
 - Migration from Jenkins to Buildkite for automatic testing #145 #147
+- Detached the releases of EMS Client from the services consumed #185
+- Updated the client to support date based versions #185
+- Update dependencies #159 #165 #173 #176 #181 #184
 
 ## [8.4.0] - 2023-01-11
 
