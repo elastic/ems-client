@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [8.5.1] TBD
 
 - Update release documentation #194
+- Include OpenAPI specification #196
 
 ## [8.5.0] - 2023-08-23
 
