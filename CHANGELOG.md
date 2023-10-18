@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Update release documentation #194
 - Include OpenAPI specification #196 #197
-- Add a new `getEmsVersion` method
+- Add a new `getEmsVersion` method #204
 
 ## [8.5.0] - 2023-08-23
 
