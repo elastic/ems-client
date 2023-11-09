@@ -3,10 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [7.17.0] - TBD
+## [7.17.1] - 2023-11-09
 
 ### Changed
 
+- Upgrade to Node 20 #208
+- Upgrade dependencies #138 #162 #165 #169 #172 #173 !76 #184 #191 #198 #205
+- Migration from Jenkins to Buildkite for automatic testing #163 #199
 - Default EMS version is 7.17
 
 ## [7.16.0] - 2021-10-13
