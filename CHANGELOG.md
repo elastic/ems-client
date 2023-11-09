@@ -3,11 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.5.1] TBD
+## [8.5.1] - 2023-11-09
 
-- Update release documentation #194
-- Include OpenAPI specification #196 #197
+### Added
 - Add a new `getEmsVersion` method #204
+- Include OpenAPI specification #196 #197
+
+### Changed
+- Update release documentation #194
+- Update dependencies #198 #205
+- Update resources for Buildkite build # 199
+- Migration to Node 20 #208
 
 ## [8.5.0] - 2023-08-23
 
@@ -34,7 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [8.3.1] - 2022-05-06
 
- - Added static methods to help translating basemap labels and blending colors to paint properties #105
+- Added static methods to help translating basemap labels and blending colors to paint properties #105
 - Add optional `format` argument to `getMinZoom` and `getMaxZoom` #90
 
 ## [8.3.0] - 2022-04-18
