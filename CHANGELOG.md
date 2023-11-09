@@ -7,10 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- Upgrade to Node 20 #208
+- Default EMS version is 7.17
 - Upgrade dependencies #138 #162 #165 #169 #172 #173 !76 #184 #191 #198 #205
 - Migration from Jenkins to Buildkite for automatic testing #163 #199
-- Default EMS version is 7.17
+- Upgrade to Node 20 #208
 
 ## [7.16.0] - 2021-10-13
 
