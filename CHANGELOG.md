@@ -5,9 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [8.4.1] - 2023-11-09
 
-- Upgrade to Node 20 #208
-- Dependencies updates #165 #173 #176 #183 #181 #184 #191 #198 #205
 - Migration from Jenkins to Buildkite for automatic testing #145 #147 #199
+- Dependencies updates #165 #173 #176 #183 #181 #184 #191 #198 #205
+- Upgrade to Node 20 #208
 
 ## [8.4.0] - 2023-01-11
 
