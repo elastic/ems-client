@@ -347,6 +347,10 @@ export class EMSClient {
     return this._cache.get(layerId);
   }
 
+  getEmsVersion(): string {
+    return this._emsVersion;
+  }
+
   getTileApiUrl(): string {
     return this._tileApiUrl;
   }
