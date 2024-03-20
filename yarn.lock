@@ -1779,10 +1779,17 @@
     "@types/geojson" "*"
     "@types/topojson-specification" "*"
 
-"@types/topojson-specification@*", "@types/topojson-specification@^1.0.1":
+"@types/topojson-specification@*":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@types/topojson-specification/-/topojson-specification-1.0.4.tgz#df2d2738a11bacda3b88f5b4630e3da80a12a609"
   integrity sha512-LG/a8kJi4X6MsFhZKiBAIC/a+yCFtjkHsDMwuQqSoB1az8D2bR2xRKU3aczizfcqdt2lVqnS+aJBFMrO+rO5Aw==
+  dependencies:
+    "@types/geojson" "*"
+
+"@types/topojson-specification@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@types/topojson-specification/-/topojson-specification-1.0.5.tgz#bf0009b2e0debb2d97237b124c00b9ea92570375"
+  integrity sha512-C7KvcQh+C2nr6Y2Ub4YfgvWvWCgP2nOQMtfhlnwsRL4pYmmwzBS7HclGiS87eQfDOU/DLQpX6GEscviaz4yLIQ==
   dependencies:
     "@types/geojson" "*"
 
