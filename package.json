@@ -42,7 +42,7 @@
     "chroma-js": "^2.1.0",
     "lodash": "^4.17.15",
     "lru-cache": "^6.0.0",
-    "semver": "7.6.0",
+    "semver": "7.6.1",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
