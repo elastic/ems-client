@@ -129,10 +129,10 @@ export class TMSService extends AbstractEmsService {
     operation: blendMode;
     percentage: number;
   }[] = [
-    { style: 'road_map', operation: 'mix', percentage: 0.25 },
-    { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
-    { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
-  ];
+      { style: 'road_map', operation: 'mix', percentage: 0.25 },
+      { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
+      { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
+    ];
 
   protected readonly _config: TMSServiceConfig;
 
@@ -374,16 +374,22 @@ export class TMSService extends AbstractEmsService {
 
   async getMinZoom(format = 'vector'): Promise<number | undefined> {
     switch (format) {
-      case 'vector':
+      case 'vector': {
         const { sources } = (await this._getVectorStyleJsonInlined()) || { sources: {} };
         return Math.min(
           ...Object.values(sources)
-            .map(({ minzoom }) => minzoom)
+            .map((s) => {
+              return s && s instanceof Object && 'minzoom' in s ?
+                s['minzoom'] :
+                null
+            })
             .filter((minzoom): minzoom is number => Number.isFinite(minzoom))
         );
-      case 'raster':
+      }
+      case 'raster': {
         const { minzoom } = (await this._getRasterStyleJson()) || {};
         return minzoom;
+      }
       default:
         return;
     }
@@ -391,16 +397,22 @@ export class TMSService extends AbstractEmsService {
 
   async getMaxZoom(format = 'vector'): Promise<number | undefined> {
     switch (format) {
-      case 'vector':
+      case 'vector': {
         const { sources } = (await this._getVectorStyleJsonInlined()) || { sources: {} };
         return Math.max(
           ...Object.values(sources)
-            .map(({ maxzoom }) => maxzoom)
+            .map((s) => {
+              return s && s instanceof Object && 'maxzoom' in s ?
+                s['maxzoom'] :
+                null
+            })
             .filter((maxzoom): maxzoom is number => Number.isFinite(maxzoom))
         );
-      case 'raster':
+      }
+      case 'raster': {
         const { maxzoom } = (await this._getRasterStyleJson()) || {};
         return maxzoom;
+      }
       default:
         return;
     }
@@ -425,13 +437,12 @@ export class TMSService extends AbstractEmsService {
       vectorFormats = this._getFormats(formatType, this._emsClient.getDefaultLocale());
     }
     if (!vectorFormats.length) {
-      // eslint-disable-next-line max-len
       throw new Error(
         `Cannot find ${formatType} tile layer for locale ${this._emsClient.getLocale()} or ${this._emsClient.getDefaultLocale()}`
       );
     }
     const defaultStyle = vectorFormats[0];
-    if (defaultStyle && defaultStyle.hasOwnProperty('url')) {
+    if (defaultStyle && Object.prototype.hasOwnProperty.call(defaultStyle, 'url')) {
       return defaultStyle.url;
     }
   }
