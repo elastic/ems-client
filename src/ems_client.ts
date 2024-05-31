@@ -311,7 +311,7 @@ export class EMSClient {
    */
   addQueryParams(additionalQueryParams: { [key: string]: string }): void {
     for (const key in additionalQueryParams) {
-      if (Object.prototype.hasOwnProperty.call(additionalQueryParams,key)) {
+      if (Object.prototype.hasOwnProperty.call(additionalQueryParams, key)) {
         if (additionalQueryParams[key] !== this._queryParams[key]) {
           //changes detected.
           this._queryParams = _.assign({}, this._queryParams, additionalQueryParams);

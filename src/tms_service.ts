@@ -129,10 +129,10 @@ export class TMSService extends AbstractEmsService {
     operation: blendMode;
     percentage: number;
   }[] = [
-      { style: 'road_map', operation: 'mix', percentage: 0.25 },
-      { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
-      { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
-    ];
+    { style: 'road_map', operation: 'mix', percentage: 0.25 },
+    { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
+    { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
+  ];
 
   protected readonly _config: TMSServiceConfig;
 
@@ -169,9 +169,8 @@ export class TMSService extends AbstractEmsService {
         if (url) {
           const sourceUrl = this._proxyPath + this._getAbsoluteUrl(url);
           const extendedUrl = this._emsClient.extendUrlWithParams(sourceUrl);
-          const sourceJson = await this._emsClient.getManifest<VectorSourceSpecification>(
-            extendedUrl
-          );
+          const sourceJson =
+            await this._emsClient.getManifest<VectorSourceSpecification>(extendedUrl);
           const tiles = sourceJson?.tiles?.map((tileUrl) => {
             const directUrl = this._proxyPath + this._getAbsoluteUrl(tileUrl);
             return this._emsClient.extendUrlWithParams(directUrl);
@@ -379,9 +378,7 @@ export class TMSService extends AbstractEmsService {
         return Math.min(
           ...Object.values(sources)
             .map((s) => {
-              return s && s instanceof Object && 'minzoom' in s ?
-                s['minzoom'] :
-                null
+              return s && s instanceof Object && 'minzoom' in s ? s['minzoom'] : null;
             })
             .filter((minzoom): minzoom is number => Number.isFinite(minzoom))
         );
@@ -402,9 +399,7 @@ export class TMSService extends AbstractEmsService {
         return Math.max(
           ...Object.values(sources)
             .map((s) => {
-              return s && s instanceof Object && 'maxzoom' in s ?
-                s['maxzoom'] :
-                null
+              return s && s instanceof Object && 'maxzoom' in s ? s['maxzoom'] : null;
             })
             .filter((maxzoom): maxzoom is number => Number.isFinite(maxzoom))
         );
