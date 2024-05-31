@@ -18,7 +18,7 @@ import semverMinor from 'semver/functions/minor';
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
-import LRUCache from 'lru-cache';
+import { LRUCache } from 'lru-cache';
 
 const REST_API_REGEX = /\d{4}-\d{2}-\d{2}/;
 export const LATEST_API_URL_PATH = 'latest';
@@ -430,7 +430,7 @@ export class EMSClient {
   }
 
   private _invalidateSettings(): void {
-    this._cache.reset();
+    this._cache.clear();
     this._getMainCatalog = _.once(async (): Promise<EmsCatalogManifest> => {
       const services = [];
       if (this._tileApiUrl) {
