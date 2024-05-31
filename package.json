@@ -32,12 +32,11 @@
   "homepage": "https://github.com/elastic/ems-client#readme",
   "dependencies": {
     "@types/geojson": "^7946.0.14",
-    "@types/lru-cache": "^7.10.10",
     "@types/topojson-client": "^3.1.4",
     "@types/topojson-specification": "^1.0.5",
     "chroma-js": "^2.1.0",
     "lodash": "^4.17.15",
-    "lru-cache": "^10.2.2",
+    "lru-cache": "7.18.3",
     "semver": "7.6.2",
     "topojson-client": "^3.1.0"
   },
