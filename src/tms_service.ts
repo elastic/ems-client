@@ -451,7 +451,7 @@ export class TMSService extends AbstractEmsService {
   private async _getSpriteSheetRootPath(): Promise<string> {
     const vectorStyleJson = await this._getVectorStyleJsonRaw();
     if (vectorStyleJson?.sprite) {
-      return this._proxyPath + this._getAbsoluteUrl(vectorStyleJson.sprite);
+      return this._proxyPath + this._getAbsoluteUrl(vectorStyleJson.sprite.toString());
     } else {
       return '';
     }
