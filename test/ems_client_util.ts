@@ -42,7 +42,7 @@ export function getEMSClient(options = {}) {
 
   const getManifestMock = jest
     .spyOn(emsClient, 'getManifest')
-    .mockImplementation(async (url: string): Promise<any> => {
+    .mockImplementation(async (url: string): Promise<Object | unknown> => {
       //simulate network calls
       if (url.startsWith('https://foobar')) {
         return EMS_CATALOGUE;

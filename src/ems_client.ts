@@ -290,7 +290,11 @@ export class EMSClient {
       if (!response.ok) {
         throw new Error(response.statusText);
       }
-      return response ? await response.json() : null;
+      if (response) {
+        return (await response.json()) as Promise<T>;
+      } else {
+        throw new Error('Response not found');
+      }
     } catch (e) {
       if (e instanceof Error) {
         throw e;
@@ -307,7 +311,7 @@ export class EMSClient {
    */
   addQueryParams(additionalQueryParams: { [key: string]: string }): void {
     for (const key in additionalQueryParams) {
-      if (additionalQueryParams.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(additionalQueryParams, key)) {
         if (additionalQueryParams[key] !== this._queryParams[key]) {
           //changes detected.
           this._queryParams = _.assign({}, this._queryParams, additionalQueryParams);
@@ -426,7 +430,7 @@ export class EMSClient {
   }
 
   private _invalidateSettings(): void {
-    this._cache.reset();
+    this._cache.clear();
     this._getMainCatalog = _.once(async (): Promise<EmsCatalogManifest> => {
       const services = [];
       if (this._tileApiUrl) {
