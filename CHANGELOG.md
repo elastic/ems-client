@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Added
 
 ## Changed
+- Update dependencies #234
 - Update dependencies #232
 
 ## [8.5.1] - 2023-11-09
