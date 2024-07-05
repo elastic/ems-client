@@ -430,7 +430,7 @@ export class EMSClient {
   }
 
   private _invalidateSettings(): void {
-    this._cache.clear();
+    this._cache.reset();
     this._getMainCatalog = _.once(async (): Promise<EmsCatalogManifest> => {
       const services = [];
       if (this._tileApiUrl) {
