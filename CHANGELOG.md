@@ -3,13 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.5.2] - TBD
-
-## Added
+## [8.5.2] - 2024-07-05
 
 ## Changed
-- Update dependencies #234
-- Update dependencies #232
+- Update dependencies #232 #233 #234 #235 
 
 ## [8.5.1] - 2023-11-09
 
