@@ -9,6 +9,9 @@ set -eu
 echo "--- :yarn:  Installing dependencies"
 yarn install
 
+echo "--- :gear: Checking dependencies with Kibana"
+node .buildkite/compare_dependencies.js
+
 echo "--- :alembic: Running tests"
 yarn test
 
