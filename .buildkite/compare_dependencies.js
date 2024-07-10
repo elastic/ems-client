@@ -13,8 +13,8 @@ EMS Client is behind */
 const fs = require('node:fs');
 const semver = require('semver');
 
-const DEFAULT_BRANCH = 'master';
-const branch = process.env.BUILDKITE_BRANCH || DEFAULT_BRANCH;
+const DEFAULT_BRANCH = 'main';
+const branch = process.env.KIBANA_BRANCH || DEFAULT_BRANCH;
 const kibanaPackageUrl = `https://raw.githubusercontent.com/elastic/kibana/${branch}/package.json`;
 
 const processDependency = function (dependency, srcDeps, dstDeps, dstDevDeps) {
