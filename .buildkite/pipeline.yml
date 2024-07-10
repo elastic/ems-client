@@ -6,3 +6,5 @@ agents:
 steps:
   - label: ":hammer_and_wrench: Test and build"
     command: ".buildkite/build.sh"
+    env:
+      KIBANA_BRANCH: "main"
