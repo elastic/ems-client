@@ -8,7 +8,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["target","*.config.js"]
+    ignores: ["target","*.config.js",".buildkite"]
   },
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
