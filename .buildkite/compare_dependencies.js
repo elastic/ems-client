@@ -46,7 +46,7 @@ const main = async function () {
   const emsClientPackageJson = JSON.parse(fs.readFileSync('package.json'));
   const emsClientDeps = {
     ...emsClientPackageJson['dependencies'],
-    ...emsClientPackageJson['devDependencies']
+    // ...emsClientPackageJson['devDependencies']
   };
 
   console.log(`ems-client@${emsClientPackageJson['version']}`);
