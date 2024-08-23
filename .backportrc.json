@@ -2,10 +2,6 @@
   "upstream": "elastic/ems-client",
   "branches": [
     {
-      "name": "8.4",
-      "checked": true
-    },
-    {
       "name": "7.17",
       "checked": true
     }
