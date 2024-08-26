@@ -252,13 +252,12 @@ export class TMSService extends AbstractEmsService {
       vectorFormats = this._getFormats(formatType, this._emsClient.getDefaultLocale());
     }
     if (!vectorFormats.length) {
-      // eslint-disable-next-line max-len
       throw new Error(
         `Cannot find ${formatType} tile layer for locale ${this._emsClient.getLocale()} or ${this._emsClient.getDefaultLocale()}`
       );
     }
     const defaultStyle = vectorFormats[0];
-    if (defaultStyle && defaultStyle.hasOwnProperty('url')) {
+    if (defaultStyle && Object.prototype.hasOwnProperty.call(defaultStyle, 'url')) {
       return defaultStyle.url;
     }
   }
