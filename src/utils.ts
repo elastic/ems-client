@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import chroma, { ChromaStatic } from 'chroma-js';
+import chroma, { ChromaStatic, Color } from 'chroma-js';
 import {
   ColorSpecification,
   DataDrivenPropertyValueSpecification,
@@ -63,7 +63,10 @@ export type blendMode = Parameters<ChromaStatic['blend']>[2] | 'mix';
 /*
 Function to transform a maplibre color definition by a given function.
 */
-function transformColor(paintColor: mbColorDefinition, func: Function): mbColorDefinition {
+function transformColor(
+  paintColor: mbColorDefinition,
+  func: (color: string) => Color
+): mbColorDefinition {
   if (typeof paintColor == 'string') {
     const modifiedColor = func(paintColor);
     return `rgba(${modifiedColor.rgba().join(',')})`;
