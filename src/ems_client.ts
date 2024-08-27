@@ -15,6 +15,7 @@ import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
 import LRUCache from 'lru-cache';
+import { RequestInfo } from 'node-fetch';
 
 const DEFAULT_EMS_VERSION = '7.17';
 
@@ -96,10 +97,10 @@ type BaseClientConfig = {
   tileApiUrl: string;
   fileApiUrl: string;
   emsVersion?: string;
-  htmlSanitizer?: Function;
+  htmlSanitizer?: (x: string) => string;
   language?: string;
   landingPageUrl?: string;
-  fetchFunction: Function;
+  fetchFunction: (url: RequestInfo) => Promise<Response>;
   proxyPath?: string;
   cacheSize?: number;
 };
@@ -204,8 +205,8 @@ export class EMSClient {
   readonly EMS_LOAD_TIMEOUT = 32000;
   private _queryParams: QueryParams;
   private readonly _appVersion: string;
-  private readonly _fetchFunction: Function;
-  private readonly _sanitizer: Function;
+  private readonly _fetchFunction: (url: RequestInfo) => Promise<Response>;
+  private readonly _sanitizer: (x: string) => string;
   private readonly _manifestServiceUrl?: string;
   private readonly _fileApiUrl: string;
   private readonly _tileApiUrl: string;
@@ -218,11 +219,11 @@ export class EMSClient {
   /**
    * these methods are assigned outside the constructor
    */
-  private _getMainCatalog!: Function;
-  private _getDefaultTMSCatalog!: Function;
-  private _getDefaultFileCatalog!: Function;
-  private _loadTMSServices!: Function;
-  private _loadFileLayers!: Function;
+  private _getMainCatalog!: () => Promise<EmsCatalogManifest>;
+  private _getDefaultTMSCatalog!: () => Promise<EmsTmsCatalog>;
+  private _getDefaultFileCatalog!: () => Promise<EmsFileCatalog>;
+  private _loadTMSServices!: () => Promise<TMSService[]>;
+  private _loadFileLayers!: () => Promise<FileLayer[]>;
 
   constructor(config: ClientConfig | DeprecatedClientConfig) {
     // Remove kbnVersion in 8.0
