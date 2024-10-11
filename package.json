@@ -54,7 +54,7 @@
     "@types/jest": "29.5.13",
     "@types/lodash": "4.17.10",
     "@types/lru-cache": "5.1.1",
-    "@types/node": "20.16.10",
+    "@types/node": "20.16.11",
     "@types/node-fetch": "2.6.11",
     "@types/semver": "7.5.8",
     "@types/topojson-specification": "1.0.5",
