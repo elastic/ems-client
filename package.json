@@ -52,7 +52,7 @@
     "@types/chroma-js": "2.4.4",
     "@types/eslint__js": "8.42.3",
     "@types/jest": "29.5.13",
-    "@types/lodash": "4.17.10",
+    "@types/lodash": "4.17.11",
     "@types/lru-cache": "5.1.1",
     "@types/node": "20.16.12",
     "@types/node-fetch": "2.6.11",
