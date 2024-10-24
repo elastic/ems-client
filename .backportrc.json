@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "upstream": "elastic/ems-client",
   "branches": [
     {
@@ -13,4 +14,14 @@
   "labels": [
     "backport"
   ]
+=======
+  "repoOwner": "elastic",
+  "repoName": "ems-file-service",
+  "targetBranches": ["7.17"],
+  "targetPRLabels": ["backport"],
+  "commitConflicts": true,
+  "autoMerge": true,
+  "autoMergeMethod": "squash",
+  "fork": false
+>>>>>>> ac57655 ([skip-ci] add autoMergeMethod parameter (#397))
 }
