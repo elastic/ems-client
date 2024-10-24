@@ -1,12 +1,9 @@
 {
-  "upstream": "elastic/ems-client",
-  "branches": [
-    {
-      "name": "7.17",
-      "checked": true
-    }
-  ],
-  "labels": [
-    "backport"
-  ]
+  "repoOwner": "elastic",
+  "repoName": "ems-file-service",
+  "targetBranches": ["7.17"],
+  "targetPRLabels": ["backport"],
+  "commitConflicts": true,
+  "autoMerge": true,
+  "fork": false
 }
