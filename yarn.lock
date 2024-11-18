@@ -1529,10 +1529,10 @@
     debug "^4.3.1"
     minimatch "^3.1.2"
 
-"@eslint/core@0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.8.0.tgz#54b6591e4799b2c0e363da5b607e3686a6d8d893"
-  integrity sha512-ncQZoR8YJtXIrBuJo1vDlIIR8+uoyYj2tRXE/RbZ3KHWYXNLcPeOgNKRBzXSZ/yQbVObVS8JGbhzvpifU+eQqw==
+"@eslint/core@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.9.0.tgz#168ee076f94b152c01ca416c3e5cf82290ab4fcd"
+  integrity sha512-7ATR9F0e4W85D/0w7cU0SNj7qkAexMG+bAHEZOjo9akvGuhHE2m7umzWzfnpa0XAg5Kxc1BWmtPMV67jJ+9VUg==
 
 "@eslint/core@^0.7.0":
   version "0.7.0"
