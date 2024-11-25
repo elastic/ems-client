@@ -71,7 +71,11 @@
     "prettier": "3.4.2",
     "ts-jest": "29.2.5",
     "typescript": "5.7.2",
+<<<<<<< HEAD
     "typescript-eslint": "8.18.1"
+=======
+    "typescript-eslint": "8.15.0"
+>>>>>>> 46834c7 (chore(deps): update dependency typescript to v5.7.2 (#440))
   },
   "engines": {
     "node": ">=18 <=20"
