@@ -68,7 +68,11 @@
     "globals": "15.14.0",
     "husky": "9.1.7",
     "jest": "29.7.0",
+<<<<<<< HEAD
     "prettier": "3.4.2",
+=======
+    "prettier": "3.4.1",
+>>>>>>> 580558e (chore(deps): update dependency prettier to v3.4.1 (#444))
     "ts-jest": "29.2.5",
     "typescript": "5.7.2",
     "typescript-eslint": "8.18.1"
