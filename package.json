@@ -49,8 +49,14 @@
     "@babel/plugin-proposal-class-properties": "7.18.6",
     "@babel/preset-env": "7.26.0",
     "@babel/preset-typescript": "7.26.0",
+<<<<<<< HEAD
     "@eslint/core": "0.9.1",
     "@eslint/js": "9.17.0",
+=======
+    "@eslint/core": "0.9.0",
+    "@eslint/js": "9.16.0",
+    "@types/chroma-js": "2.4.4",
+>>>>>>> 41ae6a2 (chore(deps): update eslint monorepo to v9.16.0 (#451))
     "@types/eslint__js": "8.42.3",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.13",
@@ -62,7 +68,11 @@
     "@typescript-eslint/eslint-plugin": "8.18.1",
     "@typescript-eslint/parser": "8.18.1",
     "babel-jest": "29.7.0",
+<<<<<<< HEAD
     "eslint": "9.17.0",
+=======
+    "eslint": "9.16.0",
+>>>>>>> 41ae6a2 (chore(deps): update eslint monorepo to v9.16.0 (#451))
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
     "globals": "15.14.0",
