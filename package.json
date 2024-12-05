@@ -50,7 +50,12 @@
     "@babel/preset-env": "7.26.0",
     "@babel/preset-typescript": "7.26.0",
     "@eslint/core": "0.9.1",
+<<<<<<< HEAD
     "@eslint/js": "9.17.0",
+=======
+    "@eslint/js": "9.16.0",
+    "@types/chroma-js": "2.4.4",
+>>>>>>> 4065bf6 (chore(deps): update dependency @eslint/core to v0.9.1 (#456))
     "@types/eslint__js": "8.42.3",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.13",
