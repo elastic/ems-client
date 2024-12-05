@@ -59,8 +59,13 @@
     "@types/node-fetch": "2.6.12",
     "@types/semver": "7.5.8",
     "@types/topojson-specification": "1.0.5",
+<<<<<<< HEAD
     "@typescript-eslint/eslint-plugin": "8.18.1",
     "@typescript-eslint/parser": "8.18.1",
+=======
+    "@typescript-eslint/eslint-plugin": "8.17.0",
+    "@typescript-eslint/parser": "8.17.0",
+>>>>>>> e8dc929 (chore(deps): update typescript-eslint monorepo to v8.17.0 (#455))
     "babel-jest": "29.7.0",
     "eslint": "9.17.0",
     "eslint-config-prettier": "9.1.0",
@@ -71,7 +76,11 @@
     "prettier": "3.4.2",
     "ts-jest": "29.2.5",
     "typescript": "5.7.2",
+<<<<<<< HEAD
     "typescript-eslint": "8.18.1"
+=======
+    "typescript-eslint": "8.17.0"
+>>>>>>> e8dc929 (chore(deps): update typescript-eslint monorepo to v8.17.0 (#455))
   },
   "engines": {
     "node": ">=18 <=20"
