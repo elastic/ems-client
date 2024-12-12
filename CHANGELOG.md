@@ -3,12 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.5.4] - 2024-07-10
+## [8.5.4] - 2024-12-12
 
 ### Added
+- Include color options for new EMS styles
 
 ### Changed
 
+- Dependencies reorganization and validation against Kibana #289
+- Update dependencies (search PRs for `is:pr label:8.5.4,dependencies`)
 
 ## [8.5.3] - 2024-07-10
 
