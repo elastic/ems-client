@@ -132,6 +132,9 @@ export class TMSService extends AbstractEmsService {
     { style: 'road_map', operation: 'mix', percentage: 0.25 },
     { style: 'road_map_desaturated', operation: 'screen', percentage: 0.25 },
     { style: 'dark_map', operation: 'dodge', percentage: 0.25 },
+    { style: 'high_contrast', operation: 'screen', percentage: 0.25 },
+    { style: 'road_map_desaturated_v9', operation: 'screen', percentage: 0.25 },
+    { style: 'dark_map_v9', operation: 'dodge', percentage: 0.25 },
   ];
 
   protected readonly _config: TMSServiceConfig;
