@@ -2385,6 +2385,9 @@ globals@15.14.0:
   version "15.14.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-15.14.0.tgz#b8fd3a8941ff3b4d38f3319d433b61bbb482e73f"
   integrity sha512-OkToC372DtlQeje9/zHIo5CT8lRP/FUgEOKBEhU4e0abL7J7CD24fD9ohiLN5hagG/kWCYj4K5oaxxtj2Z0Dig==
+<<<<<<< HEAD
+>>>>>>> 876eed8 (chore(deps): update dependency globals to v15.14.0 (#495))
+=======
 >>>>>>> 876eed8 (chore(deps): update dependency globals to v15.14.0 (#495))
 
 globals@^11.1.0:
