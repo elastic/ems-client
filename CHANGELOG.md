@@ -3,59 +3,48 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [7.17.4] - TBD
-
-### Added
+## [7.17.4] - 2024-12-16
 
 ### Changed
+- Update dependencies (search PRs for `is:pr label:7.17.4,dependencies`)
 
 
 ## [7.17.3] - 2024-07-10
-
 ### Changed
-
 - Update dependencies #243
 
 ## [7.17.2] - 2024-07-05
-
 ## Changed
-
 - Update dependencies  #218 #219 #220 #221 #236 #237
 
 ## [7.17.1] - 2023-11-09
-
 ### Changed
-
 - Default EMS version is 7.17
 - Upgrade dependencies #138 #162 #165 #169 #172 #173 !76 #184 #191 #198 #205
 - Migration from Jenkins to Buildkite for automatic testing #163 #199
 - Upgrade to Node 20 #208
 
 ## [7.16.0] - 2021-10-13
-
 ### Changed
  - Default EMS version is 7.16
  - Update dependencies using `yarn upgrade`
  - Better error handling for HTTP responses
 
 ## [7.15.1] - 2021-09-01
-
 ### Changed
 - Unpinned `semver` dependency [#77](https://github.com/elastic/ems-client/pull/77)
 
 ## [7.15.0] - 2021-08-12
-
 ### Changed
 - Default EMS version is 7.15
 - Updated dependencies via `yarn upgrade`
 - Fix linting issues
+
 ## [7.14.0] - 2021-06-15
 ### Added
-
 - New getters for optional field metadata `alias`, `regex`, and `values` #69
 
 ### Changed
-
 - Default EMS version is 7.14
 - **Breaking change** @elastic/ems-client is now licensed under the Elastic License v2. See the LICENSE.txt file in this repository #64
 
@@ -68,7 +57,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Default EMS version is 7.11
 - Updated dependencies using `yarn upgrade` and #44 #50
 - Add functions to get specific file formats #53
-
 
 ## [7.10.0] - 2020-08-17
 ### Changed
@@ -95,7 +83,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Convert source code to Typescript
 - Added better linting with eslint and prettier
-
 
 ## [7.8.1] - 2020-04-06
 ### Fixed
@@ -131,12 +118,10 @@ always needed and in fact breaks some client-side use of this lib
 - Correctly handle API urls that end in slashes
 
 ## [7.6.0] - 2020-01-13
-
 ### Added
 - Two new parameters were introduced, `tileApiUrl` and `fileApiUrl`. These should be used instead of `manifestServiceUrl`. These parameters should be set to their respective domains (e.g. `https://tiles.maps.elastic.co`, `https://vector.maps.elastic.co`). [#13](https://github.com/elastic/ems-client/pull/13)
 
 ### Changed
-
 - Starting with v7.6, new Elastic Maps Service (EMS) versions will be released with every matching major and minor release of the Elastic Stack. New releases of ems-client will also be released to match the EMS versions.
 
 - Handle relative URLs in EMS v7.6 manifests.
@@ -149,7 +134,6 @@ always needed and in fact breaks some client-side use of this lib
 -  Remove paragraph element from html attribution [#15](https://github.com/elastic/ems-client/pull/15)
 
 ## [7.2.1] - 2019-12-11
-
 ### Fixed
 - Inject correct attribution into vector tile sources [#14](https://github.com/elastic/ems-client/pull/14/files)
 
@@ -160,17 +144,13 @@ Bump version to match the corresponding Elastic Maps Service version. This relea
 ### Fixed
 - Update browser entry point that was pointing to an incorrect path, which fell back to the main entry
 
-
 ## [1.0.2] - 2019-10-15
-
 ### Fixed
 - Transpile the browser-side assets to be IE compatible.
 
 ## [1.0.1] - 2019-08-27
-
 ### Fixed
 - Downgrade node-fetch dependency to fix fetch error
 
 ## [1.0.0] - 2019-08-26
-
 - Initial release. Compatible with Elastic Maps Service v7.2.0.
