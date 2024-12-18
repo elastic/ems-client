@@ -3,59 +3,122 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+<<<<<<< HEAD
 ## [7.17.4] - TBD
 
+=======
+## [8.6.0] - 2024-12-13
+>>>>>>> 69f805f (8.6.0 changelog and version bump (#477))
 ### Added
+- Include color options for new EMS styles #478
 
 ### Changed
+- Dependencies reorganization and validation against Kibana #289
+- Update dependencies (search PRs for `is:pr label:8.5.4,dependencies`)
 
-
+<<<<<<< HEAD
 ## [7.17.3] - 2024-07-10
 
+=======
+## [8.5.3] - 2024-07-10
+>>>>>>> 69f805f (8.6.0 changelog and version bump (#477))
 ### Changed
 
+<<<<<<< HEAD
 - Update dependencies #243
 
 ## [7.17.2] - 2024-07-05
 
+=======
+## [8.5.2] - 2024-07-05
+>>>>>>> 69f805f (8.6.0 changelog and version bump (#477))
 ## Changed
 
+<<<<<<< HEAD
 - Update dependencies  #218 #219 #220 #221 #236 #237
 
 ## [7.17.1] - 2023-11-09
+=======
+## [8.5.1] - 2023-11-09
+### Added
+- Add a new `getEmsVersion` method #204
+- Include OpenAPI specification #196 #197
+>>>>>>> 69f805f (8.6.0 changelog and version bump (#477))
 
 ### Changed
 
+<<<<<<< HEAD
 - Default EMS version is 7.17
 - Upgrade dependencies #138 #162 #165 #169 #172 #173 !76 #184 #191 #198 #205
 - Migration from Jenkins to Buildkite for automatic testing #163 #199
 - Upgrade to Node 20 #208
+=======
+## [8.5.0] - 2023-08-23
+- Migration from Jenkins to Buildkite for automatic testing #145 #147
+- Detached the releases of EMS Client from the services consumed #185
+- Updated the client to support date based versions #185
+- Update dependencies #159 #165 #173 #176 #181 #184
+
+## [8.4.0] - 2023-01-11
+- Default EMS version is 8.4
+- Add types to colorOperationDefaults #123
+- Update dependencies #131 #133 #134 #138
+
+## [8.3.3] - 2022-05-24
+- Make percentage an optional parameter #117
+- Make color and operation optional parameters #118
+
+## [8.3.2] - 2022-05-16
+- Export `blendMode` type #111
+- Fix transforming color definitions with stops #112
+
+## [8.3.1] - 2022-05-06
+- Added static methods to help translating basemap labels and blending colors to paint properties #105
+- Add optional `format` argument to `getMinZoom` and `getMaxZoom` #90
+
+## [8.3.0] - 2022-04-18
+### Changed
+ - Default EMS version is 8.3 #104
+ - Bump maplibre-gl to 2.1.9 #103
+
+## [8.2.0] - 2022-03-24
+### Changed
+ - Default EMS version is 8.2
+ - Removed getOrigin method #91
+
+## [8.1.0] - 2021-11-09
+### Changed
+ - Default EMS version is 8.1
+ - Export EmsSprite and EmsSpritesheet types
+ - Inherit types from maplibre-gl
+
+## [8.0.0] - 2021-10-20
+### Changed
+ - Default EMS version is 8.0
+ - Remove unused API descriptors
+>>>>>>> 69f805f (8.6.0 changelog and version bump (#477))
 
 ## [7.16.0] - 2021-10-13
-
 ### Changed
  - Default EMS version is 7.16
  - Update dependencies using `yarn upgrade`
  - Better error handling for HTTP responses
 
 ## [7.15.1] - 2021-09-01
-
 ### Changed
 - Unpinned `semver` dependency [#77](https://github.com/elastic/ems-client/pull/77)
 
 ## [7.15.0] - 2021-08-12
-
 ### Changed
 - Default EMS version is 7.15
 - Updated dependencies via `yarn upgrade`
 - Fix linting issues
+
 ## [7.14.0] - 2021-06-15
 ### Added
-
 - New getters for optional field metadata `alias`, `regex`, and `values` #69
 
 ### Changed
-
 - Default EMS version is 7.14
 - **Breaking change** @elastic/ems-client is now licensed under the Elastic License v2. See the LICENSE.txt file in this repository #64
 
@@ -68,7 +131,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Default EMS version is 7.11
 - Updated dependencies using `yarn upgrade` and #44 #50
 - Add functions to get specific file formats #53
-
 
 ## [7.10.0] - 2020-08-17
 ### Changed
@@ -95,7 +157,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Convert source code to Typescript
 - Added better linting with eslint and prettier
-
 
 ## [7.8.1] - 2020-04-06
 ### Fixed
@@ -131,14 +192,11 @@ always needed and in fact breaks some client-side use of this lib
 - Correctly handle API urls that end in slashes
 
 ## [7.6.0] - 2020-01-13
-
 ### Added
 - Two new parameters were introduced, `tileApiUrl` and `fileApiUrl`. These should be used instead of `manifestServiceUrl`. These parameters should be set to their respective domains (e.g. `https://tiles.maps.elastic.co`, `https://vector.maps.elastic.co`). [#13](https://github.com/elastic/ems-client/pull/13)
 
 ### Changed
-
 - Starting with v7.6, new Elastic Maps Service (EMS) versions will be released with every matching major and minor release of the Elastic Stack. New releases of ems-client will also be released to match the EMS versions.
-
 - Handle relative URLs in EMS v7.6 manifests.
 
 ### Deprecated
@@ -160,7 +218,6 @@ Bump version to match the corresponding Elastic Maps Service version. This relea
 ### Fixed
 - Update browser entry point that was pointing to an incorrect path, which fell back to the main entry
 
-
 ## [1.0.2] - 2019-10-15
 
 ### Fixed
@@ -172,5 +229,4 @@ Bump version to match the corresponding Elastic Maps Service version. This relea
 - Downgrade node-fetch dependency to fix fetch error
 
 ## [1.0.0] - 2019-08-26
-
 - Initial release. Compatible with Elastic Maps Service v7.2.0.
