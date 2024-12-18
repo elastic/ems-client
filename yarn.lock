@@ -1378,7 +1378,16 @@
   resolved "https://registry.yarnpkg.com/@types/babel__traverse/-/babel__traverse-7.20.6.tgz#8dc9f0ae0f202c08d8d4dab648912c8d6038e3f7"
   integrity sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==
   dependencies:
+<<<<<<< HEAD
     "@babel/types" "^7.20.7"
+=======
+    "@babel/types" "^7.3.0"
+
+"@types/chroma-js@2.4.5":
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/@types/chroma-js/-/chroma-js-2.4.5.tgz#483e08cdb1c400e8a9fb55b9c259caccb3e712f0"
+  integrity sha512-6ISjhzJViaPCy2q2e6PgK+8HcHQDQ0V2LDiKmYAh+jJlLqDa6HbwDh0wOevHY0kHHUx0iZwjSRbVD47WOUx5EQ==
+>>>>>>> 1a38626 (chore(deps): update dependency @types/chroma-js to v2.4.5 (#491))
 
 "@types/eslint@*":
   version "9.6.1"

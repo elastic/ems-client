@@ -51,6 +51,10 @@
     "@babel/preset-typescript": "7.26.0",
     "@eslint/core": "0.9.1",
     "@eslint/js": "9.17.0",
+<<<<<<< HEAD
+=======
+    "@types/chroma-js": "2.4.5",
+>>>>>>> 1a38626 (chore(deps): update dependency @types/chroma-js to v2.4.5 (#491))
     "@types/eslint__js": "8.42.3",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.13",
