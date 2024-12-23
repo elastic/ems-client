@@ -1,10 +1,17 @@
 {
   "repoOwner": "elastic",
-  "repoName": "ems-file-service",
-  "targetBranches": ["7.17"],
+  "repoName": "ems-client",
+  "targetBranchChoices": [
+    "master",
+    "7.17"
+  ],
+  "branchLabelMapping": {
+    "^v8.\\d+.\\d+$": "master",
+    "^v7.\\d+.\\d+$": "v7.17"
+  },
   "targetPRLabels": ["backport"],
   "commitConflicts": true,
-  "autoMerge": true,
+  "autoMerge": false,
   "autoMergeMethod": "squash",
   "fork": false
 }
