@@ -9,13 +9,11 @@ import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { EMSFormatType, FileLayer } from './file_layer';
 import { FeatureCollection } from 'geojson';
-import { Response } from 'node-fetch';
 import semver from 'semver';
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
 import LRUCache from 'lru-cache';
-import { RequestInfo } from 'node-fetch';
 
 const DEFAULT_EMS_VERSION = '7.17';
 
