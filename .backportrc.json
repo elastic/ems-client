@@ -1,6 +1,6 @@
 {
   "repoOwner": "elastic",
-  "repoName": "ems-file-service",
+  "repoName": "ems-client",
   "targetBranchChoices": [
     "master",
     "7.17"
