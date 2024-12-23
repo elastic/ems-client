@@ -39,7 +39,6 @@
     "@types/topojson-client": "3.1.5",
     "lodash": "4.17.21",
     "lru-cache": "4.1.5",
-    "node-fetch": "2.7.0",
     "semver": "7.6.3",
     "topojson-client": "3.1.0"
   },
@@ -56,7 +55,6 @@
     "@types/lodash": "4.17.13",
     "@types/lru-cache": "5.1.1",
     "@types/node": "20.17.10",
-    "@types/node-fetch": "2.6.12",
     "@types/semver": "7.5.8",
     "@types/topojson-specification": "1.0.5",
     "@typescript-eslint/eslint-plugin": "8.18.1",
