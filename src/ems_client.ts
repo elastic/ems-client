@@ -8,7 +8,6 @@ import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { EMSFormatType, FileLayer } from './file_layer';
 import { FeatureCollection } from 'geojson';
-import { Response } from 'node-fetch';
 
 import semverCoerce from 'semver/functions/coerce';
 import semverValid from 'semver/functions/valid';
@@ -19,7 +18,6 @@ import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
 import LRUCache from 'lru-cache';
-import { RequestInfo } from 'node-fetch';
 
 const REST_API_REGEX = /\d{4}-\d{2}-\d{2}/;
 export const LATEST_API_URL_PATH = 'latest';
