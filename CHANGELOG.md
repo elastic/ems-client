@@ -3,12 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.6.1] - TBD
-### Added
-
+## [8.6.1] - 2024-12-23
 ### Changed
-- Update dependencies (search PRs for `is:pr label:8.6.1,dependencies`)
-
+- Removed node-fetch #519
 
 ## [8.6.0] - 2024-12-13
 ### Added
