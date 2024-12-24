@@ -7,7 +7,7 @@
   ],
   "branchLabelMapping": {
     "^v8.\\d+.\\d+$": "master",
-    "^v7.\\d+.\\d+$": "v7.17"
+    "^v7.\\d+.\\d+$": "7.17"
   },
   "targetPRLabels": ["backport"],
   "commitConflicts": true,
