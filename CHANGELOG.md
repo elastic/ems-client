@@ -3,8 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.6.3] - TBD
+## [8.6.3] - 2025-01-15
 ### Changed
+- Upgrade to Node 22 #552
+- Update dependencies (search PRs for `is:pr label:v8.6.3 label:dependencies `)
 
 ## [8.6.2] - 2024-12-24
 ### Changed
@@ -20,7 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Dependencies reorganization and validation against Kibana #289
-- Update dependencies (search PRs for `is:pr label:8.5.4,dependencies`)
+- Update dependencies (search PRs for `is:pr label:v8.5.4 label:dependencies`)
 
 ## [8.5.3] - 2024-07-10
 ### Changed
