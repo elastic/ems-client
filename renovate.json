@@ -6,7 +6,7 @@
   "labels": [
     "dependencies",
     "v7.17.6",
-    "v8.6.3"
+    "v8.6.4"
   ],
   "packageRules": [
     {
