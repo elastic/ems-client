@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.17.7] - TBD
+## Changed
+- 
+
 ## [7.17.6] - 2025-01-16
 ## Changed
 - Upgrade support for Node 22 #552
