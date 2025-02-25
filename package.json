@@ -66,8 +66,13 @@
     "globals": "15.15.0",
     "husky": "9.1.7",
     "jest": "29.7.0",
+<<<<<<< HEAD
     "prettier": "3.5.1",
     "ts-jest": "29.2.5",
+=======
+    "prettier": "3.5.2",
+    "ts-jest": "29.2.6",
+>>>>>>> df56f48 (chore(deps): update dependency ts-jest to v29.2.6 (#633))
     "typescript": "5.7.3",
     "typescript-eslint": "8.24.1"
   },
