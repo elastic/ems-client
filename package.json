@@ -49,7 +49,7 @@
     "@babel/preset-env": "7.26.9",
     "@babel/preset-typescript": "7.26.0",
     "@eslint/core": "0.11.0",
-    "@eslint/js": "9.20.0",
+    "@eslint/js": "9.21.0",
     "@types/eslint__js": "8.42.3",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.15",
@@ -57,10 +57,10 @@
     "@types/node": "22.13.4",
     "@types/semver": "7.5.8",
     "@types/topojson-specification": "1.0.5",
-    "@typescript-eslint/eslint-plugin": "8.24.1",
-    "@typescript-eslint/parser": "8.24.1",
+    "@typescript-eslint/eslint-plugin": "8.25.0",
+    "@typescript-eslint/parser": "8.25.0",
     "babel-jest": "29.7.0",
-    "eslint": "9.20.1",
+    "eslint": "9.21.0",
     "eslint-config-prettier": "10.0.1",
     "eslint-plugin-prettier": "5.2.3",
     "globals": "15.15.0",
@@ -69,7 +69,7 @@
     "prettier": "3.5.1",
     "ts-jest": "29.2.6",
     "typescript": "5.7.3",
-    "typescript-eslint": "8.24.1"
+    "typescript-eslint": "8.25.0"
   },
   "engines": {
     "node": ">=18 <=22"
