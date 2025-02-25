@@ -967,14 +967,7 @@
     debug "^4.3.1"
     minimatch "^3.1.2"
 
-"@eslint/core@0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.11.0.tgz#7a9226e850922e42cbd2ba71361eacbe74352a12"
-  integrity sha512-DWUB2pksgNEb6Bz2fggIy1wh6fGgZP4Xyy/Mt0QZPiloKKXerbqq9D3SBQTlCRYOrcRPu4vuz+CGjwdfqxnoWA==
-  dependencies:
-    "@types/json-schema" "^7.0.15"
-
-"@eslint/core@^0.12.0":
+"@eslint/core@0.12.0", "@eslint/core@^0.12.0":
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.12.0.tgz#5f960c3d57728be9f6c65bd84aa6aa613078798e"
   integrity sha512-cmrR6pytBuSMTaBweKoGMwu3EiHiEC+DoyupPmlZ0HxBJBtIxwe+j/E4XPIKNx+Q74c8lXKPwYawBf5glsTkHg==
