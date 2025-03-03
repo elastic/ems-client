@@ -282,7 +282,11 @@ export class EMSClient {
       if (!response.ok) {
         throw new Error(response.statusText);
       }
-      return response ? await response.json() : null;
+      if (response) {
+        return (await response.json()) as Promise<T>;
+      } else {
+        throw new Error('Response not found');
+      }
     } catch (e) {
       if (e instanceof Error) {
         throw e;
