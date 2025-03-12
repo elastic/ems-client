@@ -37,15 +37,8 @@
   "dependencies": {
     "@types/geojson": "7946.0.16",
     "@types/topojson-client": "3.1.5",
-<<<<<<< HEAD
     "lodash": "4.17.21",
-    "lru-cache": "4.1.5",
-=======
-    "chroma-js": "2.4.2",
-    "lodash": "^4.17.21",
     "lru-cache": "11.0.2",
-    "maplibre-gl": "5.1.1",
->>>>>>> 12cb43c (Upgrade to lru-cache 11.0.2 (#663))
     "semver": "7.7.1",
     "topojson-client": "3.1.0"
   },
