@@ -13,7 +13,7 @@ import semver from 'semver';
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
 import { ParsedUrlQueryInput } from 'querystring';
-import LRUCache from 'lru-cache';
+import { LRUCache } from 'lru-cache';
 
 const DEFAULT_EMS_VERSION = '7.17';
 
@@ -420,7 +420,7 @@ export class EMSClient {
   }
 
   private _invalidateSettings(): void {
-    this._cache.reset();
+    this._cache.clear();
     this._getMainCatalog = _.once(async (): Promise<EmsCatalogManifest> => {
       // Preserve manifestServiceUrl parameter for backwards compatibility with EMS v7.2
       if (this._manifestServiceUrl) {
