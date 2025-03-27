@@ -53,15 +53,9 @@
     "@types/eslint__js": "8.42.3",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.16",
-<<<<<<< HEAD
     "@types/lru-cache": "5.1.1",
     "@types/node": "22.13.13",
-    "@types/semver": "7.5.8",
-=======
-    "@types/lru-cache": "7.10.10",
-    "@types/node": "22.13.14",
     "@types/semver": "7.7.0",
->>>>>>> 5066c38 (chore(deps): update dependency @types/semver to v7.7.0 (#678))
     "@types/topojson-specification": "1.0.5",
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
