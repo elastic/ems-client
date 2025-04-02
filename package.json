@@ -53,13 +53,8 @@
     "@types/eslint__js": "8.42.3",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.16",
-<<<<<<< HEAD
     "@types/lru-cache": "5.1.1",
-    "@types/node": "22.13.16",
-=======
-    "@types/lru-cache": "7.10.10",
     "@types/node": "22.13.17",
->>>>>>> 7f06cf0 (chore(deps): update dependency @types/node to v22.13.17 (#692))
     "@types/semver": "7.7.0",
     "@types/topojson-specification": "1.0.5",
     "@typescript-eslint/eslint-plugin": "8.29.0",
