@@ -57,8 +57,8 @@
     "@types/node": "22.15.3",
     "@types/semver": "7.7.0",
     "@types/topojson-specification": "1.0.5",
-    "@typescript-eslint/eslint-plugin": "8.31.0",
-    "@typescript-eslint/parser": "8.31.0",
+    "@typescript-eslint/eslint-plugin": "8.31.1",
+    "@typescript-eslint/parser": "8.31.1",
     "babel-jest": "29.7.0",
     "eslint": "9.25.1",
     "eslint-config-prettier": "10.1.2",
@@ -69,7 +69,7 @@
     "prettier": "3.5.3",
     "ts-jest": "29.3.2",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.31.0"
+    "typescript-eslint": "8.31.1"
   },
   "engines": {
     "node": ">=18 <=22"
