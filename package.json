@@ -54,7 +54,7 @@
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.16",
     "@types/lru-cache": "7.10.10",
-    "@types/node": "22.15.3",
+    "@types/node": "22.15.14",
     "@types/semver": "7.7.0",
     "@types/topojson-specification": "1.0.5",
     "@typescript-eslint/eslint-plugin": "8.31.1",
