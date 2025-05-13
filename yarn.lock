@@ -4087,10 +4087,10 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-maplibre-gl@5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-5.3.0.tgz#31fcc6f689dd0d342446a2baa29bbb8015f9f3dc"
-  integrity sha512-qru6B6jHlDPR4Q9/P4W1zEPbPofR4wwYbrrjiHKWI7yLtyXmpJ1/G1KaIYDr5uNdFbPZ7uiZAWdqtfdNLmIhGg==
+maplibre-gl@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-5.4.0.tgz#1cff5776838b981636d8c1a182034e76e98707ff"
+  integrity sha512-ZVrtdFIhFAqt53H2k5Ssqn7QIKNI19fW+He5tr4loxZxWZffp1aZYY9ImNncAJaALU/NYlV6Eul7UVB56/N7WQ==
   dependencies:
     "@mapbox/geojson-rewind" "^0.5.2"
     "@mapbox/jsonlint-lines-primitives" "^2.0.2"
