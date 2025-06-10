@@ -57,15 +57,9 @@
     "@types/node": "22.15.30",
     "@types/semver": "7.7.0",
     "@types/topojson-specification": "1.0.5",
-<<<<<<< HEAD
-    "@typescript-eslint/eslint-plugin": "8.33.1",
-    "@typescript-eslint/parser": "8.33.1",
-    "babel-jest": "29.7.0",
-=======
     "@typescript-eslint/eslint-plugin": "8.34.0",
     "@typescript-eslint/parser": "8.34.0",
     "babel-jest": "30.0.0",
->>>>>>> 78f01ee (chore(deps): update jest monorepo to v30 (#802))
     "eslint": "9.28.0",
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-prettier": "5.4.1",
