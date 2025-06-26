@@ -1470,10 +1470,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/config-helpers/-/config-helpers-0.2.1.tgz#26042c028d1beee5ce2235a7929b91c52651646d"
   integrity sha512-RI17tsD2frtDu/3dmI7QRrD4bedNKPM08ziRYaC5AhkGrzIAJelm9kJU1TznK+apx6V+cqRz8tfpEeG3oIyjxw==
 
-"@eslint/core@0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.15.0.tgz#8fc04709a7b9a179d9f7d93068fc000cb8c5603d"
-  integrity sha512-b7ePw78tEWWkpgZCDYkbqDOP8dmM6qe+AOC6iuJqlq1R/0ahMAeH3qynpnqKFGkMltrp44ohV4ubGyvLX28tzw==
+"@eslint/core@0.15.1":
+  version "0.15.1"
+  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-0.15.1.tgz#d530d44209cbfe2f82ef86d6ba08760196dd3b60"
+  integrity sha512-bkOp+iumZCCbt1K1CmWf0R9pM5yKpDv+ZXtvSyQpudrI9kuFLp+bM2WOPXImuD/ceQuaa8f5pj93Y7zyECIGNA==
   dependencies:
     "@types/json-schema" "^7.0.15"
 
