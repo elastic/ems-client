@@ -49,12 +49,7 @@
     "@babel/preset-env": "7.27.2",
     "@babel/preset-typescript": "7.27.1",
     "@eslint/core": "0.15.1",
-<<<<<<< HEAD
-    "@eslint/js": "9.29.0",
-=======
     "@eslint/js": "9.30.0",
-    "@types/chroma-js": "2.4.5",
->>>>>>> 553986e (chore(deps): update eslint monorepo to v9.30.0 (#845))
     "@types/eslint__js": "8.42.3",
     "@types/jest": "30.0.0",
     "@types/lodash": "4.17.19",
