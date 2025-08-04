@@ -61,8 +61,13 @@
     "@typescript-eslint/parser": "8.38.0",
     "babel-jest": "30.0.5",
     "eslint": "9.32.0",
+<<<<<<< HEAD
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-prettier": "5.5.1",
+=======
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.3",
+>>>>>>> 56d0a90 (chore(deps): update dependency eslint-plugin-prettier to v5.5.3 (#876))
     "globals": "16.3.0",
     "husky": "9.1.7",
     "jest": "30.0.5",
