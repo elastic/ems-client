@@ -36,7 +36,7 @@
     "chroma-js": "2.4.2",
     "lodash": "^4.17.21",
     "lru-cache": "11.1.0",
-    "maplibre-gl": "5.3.0",
+    "maplibre-gl": "5.7.0",
     "semver": "7.7.2",
     "topojson-client": "^3.1.0"
   },
