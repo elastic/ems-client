@@ -3,16 +3,14 @@
         {
             "repoOwner": "elastic",
             "repoName": "ems-client",
-            "enabled": true,
+            "enabled": false,
             "pipeline_slug": "ems-client",
             "allow_org_users": true,
             "allowed_repo_permissions": [
                 "admin",
                 "write"
             ],
-            "allowed_list": [
-                "dependabot"
-            ],
+            "allowed_list": [],
             "build_on_commit": true,
             "build_on_comment": true,
             "trigger_comment_regex": "^(?:(?:buildkite\\W+)?(?:build|test)\\W+(?:this|it))",
