@@ -3,7 +3,7 @@
         {
             "repoOwner": "elastic",
             "repoName": "ems-client",
-            "enabled": true,
+            "enabled": false,
             "pipeline_slug": "ems-client",
             "allow_org_users": true,
             "allowed_repo_permissions": [
