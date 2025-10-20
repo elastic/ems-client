@@ -1453,6 +1453,13 @@
     string-length "^4.0.2"
     v8-to-istanbul "^9.0.1"
 
+"@jest/schemas@30.0.0":
+  version "30.0.0"
+  resolved "https://registry.yarnpkg.com/@jest/schemas/-/schemas-30.0.0.tgz#427b862696c65ea6f6a138a9221326519877555f"
+  integrity sha512-NID2VRyaEkevCRz6badhfqYwri/RvMbiHY81rk3AkK/LaiB0LSxi1RdVZ7MpZdTjNugtZeGfpL0mLs9Kp3MrQw==
+  dependencies:
+    "@sinclair/typebox" "^0.34.0"
+
 "@jest/schemas@30.0.5":
   version "30.0.5"
   resolved "https://registry.yarnpkg.com/@jest/schemas/-/schemas-30.0.5.tgz#7bdf69fc5a368a5abdb49fd91036c55225846473"
@@ -1520,19 +1527,13 @@
     slash "^3.0.0"
     write-file-atomic "^5.0.1"
 
-<<<<<<< HEAD
 "@jest/types@30.0.5":
   version "30.0.5"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-30.0.5.tgz#29a33a4c036e3904f1cfd94f6fe77f89d2e1cc05"
   integrity sha512-aREYa3aku9SSnea4aX6bhKn4bgv3AXkgijoQgbYV3yvbiGt6z+MQ85+6mIhx9DsKW2BuB/cLR/A+tcMThx+KLQ==
-=======
-"@jest/types@30.0.0":
-  version "30.0.0"
-  resolved "https://registry.yarnpkg.com/@jest/types/-/types-30.0.0.tgz#7afb1d34937f722f667b621eb9c653f0f8fda07e"
-  integrity sha512-1Nox8mAL52PKPfEnUQWBvKU/bp8FTT6AiDu76bFDEJj/qsRFSAVSldfCH3XYMqialti2zHXKvD5gN0AaHc0yKA==
   dependencies:
-    "@jest/pattern" "30.0.0"
-    "@jest/schemas" "30.0.0"
+    "@jest/pattern" "30.0.1"
+    "@jest/schemas" "30.0.5"
     "@types/istanbul-lib-coverage" "^2.0.6"
     "@types/istanbul-reports" "^3.0.4"
     "@types/node" "*"
@@ -1543,7 +1544,6 @@
   version "30.2.0"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-30.2.0.tgz#1c678a7924b8f59eafd4c77d56b6d0ba976d62b8"
   integrity sha512-H9xg1/sfVvyfU7o3zMfBEjQ1gcsdeTMgqHoYdN79tuLqfTtuu7WckRA1R5whDwOzxaZAeMKTYWqP+WCAi0CHsg==
->>>>>>> 3f9d65b (chore(deps): update jest monorepo to v30.2.0 (#973))
   dependencies:
     "@jest/pattern" "30.0.1"
     "@jest/schemas" "30.0.5"
@@ -2174,11 +2174,7 @@ babel-plugin-polyfill-regenerator@^0.6.5:
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.6.5"
 
-<<<<<<< HEAD
-babel-preset-current-node-syntax@^1.1.0:
-=======
 babel-preset-current-node-syntax@^1.2.0:
->>>>>>> 3f9d65b (chore(deps): update jest monorepo to v30.2.0 (#973))
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/babel-preset-current-node-syntax/-/babel-preset-current-node-syntax-1.2.0.tgz#20730d6cdc7dda5d89401cab10ac6a32067acde6"
   integrity sha512-E/VlAEzRrsLEb2+dv8yp3bo4scof3l9nR4lrld+Iy5NyVqgVYUJnDAmunkhPMisRI32Qc4iRiz425d8vM++2fg==
@@ -3213,26 +3209,19 @@ jest-message-util@30.2.0:
     slash "^3.0.0"
     stack-utils "^2.0.6"
 
-<<<<<<< HEAD
 jest-mock@30.0.5:
   version "30.0.5"
   resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-30.0.5.tgz#ef437e89212560dd395198115550085038570bdd"
   integrity sha512-Od7TyasAAQX/6S+QCbN6vZoWOMwlTtzzGuxJku1GhGanAjz9y+QsQkpScDmETvdc9aSXyJ/Op4rhpMYBWW91wQ==
-=======
-jest-mock@30.0.0:
-  version "30.0.0"
-  resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-30.0.0.tgz#f3b3115cd80c3eec7df93809430ab1feaeeb7229"
-  integrity sha512-W2sRA4ALXILrEetEOh2ooZG6fZ01iwVs0OWMKSSWRcUlaLr4ESHuiKXDNTg+ZVgOq8Ei5445i/Yxrv59VT+XkA==
   dependencies:
-    "@jest/types" "30.0.0"
+    "@jest/types" "30.0.5"
     "@types/node" "*"
-    jest-util "30.0.0"
+    jest-util "30.0.5"
 
 jest-mock@30.2.0:
   version "30.2.0"
   resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-30.2.0.tgz#69f991614eeb4060189459d3584f710845bff45e"
   integrity sha512-JNNNl2rj4b5ICpmAcq+WbLH83XswjPbjH4T7yvGzfAGCPh1rw+xVNbtk+FnRslvt9lkCcdn9i1oAoKUuFsOxRw==
->>>>>>> 3f9d65b (chore(deps): update jest monorepo to v30.2.0 (#973))
   dependencies:
     "@jest/types" "30.2.0"
     "@types/node" "*"
@@ -3353,18 +3342,12 @@ jest-snapshot@30.2.0:
     semver "^7.7.2"
     synckit "^0.11.8"
 
-<<<<<<< HEAD
 jest-util@30.0.5:
   version "30.0.5"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-30.0.5.tgz#035d380c660ad5f1748dff71c4105338e05f8669"
   integrity sha512-pvyPWssDZR0FlfMxCBoc0tvM8iUEskaRFALUtGQYzVEAqisAztmy+R8LnU14KT4XA0H/a5HMVTXat1jLne010g==
-=======
-jest-util@30.0.0:
-  version "30.0.0"
-  resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-30.0.0.tgz#d4f20f59e1fd72c7143143f4aa961bb71aeddad0"
-  integrity sha512-fhNBBM9uSUbd4Lzsf8l/kcAdaHD/4SgoI48en3HXcBEMwKwoleKFMZ6cYEYs21SB779PRuRCyNLmymApAm8tZw==
   dependencies:
-    "@jest/types" "30.0.0"
+    "@jest/types" "30.0.5"
     "@types/node" "*"
     chalk "^4.1.2"
     ci-info "^4.2.0"
@@ -3375,7 +3358,6 @@ jest-util@30.2.0:
   version "30.2.0"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-30.2.0.tgz#5142adbcad6f4e53c2776c067a4db3c14f913705"
   integrity sha512-QKNsM0o3Xe6ISQU869e+DhG+4CK/48aHYdJZGlFQVTjnbvgpcKyxpzk29fGiO7i/J8VENZ+d2iGnSsvmuHywlA==
->>>>>>> 3f9d65b (chore(deps): update jest monorepo to v30.2.0 (#973))
   dependencies:
     "@jest/types" "30.2.0"
     "@types/node" "*"
@@ -3846,18 +3828,12 @@ prettier@3.6.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.6.2.tgz#ccda02a1003ebbb2bfda6f83a074978f608b9393"
   integrity sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==
 
-<<<<<<< HEAD
-pretty-format@30.0.5, pretty-format@^30.0.0:
+pretty-format@30.0.5:
   version "30.0.5"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-30.0.5.tgz#e001649d472800396c1209684483e18a4d250360"
   integrity sha512-D1tKtYvByrBkFLe2wHJl2bwMJIiT8rW+XA+TiataH79/FszLQMrpGEvzUVkzPau7OCO0Qnrhpe87PqtOAIB8Yw==
-=======
-pretty-format@30.0.0, pretty-format@^30.0.0:
-  version "30.0.0"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-30.0.0.tgz#a3137bed442af87eadea2c427a1b201189e590a4"
-  integrity sha512-18NAOUr4ZOQiIR+BgI5NhQE7uREdx4ZyV0dyay5izh4yfQ+1T7BSvggxvRGoXocrRyevqW5OhScUjbi9GB8R8Q==
   dependencies:
-    "@jest/schemas" "30.0.0"
+    "@jest/schemas" "30.0.5"
     ansi-styles "^5.2.0"
     react-is "^18.3.1"
 
@@ -3865,9 +3841,17 @@ pretty-format@30.2.0:
   version "30.2.0"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-30.2.0.tgz#2d44fe6134529aed18506f6d11509d8a62775ebe"
   integrity sha512-9uBdv/B4EefsuAL+pWqueZyZS2Ba+LxfFeQ9DN14HU4bN8bhaxKdkpjpB6fs9+pSjIBu+FXQHImEg8j/Lw0+vA==
->>>>>>> 3f9d65b (chore(deps): update jest monorepo to v30.2.0 (#973))
   dependencies:
     "@jest/schemas" "30.0.5"
+    ansi-styles "^5.2.0"
+    react-is "^18.3.1"
+
+pretty-format@^30.0.0:
+  version "30.0.0"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-30.0.0.tgz#a3137bed442af87eadea2c427a1b201189e590a4"
+  integrity sha512-18NAOUr4ZOQiIR+BgI5NhQE7uREdx4ZyV0dyay5izh4yfQ+1T7BSvggxvRGoXocrRyevqW5OhScUjbi9GB8R8Q==
+  dependencies:
+    "@jest/schemas" "30.0.0"
     ansi-styles "^5.2.0"
     react-is "^18.3.1"
 
