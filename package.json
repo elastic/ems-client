@@ -39,14 +39,8 @@
     "@types/topojson-client": "3.1.5",
     "lodash": "^4.17.21",
     "lru-cache": "11.2.2",
-<<<<<<< HEAD
-    "semver": "7.7.2",
-    "topojson-client": "3.1.0"
-=======
-    "maplibre-gl": "5.3.0",
     "semver": "7.7.3",
     "topojson-client": "^3.1.0"
->>>>>>> 2e067e2 (fix(deps): update dependency semver to v7.7.3 (#991))
   },
   "devDependencies": {
     "@types/chroma-js": "2.4.5",
