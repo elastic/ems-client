@@ -5,10 +5,9 @@
   "extends": [
     "github>elastic/renovate-config"
   ],
+  "baseBranches": ["master", "7.17"],
   "labels": [
-    "dependencies",
-    "v7.17.7",
-    "v8.6.4"
+    "dependencies"
   ],
   "packageRules": [
     {
@@ -18,6 +17,16 @@
     {
       "matchDepTypes": ["devDependencies"],
       "automerge": true
+    },
+    {
+      "description": "Master branch specific rules",
+      "matchBaseBranches": ["master"],
+      "labels": ["dependencies", "v8.6.4"]
+    },
+    {
+      "description": "7.17 branch specific rules",
+      "matchBaseBranches": ["7.17"],
+      "labels": ["dependencies", "v7.17.7"]
     }
   ]
 }
