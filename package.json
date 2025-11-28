@@ -43,7 +43,6 @@
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
-    "@types/chroma-js": "3.1.2",
     "@babel/cli": "7.28.3",
     "@babel/core": "7.28.5",
     "@babel/plugin-proposal-class-properties": "7.18.6",

@@ -1808,11 +1808,6 @@
   dependencies:
     "@babel/types" "^7.28.2"
 
-"@types/chroma-js@3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@types/chroma-js/-/chroma-js-3.1.2.tgz#29dd767ae46124c9d0cd3370bedad7364adcfd10"
-  integrity sha512-YBTQqArPN8A0niHXCwrO1z5x++a+6l0mLBykncUpr23oIPW7L4h39s6gokdK/bDrPmSh8+TjMmrhBPnyiaWPmQ==
-
 "@types/eslint@*":
   version "9.6.1"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-9.6.1.tgz#d5795ad732ce81715f27f75da913004a56751584"
