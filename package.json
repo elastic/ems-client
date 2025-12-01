@@ -70,7 +70,7 @@
     "typescript-eslint": "8.46.4"
   },
   "resolutions": {
-    "**/glob": "^11.0.0"
+    "**/glob": "^12.0.0"
   },
   "engines": {
     "node": ">=18 <=24"
