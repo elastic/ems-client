@@ -5,7 +5,7 @@
   "extends": [
     "github>elastic/renovate-config"
   ],
-  "baseBranchPatterns": ["master", "7.17"],
+  "baseBranches": ["master", "7.17"],
   "labels": [
     "dependencies"
   ],
