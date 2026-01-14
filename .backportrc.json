@@ -2,12 +2,10 @@
   "repoOwner": "elastic",
   "repoName": "ems-client",
   "targetBranchChoices": [
-    "master",
-    "7.17"
+    "master"
   ],
   "branchLabelMapping": {
-    "^v8.\\d+.\\d+$": "master",
-    "^v7.\\d+.\\d+$": "7.17"
+    "^v8.\\d+.\\d+$": "master"
   },
   "targetPRLabels": ["backport"],
   "commitConflicts": true,
