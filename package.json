@@ -71,7 +71,8 @@
   },
   "resolutions": {
     "**/glob": "^13.0.0",
-    "**/minimatch": "^10.2.1"
+    "**/minimatch": "^10.2.1",
+    "@babel/helper-compilation-targets/lru-cache": "5.1.1"
   },
   "engines": {
     "node": ">=18 <=24"
