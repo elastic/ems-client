@@ -35,7 +35,7 @@
     "@types/topojson-client": "3.1.5",
     "chroma-js": "2.4.2",
     "lodash": "^4.17.23",
-    "lru-cache": "11.2.5",
+    "lru-cache": "11.2.6",
     "maplibre-gl": "5.3.0",
     "semver": "7.7.3",
     "topojson-client": "^3.1.0"
@@ -72,7 +72,7 @@
   "resolutions": {
     "**/glob": "^13.0.0",
     "**/minimatch": "^10.2.1",
-    "@babel/helper-compilation-targets/lru-cache": "5.1.1"
+    "@babel/helper-compilation-targets/lru-cache": "11.2.6"
   },
   "engines": {
     "node": ">=18 <=24"
