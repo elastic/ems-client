@@ -298,7 +298,7 @@ export class EMSClient {
       if (e instanceof Error) {
         throw e;
       } else {
-        throw new Error('Unknown error');
+        throw new Error('Unknown error', { cause: e });
       }
     }
   }
