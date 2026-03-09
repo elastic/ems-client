@@ -50,7 +50,7 @@
     "@eslint/js": "10.0.1",
     "@types/chroma-js": "2.4.5",
     "@types/jest": "30.0.0",
-    "@types/lodash": "4.17.23",
+    "@types/lodash": "4.17.24",
     "@types/lru-cache": "7.10.10",
     "@types/node": "24.10.13",
     "@types/semver": "7.7.1",
