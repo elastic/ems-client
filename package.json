@@ -1,6 +1,6 @@
 {
   "name": "@elastic/ems-client",
-  "version": "8.6.4",
+  "version": "8.7.0",
   "description": "JavaScript client library for the Elastic Maps Service",
   "main": "target/node/index.js",
   "browser": "target/web/index.js",
@@ -75,6 +75,6 @@
     "@babel/helper-compilation-targets/lru-cache": "11.2.6"
   },
   "engines": {
-    "node": ">=18 <=24"
+    "node": ">=22"
   }
 }
