@@ -3,9 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.6.4] - TBD
+## [8.7.0] - 2026-04-09
 ### Changed
-
+- Upgraded maplibre-gl from v3 to v5 #650 #693
+- Upgraded lru-cache from v4 to v11 #663
+- Added Node.js 24 support #1012
+- Update dependencies
 
 ## [8.6.3] - 2025-01-15
 ### Changed
