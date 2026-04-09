@@ -9,16 +9,14 @@
 
 If you have access to make releases, the process is as follows:
 
-1. Be sure you have checked out the `master` or released branch and have pulled latest changes
+1. Be sure you have checked out the `master` branch and have pulled latest changes
 1. Update the version in `package.json` accordingly.
 1. Update the CHANGELOG.md
 1. Commit changes with message "bump to x.y.z" where x.y.z is the version in package.json
-1. Tag the commit with `git tag vx.y.x`, for example `git tag v7.2.1`
+1. Tag the commit with `git tag vx.y.z`, for example `git tag v7.2.1`
 1. Push commits and tags upstream with `git push upstream master && git push upstream --tags` (and optionally to your own fork as well)
-1. Update the latest major branch on upstream with `git push upstream <major_branch>`
-1. Build the targets with `yarn build`
-1. Publish to npm with `npm publish --access public`
-1. If necessary, push the new branch upstream and create/archive Snyk targets
+1. The [publish workflow](.github/workflows/publish.yml) will automatically build and publish to npm via [npm Trusted Publishers](https://docs.npmjs.com/trusted-publishers) when the tag is pushed
+1. Monitor the publish run in the repository's [Actions tab](https://github.com/elastic/ems-client/actions/workflows/publish.yml)
 
 ## Continuous Integration
 
