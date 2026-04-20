@@ -1762,14 +1762,7 @@
   dependencies:
     "@eslint/core" "^1.2.1"
 
-"@eslint/core@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@eslint/core/-/core-1.2.0.tgz#3f741da0119058ad2a567a6f215677b5557a19e9"
-  integrity sha512-8FTGbNzTvmSlc4cZBaShkC6YvFMG0riksYWRFKXztqVdXaQbcZLXlFbSpC05s70sGEsXAw0qwhx69JiW7hQS7A==
-  dependencies:
-    "@types/json-schema" "^7.0.15"
-
-"@eslint/core@^1.2.0", "@eslint/core@^1.2.1":
+"@eslint/core@1.2.1", "@eslint/core@^1.2.0", "@eslint/core@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@eslint/core/-/core-1.2.1.tgz#c1da7cd1b82fa8787f98b5629fb811848a1b63ce"
   integrity sha512-MwcE1P+AZ4C6DWlpin/OmOA54mmIZ/+xZuJiQd4SyB29oAJjN30UW9wkKNptW2ctp4cEsvhlLY/CsQ1uoHDloQ==
