@@ -4577,7 +4577,7 @@ pretty-format@30.3.0:
     ansi-styles "^5.2.0"
     react-is "^18.3.1"
 
-protocol-buffers-schema@^3.3.1:
+protocol-buffers-schema@^3.3.1, protocol-buffers-schema@^3.6.1:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/protocol-buffers-schema/-/protocol-buffers-schema-3.6.1.tgz#fd9a58a5c4e96385b964808f3ddd58f9ef18c3c8"
   integrity sha512-VG2K63Igkiv9p76tk1lilczEK1cT+kCjKtkdhw1dQZV3k3IXJbd3o6Ho8b9zJZaHSnT2hKe4I+ObmX9w6m5SmQ==
