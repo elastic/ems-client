@@ -21,7 +21,7 @@
     {
       "description": "Master branch specific rules",
       "matchBaseBranches": ["master"],
-      "labels": ["dependencies", "v8.6.4"]
+      "labels": ["dependencies", "v8.8.0"]
     }
   ]
 }
