@@ -2,13 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "enabled": true,
   "minimumReleaseAge": "14 days",
-  "extends": [
-    "github>elastic/renovate-config"
-  ],
-  "baseBranches": ["master"],
-  "labels": [
-    "dependencies"
-  ],
+  "extends": ["github>elastic/renovate-config"],
+  "baseBranchPatterns": ["master"],
+  "labels": ["dependencies"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
