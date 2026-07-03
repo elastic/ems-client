@@ -7,7 +7,7 @@
 import _ from 'lodash';
 import { TMSService } from './tms_service';
 import { EMSFormatType, FileLayer } from './file_layer';
-import { FeatureCollection } from 'geojson';
+import type { FeatureCollection } from 'geojson';
 
 import semverCoerce from 'semver/functions/coerce';
 import semverValid from 'semver/functions/valid';

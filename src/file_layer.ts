@@ -14,7 +14,7 @@ import {
   FileLayerField,
 } from './ems_client';
 import { AbstractEmsService } from './ems_service';
-import { FeatureCollection } from 'geojson';
+import type { FeatureCollection } from 'geojson';
 import * as topojson from 'topojson-client';
 
 export enum EMSFormatType {
