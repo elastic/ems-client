@@ -5,9 +5,7 @@ module.exports = {
         [
           '@babel/preset-env',
           {
-            useBuiltIns: 'entry',
             modules: false,
-            corejs: 3,
           },
         ],
       ],
@@ -20,6 +18,7 @@ module.exports = {
             targets: {
               node: 'current',
             },
+            modules: 'commonjs',
           },
         ],
       ],
@@ -32,11 +31,11 @@ module.exports = {
             targets: {
               node: 'current',
             },
+            modules: 'commonjs',
           },
         ],
       ],
     },
   },
   presets: ['@babel/preset-typescript'],
-  plugins: ['@babel/plugin-proposal-class-properties'],
 };
