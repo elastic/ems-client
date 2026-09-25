@@ -41,9 +41,9 @@
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
-    "@babel/cli": "8.0.5",
-    "@babel/core": "8.0.5",
-    "@babel/preset-env": "8.0.5",
+    "@babel/cli": "8.0.6",
+    "@babel/core": "8.0.6",
+    "@babel/preset-env": "8.0.6",
     "@babel/preset-typescript": "8.0.1",
     "@eslint/core": "1.2.1",
     "@eslint/js": "10.0.1",
