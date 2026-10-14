@@ -42,9 +42,9 @@
   },
   "devDependencies": {
     "@babel/cli": "8.0.6",
-    "@babel/core": "8.0.6",
-    "@babel/preset-env": "8.0.6",
-    "@babel/preset-typescript": "8.0.1",
+    "@babel/core": "8.0.7",
+    "@babel/preset-env": "8.0.7",
+    "@babel/preset-typescript": "8.0.7",
     "@eslint/core": "1.2.1",
     "@eslint/js": "10.0.1",
     "@types/chroma-js": "2.4.5",
