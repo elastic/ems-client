@@ -17,7 +17,7 @@
     {
       "description": "Hold maplibre-gl at the version Kibana uses (elastic/kibana#301722). Remove once Kibana moves on.",
       "matchPackageNames": ["maplibre-gl"],
-      "enabled": false
+      "allowedVersions": "6.4.1"
     },
     {
       "description": "Master branch specific rules",
