@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [8.8.1] - 2026-10-29
+### Fixed
+- Use `import type` for maplibre-gl, so the compiled output does not require maplibre-gl at runtime. Version 8.8.0 required it, and maplibre-gl 6 is ESM only, so Jest in Kibana cannot load it
+
 ## [8.8.0] - 2026-10-29
 ### Changed
 - Upgraded maplibre-gl from v5 to v6.4.1, the version Kibana upgrades to in elastic/kibana#301722 #1243
