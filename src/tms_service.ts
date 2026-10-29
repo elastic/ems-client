@@ -6,7 +6,7 @@
  */
 
 import _ from 'lodash';
-import {
+import type {
   DataDrivenPropertyValueSpecification,
   FormattedSpecification,
   LayerSpecification,

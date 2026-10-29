@@ -6,7 +6,7 @@
  */
 
 import chroma, { ChromaStatic, Color } from 'chroma-js';
-import {
+import type {
   ColorSpecification,
   DataDrivenPropertyValueSpecification,
   PropertyValueSpecification,
