@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.7.1] - TBD
+## [8.8.0] - 2026-10-29
+### Changed
+- Upgraded maplibre-gl from v5 to v6.4.1, the version Kibana upgrades to in elastic/kibana#301722 #1243
+- Require Node.js 24 (`engines.node` is now `>=24`) #1236
+- Ignore maplibre-gl in the Kibana dependencies check and hold it at 6.4.1 in Renovate until Kibana moves on #1243
 
 
 ## [8.7.0] - 2026-04-09
