@@ -11,6 +11,10 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      # setup-node v7 no longer exports a placeholder token (v6 did), and every yarn
+      # command fails on ${NODE_AUTH_TOKEN} in the generated .npmrc. Publishing uses OIDC.
+      NODE_AUTH_TOKEN: XXXXX-XXXXX-XXXXX-XXXXX
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
@@ -19,11 +23,7 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
-      # setup-node v7 no longer exports a placeholder token, and yarn fails on
-      # ${NODE_AUTH_TOKEN} in the generated .npmrc. Publishing uses OIDC, not this value.
       - run: yarn install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: XXXXX-XXXXX-XXXXX-XXXXX
 
       - run: yarn build
 
