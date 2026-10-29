@@ -19,7 +19,11 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
+      # setup-node v7 no longer exports a placeholder token, and yarn fails on
+      # ${NODE_AUTH_TOKEN} in the generated .npmrc. Publishing uses OIDC, not this value.
       - run: yarn install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: XXXXX-XXXXX-XXXXX-XXXXX
 
       - run: yarn build
 
