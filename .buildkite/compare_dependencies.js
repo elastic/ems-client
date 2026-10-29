@@ -17,8 +17,23 @@ const DEFAULT_BRANCH = 'main';
 const branch = process.env.KIBANA_BRANCH || DEFAULT_BRANCH;
 const kibanaPackageUrl = `https://raw.githubusercontent.com/elastic/kibana/${branch}/package.json`;
 
+// Dependencies that are allowed to be ahead of Kibana, with the reason.
+// Remove an entry once Kibana catches up.
+const IGNORED_DEPENDENCIES = {
+  'maplibre-gl':
+    'Kibana upgrades to 6.4.1 in https://github.com/elastic/kibana/pull/301722 and overrides the ems-client version meanwhile',
+};
+
 const processDependency = function (dependency, srcDeps, dstDeps, dstDevDeps) {
   if (!(dependency in dstDeps) && !(dependency in dstDevDeps)) {
+    return true;
+  }
+
+  if (dependency in IGNORED_DEPENDENCIES) {
+    const destination = dstDeps[dependency] || dstDevDeps[dependency];
+    console.log(
+      `⏭  ${dependency}: ${srcDeps[dependency]} vs ${destination} (ignored: ${IGNORED_DEPENDENCIES[dependency]})`
+    );
     return true;
   }
   const source = srcDeps[dependency].replace('^', '');
