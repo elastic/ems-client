@@ -16,7 +16,7 @@ import semverMinor from 'semver/functions/minor';
 
 import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
 import { toAbsoluteUrl } from './utils';
-import { ParsedUrlQueryInput } from 'querystring';
+import type { ParsedUrlQueryInput } from 'querystring';
 import { LRUCache } from 'lru-cache';
 
 const REST_API_REGEX = /\d{4}-\d{2}-\d{2}/;
