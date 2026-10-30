@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+### Fixed
+- Use `import type` for `ParsedUrlQueryInput` from `querystring`, so the compiled output does not import the Node.js `querystring` module. Browser bundlers such as Vite warn that the module is externalized
+
 ## [8.8.1] - 2026-10-29
 ### Fixed
 - Use `import type` for maplibre-gl, so the compiled output does not require maplibre-gl at runtime. Version 8.8.0 required it, and maplibre-gl 6 is ESM only, so Jest in Kibana cannot load it
