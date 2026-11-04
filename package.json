@@ -70,7 +70,7 @@
   },
   "resolutions": {
     "**/glob": "^14.0.0",
-    "**/minimatch": "^10.2.5",
+    "**/minimatch": "^11.0.0",
     "**/protocol-buffers-schema": "^3.6.1"
   },
   "engines": {
