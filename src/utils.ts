@@ -36,6 +36,28 @@ export function toAbsoluteUrl(host: string | undefined, path: string): string {
 /*
 Type with the possible ways to define a color in maplibre
 */
+const RELATIVE_URL_BASE = 'http://relative.invalid';
+
+/**
+ * Sets query parameters on a URL, keeping the existing ones. Works with
+ * absolute, protocol-relative and path-only URLs (the Kibana proxy uses the latter).
+ * Spaces are encoded as %20, like the legacy `url` module did.
+ */
+export function setUrlQueryParams(input: string, query: Record<string, string>): string {
+  const isAbsolute = /^[a-z][a-z\d+.-]*:/i.test(input);
+  const isProtocolRelative = input.startsWith('//');
+  const parsed = new URL(input, RELATIVE_URL_BASE);
+  for (const [key, value] of Object.entries(query)) {
+    parsed.searchParams.set(key, value);
+  }
+  parsed.search = parsed.searchParams.toString().replace(/\+/g, '%20');
+  if (isAbsolute) {
+    return parsed.href;
+  }
+  const tail = `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  return isProtocolRelative ? `//${parsed.host}${tail}` : tail;
+}
+
 export type mbColorDefinition =
   | PropertyValueSpecification<ColorSpecification>
   | DataDrivenPropertyValueSpecification<ColorSpecification>;

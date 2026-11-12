@@ -5,7 +5,6 @@
  * 2.0.
  */
 
-import url from 'url';
 import {
   EMSClient,
   EmsFileLayerFormatGeoJson,
@@ -90,13 +89,10 @@ export class FileLayer extends AbstractEmsService {
 
   getEMSHotLink(): string {
     const landingPageString = this._emsClient.getLandingPageUrl();
-    const urlObject = url.parse(landingPageString, true);
+    const urlObject = new URL(landingPageString);
+    urlObject.searchParams.set('locale', this._emsClient.getLocale());
     urlObject.hash = `file/${this.getId()}`;
-    urlObject.query = {
-      ...urlObject.query,
-      locale: this._emsClient.getLocale(),
-    };
-    return url.format(urlObject);
+    return urlObject.href;
   }
 
   getDefaultFormatType(): string {
