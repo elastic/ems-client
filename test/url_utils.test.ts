@@ -32,4 +32,21 @@ describe('setUrlQueryParams', () => {
       '/%7Bz%7D/%7Bx%7D/%7By%7D.png?'
     );
   });
+
+  test('protocol-relative URL keeps explicit port 80 and credentials', () => {
+    expect(setUrlQueryParams('//u:p@tiles.example:80/p.png', { a: '1' })).toBe(
+      '//u:p@tiles.example:80/p.png?a=1'
+    );
+  });
+
+  test('relative paths are not normalized', () => {
+    expect(setUrlQueryParams('api/manifest', { a: '1' })).toBe('api/manifest?a=1');
+    expect(setUrlQueryParams('../api/manifest?b=2#h', { a: '1' })).toBe(
+      '../api/manifest?b=2&a=1#h'
+    );
+  });
+
+  test('empty input yields only the query', () => {
+    expect(setUrlQueryParams('', { a: '1' })).toBe('?a=1');
+  });
 });

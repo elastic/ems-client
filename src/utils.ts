@@ -36,26 +36,35 @@ export function toAbsoluteUrl(host: string | undefined, path: string): string {
 /*
 Type with the possible ways to define a color in maplibre
 */
-const RELATIVE_URL_BASE = 'http://relative.invalid';
-
 /**
  * Sets query parameters on a URL, keeping the existing ones. Works with
- * absolute, protocol-relative and path-only URLs (the Kibana proxy uses the latter).
- * Spaces are encoded as %20, like the legacy `url` module did.
+ * absolute, protocol-relative, path-only and empty URLs (the Kibana proxy uses
+ * the path-only form). Spaces are encoded as %20, like the legacy `url` module did.
+ *
+ * Only absolute URLs go through the WHATWG parser. Any other input keeps its
+ * original authority and path untouched: the parser would drop default ports and
+ * credentials, and resolve relative segments against a dummy base.
  */
 export function setUrlQueryParams(input: string, query: Record<string, string>): string {
   const isAbsolute = /^[a-z][a-z\d+.-]*:/i.test(input);
-  const isProtocolRelative = input.startsWith('//');
-  const parsed = new URL(input, RELATIVE_URL_BASE);
-  for (const [key, value] of Object.entries(query)) {
-    parsed.searchParams.set(key, value);
-  }
-  parsed.search = parsed.searchParams.toString().replace(/\+/g, '%20');
   if (isAbsolute) {
+    const parsed = new URL(input);
+    for (const [key, value] of Object.entries(query)) {
+      parsed.searchParams.set(key, value);
+    }
+    parsed.search = parsed.searchParams.toString().replace(/\+/g, '%20');
     return parsed.href;
   }
-  const tail = `${parsed.pathname}${parsed.search}${parsed.hash}`;
-  return isProtocolRelative ? `//${parsed.host}${tail}` : tail;
+  const hashIndex = input.indexOf('#');
+  const hash = hashIndex >= 0 ? input.slice(hashIndex) : '';
+  const beforeHash = hashIndex >= 0 ? input.slice(0, hashIndex) : input;
+  const queryIndex = beforeHash.indexOf('?');
+  const path = queryIndex >= 0 ? beforeHash.slice(0, queryIndex) : beforeHash;
+  const params = new URLSearchParams(queryIndex >= 0 ? beforeHash.slice(queryIndex + 1) : '');
+  for (const [key, value] of Object.entries(query)) {
+    params.set(key, value);
+  }
+  return `${path}?${params.toString().replace(/\+/g, '%20')}${hash}`;
 }
 
 export type mbColorDefinition =
