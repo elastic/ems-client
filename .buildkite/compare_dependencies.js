@@ -19,10 +19,7 @@ const kibanaPackageUrl = `https://raw.githubusercontent.com/elastic/kibana/${bra
 
 // Dependencies that are allowed to be ahead of Kibana, with the reason.
 // Remove an entry once Kibana catches up.
-const IGNORED_DEPENDENCIES = {
-  'maplibre-gl':
-    'Kibana upgrades to 6.4.1 in https://github.com/elastic/kibana/pull/301722 and overrides the ems-client version meanwhile',
-};
+const IGNORED_DEPENDENCIES = {};
 
 const processDependency = function (dependency, srcDeps, dstDeps, dstDevDeps) {
   if (!(dependency in dstDeps) && !(dependency in dstDevDeps)) {
