@@ -27,9 +27,9 @@ describe('setUrlQueryParams', () => {
     );
   });
 
-  test('template variables are percent-encoded in the path', () => {
+  test('template variables are left untouched in the path', () => {
     expect(setUrlQueryParams('https://t.example/{z}/{x}/{y}.png', query)).toContain(
-      '/%7Bz%7D/%7Bx%7D/%7By%7D.png?'
+      '/{z}/{x}/{y}.png?'
     );
   });
 
@@ -44,6 +44,16 @@ describe('setUrlQueryParams', () => {
     expect(setUrlQueryParams('../api/manifest?b=2#h', { a: '1' })).toBe(
       '../api/manifest?b=2&a=1#h'
     );
+  });
+
+  test('spaces in the path are passed through as given', () => {
+    expect(setUrlQueryParams('https://t.example/my maps/é.json', { a: '1' })).toBe(
+      'https://t.example/my maps/é.json?a=1'
+    );
+  });
+
+  test('origin without path gets the root path', () => {
+    expect(setUrlQueryParams('https://t.example', { a: '1' })).toBe('https://t.example/?a=1');
   });
 
   test('empty input yields only the query', () => {

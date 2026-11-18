@@ -41,25 +41,18 @@ Type with the possible ways to define a color in maplibre
  * absolute, protocol-relative, path-only and empty URLs (the Kibana proxy uses
  * the path-only form). Spaces are encoded as %20, like the legacy `url` module did.
  *
- * Only absolute URLs go through the WHATWG parser. Any other input keeps its
- * original authority and path untouched: the parser would drop default ports and
- * credentials, and resolve relative segments against a dummy base.
+ * The input is split by hand instead of using the WHATWG parser, so the scheme,
+ * authority and path stay exactly as given: the parser would drop default ports
+ * and credentials, and resolve relative segments against a dummy base.
  */
 export function setUrlQueryParams(input: string, query: Record<string, string>): string {
-  const isAbsolute = /^[a-z][a-z\d+.-]*:/i.test(input);
-  if (isAbsolute) {
-    const parsed = new URL(input);
-    for (const [key, value] of Object.entries(query)) {
-      parsed.searchParams.set(key, value);
-    }
-    parsed.search = parsed.searchParams.toString().replace(/\+/g, '%20');
-    return parsed.href;
-  }
   const hashIndex = input.indexOf('#');
   const hash = hashIndex >= 0 ? input.slice(hashIndex) : '';
   const beforeHash = hashIndex >= 0 ? input.slice(0, hashIndex) : input;
   const queryIndex = beforeHash.indexOf('?');
-  const path = queryIndex >= 0 ? beforeHash.slice(0, queryIndex) : beforeHash;
+  const rawPath = queryIndex >= 0 ? beforeHash.slice(0, queryIndex) : beforeHash;
+  // an origin without path gets the root path, as `https://host` -> `https://host/`
+  const path = /^[a-z][a-z\d+.-]*:\/\/[^/]*$/i.test(rawPath) ? `${rawPath}/` : rawPath;
   const params = new URLSearchParams(queryIndex >= 0 ? beforeHash.slice(queryIndex + 1) : '');
   for (const [key, value] of Object.entries(query)) {
     params.set(key, value);
