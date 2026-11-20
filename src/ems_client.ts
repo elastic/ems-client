@@ -14,72 +14,11 @@ import semverValid from 'semver/functions/valid';
 import semverMajor from 'semver/functions/major';
 import semverMinor from 'semver/functions/minor';
 
-import { format as formatUrl, parse as parseUrl, UrlObject } from 'url';
-import { toAbsoluteUrl } from './utils';
-import type { ParsedUrlQueryInput } from 'querystring';
+import { setUrlQueryParams, toAbsoluteUrl } from './utils';
 import { LRUCache } from 'lru-cache';
 
 const REST_API_REGEX = /\d{4}-\d{2}-\d{2}/;
 export const LATEST_API_URL_PATH = 'latest';
-
-type URLMeaningfulParts = {
-  auth?: string | null;
-  hash?: string | null;
-  hostname?: string | null;
-  pathname?: string | null;
-  protocol?: string | null;
-  slashes?: boolean | null;
-  port?: string | null;
-  query: ParsedUrlQueryInput;
-};
-
-/**
- * plugins cannot have upstream dependencies on core/*-kibana.
- * Work-around by copy-pasting modifyUrl routine here.
- * @param url
- * @param block
- */
-function modifyUrlLocal(
-  url: string,
-  block: (urlParts: URLMeaningfulParts) => Partial<URLMeaningfulParts> | void
-): string {
-  const parsed = parseUrl(url, true) as URLMeaningfulParts;
-
-  // copy over the most specific version of each
-  // property. By default, the parsed url includes
-  // several conflicting properties (like path and
-  // pathname + search, or search and query) and keeping
-  // track of which property is actually used when they
-  // are formatted is harder than necessary
-  const meaningfulParts: URLMeaningfulParts = {
-    protocol: parsed.protocol,
-    slashes: parsed.slashes,
-    auth: parsed.auth,
-    hostname: parsed.hostname,
-    port: parsed.port,
-    pathname: parsed.pathname,
-    query: parsed.query || {},
-    hash: parsed.hash,
-  };
-
-  // the block modifies the meaningfulParts object, or returns a new one
-  const modifiedParts = block(meaningfulParts) || meaningfulParts;
-
-  // format the modified/replaced meaningfulParts back into a url
-  return formatUrl({
-    protocol: modifiedParts.protocol,
-    slashes: modifiedParts.slashes,
-    auth: modifiedParts.auth,
-    hostname: modifiedParts.hostname,
-    port: modifiedParts.port,
-    pathname: modifiedParts.pathname,
-    query: modifiedParts.query,
-    hash: modifiedParts.hash,
-  } as UrlObject);
-}
-
-const extendUrl = (url: string, props: URLMeaningfulParts) =>
-  modifyUrlLocal(url, (parsed) => _.merge(parsed, props));
 
 /**
  *  Unescape a url template that was escaped by encodeURI() so leaflet
@@ -284,7 +223,7 @@ export class EMSClient {
    */
   async getManifest<T>(endpointUrl: string): Promise<T> {
     try {
-      const url = extendUrl(endpointUrl, { query: this._queryParams });
+      const url = setUrlQueryParams(endpointUrl, this._queryParams);
       const response = await this._fetchWithTimeout(url);
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -371,11 +310,7 @@ export class EMSClient {
   }
 
   extendUrlWithParams(url: string): string {
-    return unescapeTemplateVars(
-      extendUrl(url, {
-        query: this._queryParams,
-      })
-    );
+    return unescapeTemplateVars(setUrlQueryParams(url, this._queryParams));
   }
 
   async findFileLayerById(id: string): Promise<FileLayer | undefined> {
