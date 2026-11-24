@@ -5,7 +5,6 @@
  * 2.0.
  */
 
-import url from 'url';
 import {
   EMSClient,
   EmsFileLayerFormatGeoJson,
@@ -14,6 +13,7 @@ import {
   FileLayerField,
 } from './ems_client';
 import { AbstractEmsService } from './ems_service';
+import { setUrlQueryParams } from './utils';
 import type { FeatureCollection } from 'geojson';
 import * as topojson from 'topojson-client';
 
@@ -90,13 +90,10 @@ export class FileLayer extends AbstractEmsService {
 
   getEMSHotLink(): string {
     const landingPageString = this._emsClient.getLandingPageUrl();
-    const urlObject = url.parse(landingPageString, true);
-    urlObject.hash = `file/${this.getId()}`;
-    urlObject.query = {
-      ...urlObject.query,
-      locale: this._emsClient.getLocale(),
-    };
-    return url.format(urlObject);
+    const hashIndex = landingPageString.indexOf('#');
+    const withoutHash = hashIndex >= 0 ? landingPageString.slice(0, hashIndex) : landingPageString;
+    const withLocale = setUrlQueryParams(withoutHash, { locale: this._emsClient.getLocale() });
+    return `${withLocale}#file/${this.getId()}`;
   }
 
   getDefaultFormatType(): string {

@@ -306,6 +306,34 @@ it('.getFileLayers[0] - localized (fallback)', async () => {
   );
 });
 
+describe('getEMSHotLink - landing page URL variants', () => {
+  const hotLink = async (landingPageUrl?: string) => {
+    const { emsClient } = getEMSClient({
+      language: 'zz',
+      emsVersion: '7.6',
+      tileApiUrl: 'https://tiles.foobar',
+      fileApiUrl: 'https://files.foobar',
+      landingPageUrl,
+    });
+    const layers = await emsClient.getFileLayers();
+    return layers[0].getEMSHotLink();
+  };
+
+  test('omitted landingPageUrl does not throw', async () => {
+    expect(await hotLink(undefined)).toBe('?locale=zz#file/world_countries');
+  });
+
+  test('relative landingPageUrl is preserved', async () => {
+    expect(await hotLink('/maps')).toBe('/maps?locale=zz#file/world_countries');
+  });
+
+  test('existing hash is replaced', async () => {
+    expect(await hotLink('https://landing.foobar/#old')).toBe(
+      'https://landing.foobar/?locale=zz#file/world_countries'
+    );
+  });
+});
+
 describe('.getFileLayers[1] - getGeoJson defaults', () => {
   const { emsClient, getManifestMock } = getEMSClient({
     language: 'en',
